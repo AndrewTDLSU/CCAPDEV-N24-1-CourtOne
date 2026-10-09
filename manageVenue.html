@@ -1,1 +1,135 @@
+<!-- Copy paste to comment -->
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Manage Venue</title>
+
+        <link rel="stylesheet" href="customCSS/ownerMgmt.css"> <!-- Custom CSS -->
+
+        <!-- bootstrap link -->
+        <link rel="stylesheet" href="bootstrap-4.6.2-dist/css/bootstrap.min.css"> <!-- bootstrap css for grid -->
+        <!--<script src="[filepath]"></script>  bootstrap js script, Not used yet, remove when unncessary -->
+    </head>
+
+    <body>
+        <header>
+            <nav aria-label="Main navigation">
+            <strong>CourtOne</strong>
+            <a href="index.html">Home</a>
+            <a href="browseVenues.html">Venues</a>
+            <a href="chat.html">Chat</a>
+        </nav> 
+        </header>
+        
+        <!-- Bootstrap grid container -->
+        <div class="container text-center">
+
+            <!-- Back to dashboard and Venue Name col size 12 -->
+            <div class="row">
+                <span><a href="ownerDashboard.html">Back to Venues </a></span> <span> | </span> <span> Badminton Center, Manila City </span> <span> | </span> <span> <a href="manageStaff.html"> Manage Staff </a> </span>
+            </div>
+
+            <!-- statistics 1st row (total reservations, total revenue) col size 6 -->
+            <div class="row">
+                <div class="col-md-6">
+                    <p><strong>Total Revenue:</strong> PHP <span>21000</span> </p>
+                </div>        
+
+                <div class="col-md-6">
+                    <p><strong>Total Reservations:</strong> <span>1090</span> </p>
+                </div>
+      
+            </div> 
+
+            <!-- statistics 2nd row (revenue line chart, court usage pie chart, reservations over time) col size 4 -->
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <p><strong>Revenue Over Time</strong></p>
+                        </div>
+                        <div class="card-body">
+                            <div class="chart-container">
+                                <canvas id="revenueLineChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <p><strong>Bookings Over Time</strong></p>
+                        </div>
+                        <div class="card-body">
+                            <div class="chart-container">
+                                <canvas id="bookingsBarGraph"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <p><strong>Court Usage</strong></p>
+                        </div>
+                        <div class="card-body">
+                            <div class="chart-container">
+                                <canvas id="courtUsagePieChart"></canvas>    
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- reservations table label col size 12 -->
+            <div class="row">
+                <h5>Recent Reservations</h5>
+            </div>
+
+            <!-- table col size 12 -->
+            <div class="row">
+                <div class="table-responsive"> 
+                <table class="table table-condensed table-striped">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Court</th>
+                            <th>Date amp& Time</th>
+                            <th>Amount Paid</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Andrew Tagalag</td>
+                            <td>andrew_tagalag@dlsu.edu.ph</td>
+                            <td>Court 1</td>
+                            <td>10/16/2026 0900</td>
+                            <td>PHP 500</td>
+                            <td>(Upcoming/Completed/Cancelled)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>  
+
+        <footer>
+            <p>This is the footer</p>
+        </footer>
+
+        <!-- scripts -->
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> 
+        <script src="customScripts/charts.js"></script>
+        
+    </body>
+</html>
+
+
 
