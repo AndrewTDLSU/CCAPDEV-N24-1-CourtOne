@@ -7,37 +7,58 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Login</title>
 
-        <link rel="stylesheet" href="style.css"> <!-- Custom CSS -->
+        <link rel="stylesheet" href="customCSS/style.css"> <!-- Custom CSS -->
 
         <!-- bootstrap link -->
-        <link rel="stylesheet" href="bootstrap-4.6.2-dist/css/bootstrap-grid.min.css"> <!-- bootstrap css for grid -->
-        <script src="[filepath]"></script> <!-- bootstrap js script, Not used yet, remove when unncessary -->
+        <link rel="stylesheet" href="bootstrap-5.3.8-dist/css/bootstrap.min.css"> <!-- bootstrap css for grid -->
+        <!--<script src="[filepath]"></script>  bootstrap js script, Not used yet, remove when unncessary -->
     </head>
 
     <body>
-        <div class=""> <!-- No class yet -->
+        <div class="container my-4"> 
 
-            <!-- Logo and  -->
-            <div class="">
-                <h1 class="">CourtOne</h1>
-                <p>Court Booking Website</p>
+            <!-- Logo and tagline (WIP) -->
+            <div class="row">
+                <div class="col-md-12 p-5 text-center">
+                    <h1>CourtOne</h1>
+                    <small>Court Booking Website</small>
+                </div>
             </div>
 
-            <div class=""> <!-- No class yet -->
-                <h2>Login</h2>
-                <p class=""></p> <!-- No class yet -->
+            <!-- Username and Password form -->
+            <div class="row g-4 justify-content-center">
+                <div class="col-12 col-sm-10 col-md-6 col-lg-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h2 class="text-center h4 mb-3">Login</h2>
 
-                <form action="" method="POST">
+                            <!-- Show with JS when login fails (remove d-none) -->
+                            <div id="login-error" class="alert alert-danger d-none" role="alert">
+                                Incorrect email or password.
+                            </div>
 
-                    <label for="username">Username:</label>
-                    <input type="text" id="username" name="username" value="" required autofocus>
+                            <form action="" method="POST" class="border rounded p-3">
 
-                    <label for="password">Password:</label>
-                    <input type="password" id="password" name="password" required>
+                                <div class="mb-3">
+                                    <label for="username" class="form-label">Username:</label>
+                                    <input type="text" id="username" name="username" value="" class="form-control autofocus" > <!-- removed required attributes to access index.html -->
+                                </div>
 
-                    <button type="submit">Log In</button>
-                </form>
+                                <div class="mb-3">
+                                    <label for="password" class="form-label">Password:</label>
+                                    <input type="password" id="password" name="password" class="form-control" > <!-- removed required attributes to access index.html -->
+                                </div>
+
+                                <a href="index.html"><button type="button" class="btn btn-primary">Log In</button></a> <!-- achor link to index.html instead of type="submit" to skip backend for now -->
+                                
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </div>
+
+            <p class="text-center mt-2">New here? <span> <a href="signup.html">Sign up now</a> </span> </p>
+
         </div>
     </body>
 </html>
