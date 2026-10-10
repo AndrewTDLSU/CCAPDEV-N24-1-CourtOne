@@ -10,43 +10,46 @@
         <link rel="stylesheet" href="customCSS/ownerMgmt.css"> <!-- Custom CSS -->
 
         <!-- bootstrap link -->
-        <link rel="stylesheet" href="bootstrap-4.6.2-dist/css/bootstrap.min.css"> <!-- bootstrap css for grid -->
+        <link rel="stylesheet" href="bootstrap-5.3.8-dist/css/bootstrap.min.css"> <!-- bootstrap css for grid -->
         <!--<script src="[filepath]"></script>  bootstrap js script, Not used yet, remove when unncessary -->
     </head>
 
     <body>
         <header>
             <nav aria-label="Main navigation">
-            <strong>CourtOne</strong>
-            <a href="index.html">Home</a>
-            <a href="browseVenues.html">Venues</a>
-            <a href="chat.html">Chat</a>
-        </nav> 
+                <strong>CourtOne</strong>
+                <a href="index.html">Home</a>
+                <a href="browseVenues.html">Venues</a>
+                <a href="chat.html">Chat</a>
+            </nav> 
         </header>
         
         <!-- Bootstrap grid container -->
         <div class="container text-center">
 
             <!-- Back to dashboard and Venue Name col size 12 -->
-            <div class="row">
-                <span><a href="ownerDashboard.html">Back to Venues </a></span> <span> | </span> <span> Badminton Center, Manila City </span> <span> | </span> <span> <a href="manageStaff.html"> Manage Staff </a> </span>
+            <div class="bg-light rounded p-3 my-3">
+                <span><a href="ownerDashboard.html">←Back to Venues</a></span> 
+                <span>|</span> <span><a href="manageStaff.html"> Manage Staff </a> </span>
+                <span>|</span> <span><a href="venueForm.html"> Edit Details </a> </span>
+                <span> | </span> <span>Badminton Center, Manila City </span> 
             </div>
 
+
             <!-- statistics 1st row (total reservations, total revenue) col size 6 -->
-            <div class="row">
-                <div class="col-md-6">
+            <div class="row p-3 my-3">
+                <div class="col-md-6 bg-light rounded col-12 py-3">
                     <p><strong>Total Revenue:</strong> PHP <span>21000</span> </p>
                 </div>        
 
-                <div class="col-md-6">
+                <div class="col-md-6 bg-light rounded col-12 py-3">
                     <p><strong>Total Reservations:</strong> <span>1090</span> </p>
-                </div>
-      
+                </div>   
             </div> 
 
             <!-- statistics 2nd row (revenue line chart, court usage pie chart, reservations over time) col size 4 -->
             <div class="row">
-                <div class="col-md-4">
+                <div class="col-md-4 col-12">
                     <div class="card">
                         <div class="card-header">
                             <p><strong>Revenue Over Time</strong></p>
@@ -59,7 +62,7 @@
                     </div>
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-4 col-12">
                     <div class="card">
                         <div class="card-header">
                             <p><strong>Bookings Over Time</strong></p>
@@ -72,7 +75,7 @@
                     </div>
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-4 col-12">
                     <div class="card">
                         <div class="card-header">
                             <p><strong>Court Usage</strong></p>
@@ -87,7 +90,7 @@
             </div>
 
             <!-- reservations table label col size 12 -->
-            <div class="row">
+            <div class="row bg-light rounded m-2 py-2">
                 <h5>Recent Reservations</h5>
             </div>
 

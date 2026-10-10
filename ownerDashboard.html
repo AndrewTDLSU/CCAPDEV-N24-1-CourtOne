@@ -10,7 +10,7 @@
         <link rel="stylesheet" href="customCSS/style.css"> <!-- Custom CSS -->
 
         <!-- bootstrap link -->
-        <link rel="stylesheet" href="bootstrap-4.6.2-dist/css/bootstrap.min.css"> <!-- bootstrap css for grid -->
+        <link rel="stylesheet" href="bootstrap-5.3.8-dist/css/bootstrap.min.css"> <!-- bootstrap css for grid -->
         <!--<script src="[filepath]"></script>  bootstrap js script, Not used yet, remove when unncessary -->
     </head>
 
@@ -25,37 +25,38 @@
         </header>
         
         <!-- Bootstrap grid container -->
-        <div class="container">
+        <div class="container my-4">
 
             <!-- Header container image -->
-            <div class="row">
-                <div class="col-md-12">
-                    <div class=""> <!-- Empty class -->
-                        <h1>Manage Your Venue Now</h1>
-                    </div>
-                    <div>
-                        <img src="" alt="icon not found..." height="" width="" />
-                    </div>
-                </div>            
-            </div>
-
+            <div class="row bg-light rounded pb-5 pt-2">        
+                <div class="col-md-8" col-12> <!-- Empty class -->
+                    <h1>Manage Your Venue Now</h1>
+                </div>
+                <div class="col-md-4" col-12>
+                    <img src="" alt="icon not found..." height="" width="" />
+                </div>
+            </div>            
+            
             <!-- "Available venues" text -->
-            <div class="row">
-                <div class="col-md-12">
-                    <div class=""> <!-- Empty class -->
-                        <h5>Available Venues</h5>
-                    </div>
-                </div>            
+            <div class="row my-2">
+                <div>
+                    <strong>Available Venues</strong>  
+                    <span>|</span>
+                    <span><a href="manageStaff.html">Manage Staff</a></span> 
+                </div> 
             </div>
 
             <!-- List of owned venues displayed using bootstrap card -->
             <div class="row">
-                <div class="col-md-3">
-                    <a href="venueForm.html"><img src="..." class="card-img-top" alt="photo not found" width="" height="" ></a> <!-- No image yet, should lead to venueForm.html -->
+                <div class="col-md-3 col-12">
+                    <div class="card text-center" style="max-width: 320px; min-height: 340px">
+                        <a href="venueForm.html"><img src="..." class="card-img-top" alt="icon not found" width="" height="" ></a> <!-- No image yet, should lead to venueForm.html -->
+                        <p>Add a venue</p>
+                    </div>
                 </div>      
                 
-                <div class="col-md-3">
-                    <div class="card" style="max-width: 320px">
+                <div class="col-md-3 col-12 col-6">
+                    <div class="card" style="max-width: 320px; min-height: 340px">
                         <img src="..." class="card-img-top" alt="photo not found" width="" height=""> <!-- No image yet -->
                         <div class="card-body">
                             <h4 class="card-title">Venue Name</h4>
@@ -66,8 +67,8 @@
                     </div>
                 </div>
 
-                <div class="col-md-3">
-                    <div class="card" style="max-width: 320px">
+                <div class="col-md-3 col-12">
+                    <div class="card" style="max-width: 320px; min-height: 340px">
                         <img src="..." class="card-img-top" alt="photo not found" width="" height=""> <!-- No image yet -->
                         <div class="card-body">
                             <h4 class="card-title">Venue Name</h4>
@@ -78,8 +79,8 @@
                     </div>
                 </div>
 
-                <div class="col-md-3">
-                    <div class="card" style="max-width: 320px">
+                <div class="col-md-3 col-12">
+                    <div class="card" style="max-width: 320px; min-height: 340px">
                         <img src="..." class="card-img-top" alt="photo not found" width="" height=""> <!-- No image yet -->
                         <div class="card-body">
                             <h4 class="card-title">Venue Name</h4>
