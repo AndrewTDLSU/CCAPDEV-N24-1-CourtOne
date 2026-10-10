@@ -1,1 +1,133 @@
 
+<!-- Copy paste to comment -->
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Venue Form</title>
+
+        <link rel="stylesheet" href="customCSS/style.css"> <!-- Custom CSS -->
+
+        <!-- bootstrap link -->
+        <link rel="stylesheet" href="bootstrap-5.3.8-dist/css/bootstrap.min.css"> <!-- bootstrap css for grid -->
+        <!--<script src="[filepath]"></script>  bootstrap js script, Not used yet, remove when unncessary -->
+    </head>
+
+    <body>
+        <header>
+            <nav aria-label="Main navigation">
+            <strong>CourtOne</strong>
+            <a href="index.html">Home</a>
+            <a href="browseVenues.html">Venues</a>
+            <a href="chat.html">Chat</a>
+        </nav> 
+        </header>
+        
+        <!-- Bootstrap grid container -->
+        <main class="container my-4">
+
+            <div class="bg-light rounded px-3 py-2 mb-3">
+                <a href="ownerDashboard.html">← Back to Venues</a>
+            </div>
+
+            <h1 class="h4 mb-3">Add / edit venue</h1>
+
+            <form id="venue-form">
+
+                <div class="row g-4">
+
+                    <!-- photos -->
+                    <div class="col-12 col-md-4">
+                        <div class="photo-upload border rounded p-4 text-center mb-2">
+                            Photo upload
+                        </div>
+                        <div class="row g-2">
+                            <div class="col-4"><div class="thumb border rounded"></div></div>
+                            <div class="col-4"><div class="thumb border rounded"></div></div>
+                            <div class="col-4"><div class="thumb border rounded"></div></div>
+                        </div>
+                    </div>
+
+                    <!-- details -->
+                    <div class="col-12 col-md-8">
+                        <div class="row g-3">
+
+                            <div class="col-12 col-sm-8">
+                                <label for="name" class="form-label">Venue name</label>
+                                <input type="text" id="name" class="form-control" required>
+                            </div>
+                            <div class="col-12 col-sm-4">
+                                <label for="sport" class="form-label">Sport</label>
+                                <select id="sport" class="form-select" required>
+                                    <option value="">Select</option>
+                                </select>
+                            </div>
+
+                            <div class="col-12">
+                                <label for="location" class="form-label">Location</label>
+                                <input type="text" id="location" class="form-control" required>
+                            </div>
+
+                            <div class="col-12">
+                                <label for="description" class="form-label">Description</label>
+                                <textarea id="description" class="form-control" rows="3"></textarea>
+                            </div>
+
+                            <div class="col-6 col-sm-4">
+                                <label for="courts" class="form-label">Number of courts</label>
+                                <input type="number" id="courts" class="form-control" min="1" required>
+                            </div>
+                            <div class="col-6 col-sm-8">
+                                <label for="price" class="form-label">Price per hour (PHP)</label>
+                                <input type="number" id="price" class="form-control" min="0" required>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- hours -->
+                <div class="bg-light rounded p-3 mt-4">
+                    <h2 class="h6 mb-3">Operating hours and timeslots</h2>
+                    <div class="row g-3">
+                        <div class="col-12 col-sm-4">
+                            <label for="opens" class="form-label">Opens</label>
+                            <input type="time" id="opens" class="form-control" required>
+                        </div>
+                        <div class="col-12 col-sm-4">
+                            <label for="closes" class="form-label">Closes</label>
+                            <input type="time" id="closes" class="form-control" required>
+                        </div>
+                        <div class="col-12 col-sm-4">
+                            <label for="slot-length" class="form-label">Slot length</label>
+                            <select id="slot-length" class="form-select">
+                                <option value="60">1 hour</option>
+                                <option value="30">30 minutes</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- buttons -->
+                <div class="d-flex flex-wrap gap-2 mt-4">
+                    <button type="submit" class="btn btn-primary">Save venue</button>
+                    <a href="ownerDashboard.html"><button type="button" class="btn btn-outline-secondary">Cancel</button></a>
+                    <button type="button" id="delete-venue" class="btn btn-danger ms-md-auto">Delete venue</button>
+                </div>
+
+            </form>
+        </main>  
+
+        <footer>
+            <p>This is the footer</p>
+        </footer>
+        
+    </body>
+
+    
+</html>
+
+
