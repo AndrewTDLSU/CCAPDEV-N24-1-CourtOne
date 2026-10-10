@@ -38,12 +38,16 @@
 
             <!-- statistics 1st row (total reservations, total revenue) col size 6 -->
             <div class="row p-3 my-3">
-                <div class="col-md-6 bg-light rounded col-12 py-3">
-                    <p><strong>Total Revenue:</strong> PHP <span>21000</span> </p>
+                <div class="col-md-6 col-12">
+                    <div class="card bg-light rounded">
+                        <p class="py-3"><strong>Total Revenue:</strong> PHP <span>21000</span> </p>
+                    </div>    
                 </div>        
 
-                <div class="col-md-6 bg-light rounded col-12 py-3">
-                    <p><strong>Total Reservations:</strong> <span>1090</span> </p>
+                <div class="col-md-6 col-12">
+                    <div class="card bg-light rounded">
+                        <p class="py-3"><strong>Total Reservations:</strong> <span>1090</span> </p>
+                    </div> 
                 </div>   
             </div> 
 
@@ -55,8 +59,18 @@
                             <p><strong>Revenue Over Time</strong></p>
                         </div>
                         <div class="card-body">
-                            <div class="chart-container">
-                                <canvas id="revenueLineChart"></canvas>
+                            <div class="row">
+                                <div class="chart-container">
+                                    <canvas id="revenueLineChart"></canvas>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <label for="revyear"> Year </label>
+                                <select id="revyear" class="form-select" required>
+                                    <option value="2025">2025</option>
+                                    <option value="2026">2026</option>
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -68,9 +82,19 @@
                             <p><strong>Bookings Over Time</strong></p>
                         </div>
                         <div class="card-body">
-                            <div class="chart-container">
-                                <canvas id="bookingsBarGraph"></canvas>
+                            <div class="row">
+                                <div class="chart-container">
+                                    <canvas id="bookingsBarGraph"></canvas>
+                                </div>
                             </div>
+
+                            <div class="row">
+                                <label for="bookyear"> Year </label>
+                                <select id="bookyear" class="form-select" required>
+                                    <option value="2025">2025</option>
+                                    <option value="2026">2026</option>
+                                </select>
+                            </div>   
                         </div>
                     </div>
                 </div>
@@ -81,12 +105,43 @@
                             <p><strong>Court Usage</strong></p>
                         </div>
                         <div class="card-body">
-                            <div class="chart-container">
-                                <canvas id="courtUsagePieChart"></canvas>    
+                            <div class="row">
+                                <div class="chart-container">
+                                    <canvas id="courtUsagePieChart"></canvas>    
+                                </div>
                             </div>
+
+                            <div class="row">
+                                <div class="col-6">
+                                    <label for="courtmonth"> Month </label>
+                                    <select id="courtmonth" class="form-select" required>
+                                        <option value="2025">Jan</option>
+                                        <option value="2026">Feb</option>
+                                        <option value="2026">Mar</option>
+                                        <option value="2026">Apr</option>
+                                        <option value="2026">May</option>
+                                        <option value="2026">Jun</option>
+                                        <option value="2026">Jul</option>
+                                        <option value="2026">Aug</option>
+                                        <option value="2026">Sept</option>
+                                        <option value="2026">Oct</option>
+                                        <option value="2026">Nov</option>
+                                        <option value="2026">Dec</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-6">
+                                    <label for="courtyear"> Year </label>
+                                    <select id="courtyear" class="form-select" required>
+                                        <option value="2025">2025</option>
+                                        <option value="2026">2026</option>
+                                    </select>
+                                </div>
+                            </div>   
                         </div>
                     </div>
                 </div>
+
             </div>
 
             <!-- reservations table label col size 12 -->
