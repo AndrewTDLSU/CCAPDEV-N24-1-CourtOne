@@ -1,0 +1,25 @@
+@media (max-width: 400px) {
+
+    .hero h1 {
+        font-size: 1.3rem;
+    }
+
+    .hero-search .form-control {
+        min-width: 0;
+        font-size: 0.75rem;
+    }
+
+    .hero-search .btn {
+        font-size: 0.75rem;
+        padding: 0.5rem;
+    }
+
+    .venue-card .card-title {
+        font-size: 0.8rem;
+    }
+
+    .venue-card .btn {
+        font-size: 0.65rem;
+        white-space: normal;
+    }
+}

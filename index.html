@@ -13,109 +13,203 @@
     <link rel="stylesheet" href="customCSS/style.css">
     <link rel="stylesheet" href="customCSS/home.css">
 </head>
+
 <body>
+
+    <!-- Navigation -->
     <header class="container">
-        <nav class="d-flex flex-wrap align-items-center gap-3 py-3" aria-label="Main navigation">
-            <strong>CourtOne</strong>
-            <a href="index.html">Home</a>
-            <a href="browseVenues.html">Venues</a>
-            <a href="chat.html">Chat</a>
-            <a href="login.html" class="btn btn-outline-primary">Sign In</a> <!-- This should only appear when no one is logged in -->
+        <nav class="navbar navbar-expand-lg py-3" aria-label="Main navigation">
+            <a class="navbar-brand fw-bold" href="index.html">CourtOne</a>
+
+            <div class="d-flex gap-2 ms-auto order-lg-3">
+                <a href="login.html" class="btn btn-primary">Sign In</a>
+
+                <button class="navbar-toggler" type="button"
+                        data-bs-toggle="collapse" data-bs-target="#mainMenu"
+                        aria-controls="mainMenu" aria-expanded="false"
+                        aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+            </div>
+
+            <div class="collapse navbar-collapse order-lg-2" id="mainMenu">
+                <ul class="navbar-nav mx-lg-auto gap-lg-3">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="browseVenues.html">Venues</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#how-it-works">How It Works</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="chat.html">Chat</a>
+                    </li>
+                </ul>
+            </div>
         </nav>
     </header>
 
     <main class="container my-4">
-        <h1>Find and Book Sports Courts Near You</h1><br>
-        <div id="search-section" class="card mb-3">
+
+        <!-- Hero Section -->
+        <section class="hero rounded-4 mb-4">
+
+            <div class="row align-items-center g-3">
+                <div class="col-7 col-md-6">
+                    <h1>
+                        Find and Book
+                        <span class="text-primary">Sports Courts</span>
+                        Near You
+                    </h1>
+
+                    <p class="text-secondary">
+                        Reserve basketball courts, badminton courts,
+                        gyms and more — quickly and easily.
+                    </p>
+                </div>
+
+                <div class="col-5 col-md-6 text-center">
+                    <img src="media/icons/sports.png"
+                         class="img-fluid"
+                         alt="Sports illustration">
+                </div>
+            </div>
+
+            <!-- Search Bar -->
+            <form id="venue-search-form" class="input-group mt-3 hero-search" role="search">
+                <input type="search" id="search" class="form-control"
+                       placeholder="Search venues or locations"
+                       aria-label="Search venues or locations">
+
+                <button type="submit" id="search-button" class="btn btn-primary">
+                    Search
+                </button>
+            </form>
+
+        </section>
+
+        <!-- Available Venues -->
+        <section class="mb-5">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h2 class="h4 fw-bold mb-0">Available Venues</h2>
+                <a href="browseVenues.html" class="text-decoration-none">
+                    View All →
+                </a>
+            </div>
+
+            <div id="venue-list" class="row g-3">
+
+                <!-- Venue 1 -->
+                <div class="col-6 col-lg-4 venue-column"
+                     data-search="pasay sports complex basketball pasay city">
+
+                    <div class="card venue-card h-100">
+                        <img src="media/venues/pasay-sports-complex.jpg"
+                             class="card-img-top"
+                             alt="Pasay Sports Complex">
+
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">Pasay Sports Complex</h5>
+                            <p class="card-text small mb-1">Basketball</p>
+                            <p class="card-text small text-secondary mb-3">Pasay City</p>
+
+                            <a href="viewVenue.html"
+                               class="btn btn-primary btn-sm w-100 mt-auto">
+                                View Available Slots
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Venue 2 -->
+                <div class="col-6 col-lg-4 venue-column"
+                     data-search="the playground cloverleaf sports venue manila">
+
+                    <div class="card venue-card h-100">
+                        <img src="media/venues/playground-by-cloverleaf.jpg"
+                             class="card-img-top"
+                             alt="The Playground by Cloverleaf">
+
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">The Playground</h5>
+                            <p class="card-text small mb-1">Sports Venue</p>
+                            <p class="card-text small text-secondary mb-3">Manila</p>
+
+                            <a href="viewVenue.html"
+                               class="btn btn-primary btn-sm w-100 mt-auto">
+                                View Available Slots
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Venue 3 -->
+                <div class="col-6 col-lg-4 venue-column"
+                     data-search="koliseum ng bayan sports complex makati">
+
+                    <div class="card venue-card h-100">
+                        <img src="media/venues/koliseum-ng-bayan.jpg"
+                             class="card-img-top"
+                             alt="Koliseum ng Bayan">
+
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">Koliseum ng Bayan</h5>
+                            <p class="card-text small mb-1">Sports Complex</p>
+                            <p class="card-text small text-secondary mb-3">Makati</p>
+
+                            <a href="viewVenue.html"
+                               class="btn btn-primary btn-sm w-100 mt-auto">
+                                View Available Slots
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <p id="no-results" class="text-secondary mt-3 d-none">
+                No matching venues found.
+            </p>
+        </section>
+
+        <!-- How It Works
+
+        <section id="how-it-works" class="mb-5">
+            <h2 class="h4 fw-bold mb-3">How CourtOne Works</h2>
+
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <div class="border rounded p-3 h-100">
+                        <h3 class="h6 fw-bold">1. Find a Venue</h3>
+                        <p class="small mb-0">Search for sports courts near you.</p>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="border rounded p-3 h-100">
+                        <h3 class="h6 fw-bold">2. Choose a Time</h3>
+                        <p class="small mb-0">Select your preferred timeslot.</p>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="border rounded p-3 h-100">
+                        <h3 class="h6 fw-bold">3. Book and Play</h3>
+                        <p class="small mb-0">Confirm your booking and play.</p>
+                    </div>
+                </div>
+            </div>
+        </section>   -->
         
-        </div>
-            
-        <div class="d-flex gap-2 my-3">
-            <input type="search" id="search" class="form-control"
-                   placeholder="Search venues or locations"
-                   aria-label="Search venues or locations">
-            <button type="button" id="search-button" class="btn btn-primary">
-                Search
-            </button>
-        </div>
-
-        <h2>Available Venues</h2><br>
-     <!--
-        <div class="container text-center">
-        <div class="row">
-            <div class="col">
-            Column
-            </div>
-            <div class="col">
-            Column
-            </div>
-            <div class="col">
-            Column
-            </div>
-        </div>
-        </div>        
-        <div id="venue-list" class="row g-3"></div>
-      -->
-        <div id="venue-list" class="row g-3">
-
-    <!-- Venue 1 -->
-        <div class="col-12 col-sm-6 col-lg-3">
-            <div class="card h-100">
-                <img src="media/venues/pasay-sports-complex.jpg"
-                    class="card-img-top"
-                    alt="Pasay Sports Complex">
-
-                <div class="card-body">
-                    <h5 class="card-title">Pasay Sports Complex</h5>
-                    <p class="card-text">Basketball - Pasay City</p>
-                    <a href="viewVenue.html" class="btn btn-primary w-100">
-                        View Available Slots
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Venue 2 -->
-        <div class="col-12 col-sm-6 col-lg-3">
-            <div class="card h-100">
-                <img src="media/venues/playground-by-cloverleaf.jpg"
-                    class="card-img-top"
-                    alt="The Playground by Cloverleaf">
-
-                <div class="card-body">
-                    <h5 class="card-title">The Playground</h5>
-                    <p class="card-text">Sports Venue - Manila</p>
-                    <a href="viewVenue.html" class="btn btn-primary w-100">
-                        View Available Slots
-                    </a>
-                </div>
-            </div>
-        </div>
-
-
-        <!-- Venue 3 -->
-        <div class="col-12 col-sm-6 col-lg-3">
-            <div class="card h-100">
-                <img src="media/venues/koliseum-ng-bayan.jpg"
-                    class="card-img-top"
-                    alt="Koliseum ng Bayan">
-
-                <div class="card-body">
-                    <h5 class="card-title">Koliseum ng Bayan</h5>
-                    <p class="card-text">Sports Complex - Makati</p>
-                    <a href="viewVenue.html" class="btn btn-primary w-100">
-                        View Available Slots
-                    </a>
-                </div>
-            </div>
-        </div>
-
-     </div>
-
     </main>
 
-    <footer class="container py-3 mt-5">
-        <p>&copy; 2026 CourtOne. All rights reserved.</p>
+    <!-- Footer -->
+    <footer class="container border-top py-3 mt-5">
+        <p class="text-secondary small mb-0">
+            &copy; 2026 CourtOne. All rights reserved.
+        </p>
     </footer>
 
     <!-- Bootstrap JavaScript (Local) -->
@@ -123,5 +217,6 @@
 
     <!-- Custom JavaScript -->
     <script src="customScripts/home.js"></script>
+
 </body>
 </html>

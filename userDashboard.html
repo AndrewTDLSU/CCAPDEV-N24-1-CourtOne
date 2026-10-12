@@ -1,1 +1,143 @@
 
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard - CourtOne</title>
+
+    <!-- Bootstrap CSS (Local) -->
+    <link rel="stylesheet" href="bootstrap-5.3.8-dist/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="customCSS/style.css">
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <header class="container py-3">
+        <nav class="d-flex flex-wrap align-items-center gap-3">
+            <a href="index.html" class="fw-bold fs-4">CourtOne</a>
+            <a href="index.html">Home</a>
+            <a href="browseVenues.html">Venues</a>
+            <a href="chat.html">Chat</a>
+            <span class="ms-auto">Juan Dela Cruz</span>
+        </nav>
+    </header>
+
+    <main class="container my-4">
+
+        <div class="row g-4">
+
+            <!-- Dashboard Sidebar -->
+            <aside class="col-12 col-md-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5>My Account</h5>
+                        <hr>
+                        <nav class="d-flex flex-column gap-3">
+                            <a href="#dashboard">Dashboard</a>
+                            <a href="#bookings">My Bookings</a>
+                            <a href="#profile">Profile</a>
+                        </nav>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Dashboard Content -->
+            <div class="col-12 col-md-9">
+
+                <section id="dashboard">
+                    <h1>Welcome back, Juan!</h1>
+                    <p class="text-secondary">
+                        Manage your bookings and account information.
+                    </p>
+
+                    <!-- Statistics -->
+                    <div class="row g-3 mb-4">
+
+                        <div class="col-6">
+                            <div class="card bg-primary-subtle">
+                                <div class="card-body">
+                                    <h6>Upcoming Bookings</h6>
+                                    <h2>2</h2>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-6">
+                            <div class="card bg-success-subtle">
+                                <div class="card-body">
+                                    <h6>Past Bookings</h6>
+                                    <h2>1</h2>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </section>
+
+                <!-- Upcoming Bookings -->
+                <section id="bookings" class="mb-4">
+                    <h2 class="h4">Upcoming Bookings</h2>
+
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h5>Pasay Sports Complex</h5>
+                            <p>Basketball Court - Pasay City</p>
+                            <p>October 18, 2026 | 2:00 PM - 4:00 PM</p>
+                            <span class="badge bg-success">Confirmed</span>
+                        </div>
+                    </div>
+
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h5>The Playground</h5>
+                            <p>Sports Court - Manila</p>
+                            <p>October 24, 2026 | 6:00 PM - 8:00 PM</p>
+                            <span class="badge bg-success">Confirmed</span>
+                        </div>
+                    </div>
+
+                    <!-- Booking History -->
+                    <h2 class="h4 mt-4">Booking History</h2>
+
+                    <div class="card">
+                        <div class="card-body">
+                            <h5>Koliseum ng Bayan</h5>
+                            <p>Sports Complex - Makati</p>
+                            <p>September 26, 2026 | 4:00 PM - 6:00 PM</p>
+                            <span class="badge bg-secondary">Completed</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- My Profile -->
+                <section id="profile" class="mb-4">
+                    <h2 class="h4">My Profile</h2>
+
+                    <div class="card">
+                        <div class="card-body">
+                            <p><strong>Name:</strong> Juan Dela Cruz</p>
+                            <p><strong>Email:</strong> juan@example.com</p>
+                            <p><strong>Account Type:</strong> Customer</p>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="container border-top py-3 mt-5">
+        <p>&copy; 2026 CourtOne. All rights reserved.</p>
+    </footer>
+
+    <!-- Bootstrap JS (Local) -->
+    <script src="bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
