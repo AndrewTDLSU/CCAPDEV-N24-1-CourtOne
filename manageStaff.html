@@ -16,13 +16,39 @@
     </head>
 
     <body>
-        <header>
-            <nav id="main-nav" aria-label="Main navigation">
-                <strong>CourtOne</strong>
-                <a href="index.html">Home</a>
-                <a href="browseVenues.html">Venues</a>
-                <a href="chat.html">Chat</a>
-            </nav> 
+        <!-- Navigation -->
+        <header class="container">
+            <nav class="navbar navbar-expand-lg py-3" aria-label="Main navigation">
+                <a class="navbar-brand fw-bold" href="index.html">CourtOne</a>
+
+                <div class="d-flex gap-2 ms-auto order-lg-3">
+                    <a href="login.html" class="btn btn-primary">Sign In</a>
+
+                    <button class="navbar-toggler" type="button"
+                            data-bs-toggle="collapse" data-bs-target="#mainMenu"
+                            aria-controls="mainMenu" aria-expanded="false"
+                            aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                </div>
+
+                <div class="collapse navbar-collapse order-lg-2" id="mainMenu">
+                    <ul class="navbar-nav mx-lg-auto gap-lg-3">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="index.html">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="browseVenues.html">Venues</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#how-it-works">How It Works</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="chat.html">Chat</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
         </header>
         
         <!-- Bootstrap grid container -->
@@ -113,8 +139,11 @@
 
         </main> 
 
-        <footer>
-            <p>This is the footer</p>
+        <!-- Footer -->
+        <footer class="container border-top py-3 mt-5">
+            <p class="text-secondary small mb-0">
+                &copy; 2026 CourtOne. All rights reserved.
+            </p>
         </footer>
         
     </body>

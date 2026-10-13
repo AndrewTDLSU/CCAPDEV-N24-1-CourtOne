@@ -17,13 +17,39 @@
     </head>
 
     <body>
-        <header>
-            <nav id="main-nav" aria-label="Main navigation">
-                <strong>CourtOne</strong>
-                <a href="index.html">Home</a>
-                <a href="browseVenues.html">Venues</a>
-                <a href="chat.html">Chat</a>
-            </nav> 
+        <!-- Navigation -->
+        <header class="container">
+            <nav class="navbar navbar-expand-lg py-3" aria-label="Main navigation">
+                <a class="navbar-brand fw-bold" href="index.html">CourtOne</a>
+
+                <div class="d-flex gap-2 ms-auto order-lg-3">
+                    <a href="login.html" class="btn btn-primary">Sign In</a>
+
+                    <button class="navbar-toggler" type="button"
+                            data-bs-toggle="collapse" data-bs-target="#mainMenu"
+                            aria-controls="mainMenu" aria-expanded="false"
+                            aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                </div>
+
+                <div class="collapse navbar-collapse order-lg-2" id="mainMenu">
+                    <ul class="navbar-nav mx-lg-auto gap-lg-3">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="index.html">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="browseVenues.html">Venues</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#how-it-works">How It Works</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="chat.html">Chat</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
         </header>
         
         <!-- Bootstrap grid container -->
@@ -35,16 +61,19 @@
 
             <h1 class="h4 mb-3">Add / edit venue</h1>
 
-            <form id="venue-form">
+            <form id="venue-form" enctype="multipart/form-data" method="POST">
 
                 <div class="row g-4">
 
                     <!-- photos -->
                     <div class="col-12 col-md-4">
-                        <div id="photo-upload-box" class="photo-upload border rounded p-4 text-center mb-2">
+                        <label for="photos" class="photo-upload border rounded p-4 text-center mb-2 d-block">
                             Photo upload
-                        </div>
-                        <div id="venue-thumbnails" class="row g-2">
+                            <span class="d-block text-muted small">Click to add (up to 5)</span>
+                        </label>
+                        <input type="file" id="photos" name="photos" accept="image/*" multiple class="d-none">
+
+                        <div id="photo-previews" class="row g-2">
                             <div class="col-4"><div class="thumb border rounded"></div></div>
                             <div class="col-4"><div class="thumb border rounded"></div></div>
                             <div class="col-4"><div class="thumb border rounded"></div></div>
@@ -94,11 +123,11 @@
                 <div class="bg-light rounded p-3 mt-4">
                     <h2 class="h6 mb-3">Operating hours</h2>
                     <div class="row g-3">
-                        <div class="col-12 col-sm-4">
+                        <div class="col-12 col-sm-6">
                             <label for="opens" class="form-label">Opens</label>
                             <input type="time" id="venue-open-time" class="form-control" required>
                         </div>
-                        <div class="col-12 col-sm-4">
+                        <div class="col-12 col-sm-6">
                             <label for="closes" class="form-label">Closes</label>
                             <input type="time" id="venue-close-time" class="form-control" required>
                         </div>
@@ -115,8 +144,11 @@
             </form>
         </main>  
 
-        <footer>
-            <p>This is the footer</p>
+        <!-- Footer -->
+        <footer class="container border-top py-3 mt-5">
+            <p class="text-secondary small mb-0">
+                &copy; 2026 CourtOne. All rights reserved.
+            </p>
         </footer>
         
     </body>
