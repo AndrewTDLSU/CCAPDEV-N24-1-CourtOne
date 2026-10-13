@@ -15,50 +15,75 @@
     </head>
 
     <body>
-        <header>
-            <nav id="main-nav" aria-label="Main navigation">
-            <strong>CourtOne</strong>
-            <a href="index.html">Home</a>
-            <a href="browseVenues.html">Venues</a>
-            <a href="chat.html">Chat</a>
-        </nav> 
+        <!-- Navigation -->
+        <header class="container">
+            <nav class="navbar navbar-expand-lg py-3" aria-label="Main navigation">
+                <a class="navbar-brand fw-bold" href="index.html">CourtOne</a>
+
+                <div class="d-flex gap-2 ms-auto order-lg-3">
+                    <a href="login.html" class="btn btn-primary">Sign In</a>
+
+                    <button class="navbar-toggler" type="button"
+                            data-bs-toggle="collapse" data-bs-target="#mainMenu"
+                            aria-controls="mainMenu" aria-expanded="false"
+                            aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                </div>
+
+                <div class="collapse navbar-collapse order-lg-2" id="mainMenu">
+                    <ul class="navbar-nav mx-lg-auto gap-lg-3">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="index.html">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="browseVenues.html">Venues</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#how-it-works">How It Works</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="chat.html">Chat</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
         </header>
         
         <!-- Bootstrap grid container -->
         <main class="container my-4">
 
             <!-- Header container image -->
-            <div id="main-graphic" class="row bg-light rounded pb-5 pt-2 m-1">        
-                <div class="col-md-8" col-12> <!-- Empty class -->
-                    <h1>Manage Your Venue Now</h1>
+            <div id="main-graphic" class="row align-items-center bg-light rounded pb-5 pt-2 m-1">        
+                <div class="col-7 col-md-6"> 
+                    <h1>Manage <span class="text-primary">Your Venue</span> Now</h1>
                 </div>
-                <div class="col-md-4" col-12>
-                    <img src="media/icons/sports.png" alt="icon not found..." height="225" width="300" />
+                <div class="col-5 col-md-6 text-center">
+                    <img src="media/icons/sports.png" alt="icon not found..." class="img-fluid" />
                 </div>
             </div>            
             
             <!-- "Available venues" text -->
-            <div id="venue-list-label" class="row my-2">
-                <div>
-                    <strong>Available Venues</strong>  
-                    <span>|</span>
-                    <span><a href="manageStaff.html">Manage Staff</a></span> 
-                </div> 
+            <div class="d-flex justify-content-between align-items-center mb-3 my-2">
+                <h2 class="h4 fw-bold mb-0">Available Venues</h2>
+                <a href="manageStaff.html" class="text-decoration-none">
+                    Manage Staff →
+                </a>
             </div>
 
             <!-- List of owned venues displayed using bootstrap card -->
-            <div id="add-venue-card" class="row g-4">
-                <div class="col-md-3 col-12">
-                    <div class="card text-center" style="max-width: 320px; min-height: 400px;">
-                        <a href="venueForm.html"><img src="media/icons/add-venue.png" class="card-img-top" alt="icon not found" style="max-width: 250px" ></a>
+            <div class="row g-4">
+                <div id="add-venue-card" class="col-6 col-lg-3 venue-column">
+                    <div class="card text-center venue-card h-100" >
+                        <a href="venueForm.html"><img src="media/icons/add-venue.png" class="card-img-top" alt="icon not found"  ></a>
                         <p><strong>Add a venue</strong></p>
                     </div>
                 </div>      
                 
                 <!-- only one card should be coded, the rest should be displayed by JS -->
-                <div id="venue-card" class="col-md-3 col-12 col-6">
-                    <div class="card" style="max-width: 320px; height: 400px">
-                        <img src="media/venues/pasay-sports-complex.jpg" id="venue-image" class="card-img-top" alt="photo not found" style="max-width: 320px; min-height: 200px"> <!-- No image yet -->
+                <div id="venue-card" class="col-6 col-lg-3 venue-column">
+                    <div class="card venue-card h-100" >
+                        <img src="media/venues/pasay-sports-complex.jpg" id="venue-image" class="card-img-top" alt="photo not found" > 
                         <div class="card-body">
                             <h4 id="venue-name" class="card-title">Pasay Sports Complex</h4>
                             <p id="venue-address" class="card-text">GXWV+39H, Derham, Pasay City, Metro Manila</p>
@@ -68,9 +93,9 @@
                     </div>
                 </div>
 
-                <div id="venue-card" class="col-md-3 col-12 col-6">
-                    <div class="card" style="max-width: 320px; height: 400px">
-                        <img src="media/venues/playground-by-cloverleaf.jpg" id="venue-image" class="card-img-top" alt="photo not found" style="max-width: 320px; min-height: 200px"> <!-- No image yet -->
+                <div id="venue-card" class="col-6 col-lg-3 venue-column">
+                    <div class="card venue-card h-100" >
+                        <img src="media/venues/playground-by-cloverleaf.jpg" id="venue-image" class="card-img-top" alt="photo not found" > 
                         <div class="card-body">
                             <h4 id="venue-name" class="card-title">The Playground by Cloverleaf</h4>
                             <p id="venue-address" class="card-text">2499-2545 P. Zamora St, Manila, Metro Manila</p>
@@ -80,9 +105,9 @@
                     </div>
                 </div>
 
-                <div id="venue-card" class="col-md-3 col-12 col-6">
-                    <div class="card" style="max-width: 320px; height: 400px">
-                        <img src="media/venues/koliseum-ng-bayan.jpg" id="venue-image" class="card-img-top" alt="photo not found" style="max-width: 320px; min-height: 200px"> <!-- No image yet -->
+                <div id="venue-card" class="col-6 col-lg-3 venue-column">
+                    <div class="card venue-card h-100" >
+                        <img src="media/venues/koliseum-ng-bayan.jpg" id="venue-image" class="card-img-top" alt="photo not found" > 
                         <div class="card-body">
                             <h4 id="venue-name" class="card-title">Sports Complex (Koliseum ng Bayan)</h4>
                             <p id="venue-address" class="card-text">H236+VHR, Washington, Makati City, Metro Manila</p>
@@ -96,9 +121,12 @@
 
         </main>  
 
-        <footer>
-            <p>This is the footer</p>
-        </footer>
+        <!-- Footer -->
+    <footer class="container border-top py-3 mt-5">
+        <p class="text-secondary small mb-0">
+            &copy; 2026 CourtOne. All rights reserved.
+        </p>
+    </footer>
         
     </body>
 
