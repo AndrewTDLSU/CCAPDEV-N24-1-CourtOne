@@ -1,1 +1,265 @@
 
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Dashboard - CourtOne</title>
+
+    <!-- Bootstrap CSS (Local) -->
+    <link rel="stylesheet" href="bootstrap-5.3.8-dist/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="customCSS/style.css">
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <header class="container py-3 border-bottom">
+        <nav class="d-flex flex-wrap align-items-center gap-3">
+            <a href="index.html" class="fw-bold fs-4">CourtOne</a>
+            <a href="index.html">Home</a>
+            <a href="browseVenues.html">Venues</a>
+            <a href="chat.html">Chat</a>
+            <span class="ms-auto fw-semibold">Staff Account</span>
+        </nav>
+    </header>
+
+    <main class="container my-4">
+
+        <div class="row g-4">
+
+            <!-- Staff Sidebar -->
+            <aside class="col-12 col-md-3">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="fw-bold">Staff Account</h5>
+                        <p class="text-secondary small">staff@courtone.com</p>
+                        <hr>
+
+                        <nav class="nav nav-pills flex-column gap-2">
+                            <a href="#dashboard" class="nav-link active">
+                                Dashboard
+                            </a>
+                            <a href="#schedule" class="nav-link">
+                                Schedule
+                            </a>
+                            <a href="#bookings" class="nav-link">
+                                Bookings
+                            </a>
+                            <a href="#profile" class="nav-link">
+                                Profile
+                            </a>
+                            <a href="login.html" class="nav-link text-danger">
+                                Sign Out
+                            </a>
+                        </nav>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Main Dashboard Content -->
+            <div class="col-12 col-md-9">
+
+                <!-- Welcome Section -->
+                <section id="dashboard">
+                    <h1 class="fw-bold fs-2">Welcome back, Staff!</h1>
+                    <p class="text-secondary">
+                        View court schedules and reservations for your facility.
+                    </p>
+
+                    <!-- Statistics -->
+                    <div class="row g-3 mb-4">
+
+                        <div class="col-6 col-lg-3">
+                            <div class="card bg-primary-subtle h-100">
+                                <div class="card-body">
+                                    <h6>Today's Bookings</h6>
+                                    <h2 class="fw-bold text-primary">4</h2>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-6 col-lg-3">
+                            <div class="card bg-success-subtle h-100">
+                                <div class="card-body">
+                                    <h6>Confirmed</h6>
+                                    <h2 class="fw-bold text-success">3</h2>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-6 col-lg-3">
+                            <div class="card bg-warning-subtle h-100">
+                                <div class="card-body">
+                                    <h6>Pending</h6>
+                                    <h2 class="fw-bold text-warning-emphasis">1</h2>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-6 col-lg-3">
+                            <div class="card bg-danger-subtle h-100">
+                                <div class="card-body">
+                                    <h6>Cancelled</h6>
+                                    <h2 class="fw-bold text-danger">0</h2>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </section>
+
+                <!-- Today's Schedule -->
+                <section id="schedule" class="mb-4">
+                    <h2 class="h4 fw-bold mb-3">Today's Schedule</h2>
+
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover align-middle">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Time</th>
+                                            <th>Court</th>
+                                            <th>Customer</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        <tr>
+                                            <td>8:00 AM - 10:00 AM</td>
+                                            <td>Court 1 - Basketball</td>
+                                            <td>Juan Dela Cruz</td>
+                                            <td>
+                                                <span class="badge bg-success">Confirmed</span>
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td>10:00 AM - 12:00 PM</td>
+                                            <td>Court 2 - Badminton</td>
+                                            <td>Maria Santos</td>
+                                            <td>
+                                                <span class="badge bg-warning text-dark">Pending</span>
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td>2:00 PM - 4:00 PM</td>
+                                            <td>Court 1 - Basketball</td>
+                                            <td>Mark Reyes</td>
+                                            <td>
+                                                <span class="badge bg-success">Confirmed</span>
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td>6:00 PM - 8:00 PM</td>
+                                            <td>Court 3 - Futsal</td>
+                                            <td>Alex Tan</td>
+                                            <td>
+                                                <span class="badge bg-success">Confirmed</span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Recent Bookings -->
+                <section id="bookings" class="mb-4">
+                    <h2 class="h4 fw-bold mb-3">Recent Bookings</h2>
+
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+
+                            <div class="table-responsive">
+                                <table class="table table-hover align-middle">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Time</th>
+                                            <th>Court</th>
+                                            <th>Customer</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        <tr>
+                                            <td>Oct 14, 2026</td>
+                                            <td>8:00 AM</td>
+                                            <td>Court 1</td>
+                                            <td>Juan Dela Cruz</td>
+                                            <td>
+                                                <span class="badge bg-success">Confirmed</span>
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td>Oct 13, 2026</td>
+                                            <td>10:00 AM</td>
+                                            <td>Court 2</td>
+                                            <td>Maria Santos</td>
+                                            <td>
+                                                <span class="badge bg-secondary">Completed</span>
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td>Oct 12, 2026</td>
+                                            <td>6:00 PM</td>
+                                            <td>Court 3</td>
+                                            <td>Alex Tan</td>
+                                            <td>
+                                                <span class="badge bg-secondary">Completed</span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Staff Profile -->
+                <section id="profile" class="mb-4">
+                    <h2 class="h4 fw-bold mb-3">Staff Profile</h2>
+
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <p><strong>Name:</strong> Staff Account</p>
+                            <p><strong>Email:</strong> staff@courtone.com</p>
+                            <p><strong>Role:</strong> Staff</p>
+                            <p class="mb-0">
+                                <strong>Assigned Venue:</strong> Pasay Sports Complex
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="container border-top py-3 mt-5">
+        <p class="text-secondary small">
+            &copy; 2026 CourtOne. All rights reserved.
+        </p>
+    </footer>
+
+    <!-- Bootstrap JavaScript (Local) -->
+    <script src="bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
