@@ -1,1 +1,83 @@
 
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Browse Venues - CourtOne</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="customCSS/browseVenues.css">
+</head>
+
+<script src="customScripts/browseVenues.js"></script>
+
+<body>
+
+    <nav class="bv-nav">
+        <h2>CourtOne</h2>
+        <div>
+            <a href="index.html">Home</a>
+            <a href="browseVenues.html">Venues</a>
+            <a href="chat.html">Chat</a>
+        </div>
+    </nav>
+
+    <main class="bv-container">
+
+        <h1>Browse Sports Venues</h1>
+        <p>Find and book sports courts near you!</p>
+
+        <!-- Search and Filter -->
+        <div class="bv-filters">
+
+            <input type="text" id="searchInput"
+                   placeholder="Search venues or locations"
+                   oninput="filterVenues()">
+
+            <select id="sportFilter" onchange="filterVenues()">
+                <option value="all">All Sports</option>
+                <option value="pickleball">Pickleball</option>
+                <option value="badminton">Badminton</option>
+                <option value="basketball">Basketball</option>
+            </select>
+
+        </div>
+
+        <p id="resultCount">3 venues found</p>
+
+        <!-- Venue Cards -->
+        <div class="bv-grid">
+
+            <div class="bv-card" data-sport="pickleball">
+                <div class="bv-image">🏓</div>
+                <h3>QC Pickleball Club</h3>
+                <p>Sport: Pickleball</p>
+                <p>Location: Quezon City</p>
+                <a href="viewVenue.html">View Venue</a>
+            </div>
+
+            <div class="bv-card" data-sport="badminton">
+                <div class="bv-image">🏸</div>
+                <h3>Pasig Badminton Center</h3>
+                <p>Sport: Badminton</p>
+                <p>Location: Pasig</p>
+                <a href="viewVenue.html">View Venue</a>
+            </div>
+
+            <div class="bv-card" data-sport="basketball">
+                <div class="bv-image">🏀</div>
+                <h3>Makati Basketball Arena</h3>
+                <p>Sport: Basketball</p>
+                <p>Location: Makati</p>
+                <a href="viewVenue.html">View Venue</a>
+            </div>
+
+        </div>
+
+        <p id="noResults" hidden>No venues found.</p>
+
+    </main>
+
+    <script src="customScripts/browseVenues.js"></script>
+
+</body>
+</html>
+
