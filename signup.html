@@ -1,1 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <!-- Shared site styles, Bootstrap layout utilities, and sign-up-specific styles. -->
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Sign Up | CourtOne</title>
 
+        <link rel="stylesheet" href="customCSS/style.css">
+        <link rel="stylesheet" href="bootstrap-5.3.8-dist/css/bootstrap.min.css">
+        <link rel="stylesheet" href="customCSS/signupStyles.css">
+    </head>
+
+    <body>
+        <main class="container my-4 signup-page">
+            <!-- Brand heading matches the login page's authentication layout. -->
+            <div class="row">
+                <div class="col-12 p-5 text-center">
+                    <h1>CourtOne</h1>
+                    <small>Court Booking Website</small>
+                </div>
+            </div>
+
+            <!-- Account form is centered in a responsive Bootstrap card. -->
+            <div class="row g-4 justify-content-center">
+                <div class="col-12 col-sm-10 col-md-8 col-lg-5">
+                    <div class="card">
+                        <div class="card-body">
+                            <h2 class="text-center h4 mb-3">Create an Account</h2>
+
+                            <!-- JavaScript displays success or duplicate-email feedback here. -->
+                            <div id="signup-message" class="alert d-none" role="status" aria-live="polite"></div>
+
+                            <form id="signup-form" class="border rounded p-3">
+                                <!-- Choosing Venue Owner reveals the required business-name field. -->
+                                <div class="mb-3">
+                                    <label for="account-role" class="form-label">Account type:</label>
+                                    <select id="account-role" name="role" class="form-select" required>
+                                        <option value="customer">Customer</option>
+                                        <option value="owner">Venue Owner</option>
+                                    </select>
+                                </div>
+
+                                <!-- Identity fields are saved as a browser-only demo profile. -->
+                                <div class="mb-3">
+                                    <label for="full-name" class="form-label">Full name:</label>
+                                    <input type="text" id="full-name" name="name" class="form-control" autocomplete="name" maxlength="80" required>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">Email address:</label>
+                                    <input type="email" id="email" name="email" class="form-control" autocomplete="email" maxlength="120" required>
+                                </div>
+
+                                <div id="business-name-group" class="mb-3 d-none">
+                                    <label for="business-name" class="form-label">Venue or business name:</label>
+                                    <input type="text" id="business-name" name="businessName" class="form-control" maxlength="100" disabled>
+                                </div>
+
+                                <!-- Passwords are checked for a match and never saved to browser storage. -->
+                                <div class="mb-3">
+                                    <label for="password" class="form-label">Password:</label>
+                                    <input type="password" id="password" name="password" class="form-control" autocomplete="new-password" minlength="8" required aria-describedby="password-help">
+                                    <div id="password-help" class="form-text">Use at least 8 characters.</div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="confirm-password" class="form-label">Confirm password:</label>
+                                    <input type="password" id="confirm-password" class="form-control" autocomplete="new-password" minlength="8" required>
+                                </div>
+
+                                <div class="form-check mb-3">
+                                    <input type="checkbox" id="terms" class="form-check-input" required>
+                                    <label for="terms" class="form-check-label">I agree to use this prototype for demonstration purposes.</label>
+                                </div>
+
+                                <button type="submit" class="btn btn-primary w-100">Sign Up</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <p class="text-center mt-2">Already have an account? <a href="login.html">Log in</a></p>
+            <p class="text-center small text-secondary">Prototype only: accounts are stored in this browser. Authentication is not connected.</p>
+        </main>
+
+        <!-- Handles owner/customer fields, password matching, and demo-profile saving. -->
+        <script src="customScripts/signupScripts.js"></script>
+    </body>
+</html>

@@ -1,0 +1,22 @@
+body {
+    background: #f5f7fb;
+}
+
+.brand-mark {
+    letter-spacing: .03em;
+}
+
+.stat-card {
+    border: 0;
+    box-shadow: 0 .125rem .5rem #14213d12;
+}
+
+.venue-thumb {
+    width: 3.5rem;
+    height: 2.5rem;
+    object-fit: cover;
+}
+
+.section-anchor {
+    scroll-margin-top: 1rem;
+}

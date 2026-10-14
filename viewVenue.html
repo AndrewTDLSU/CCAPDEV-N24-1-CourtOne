@@ -1,1 +1,77 @@
-
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Bootstrap provides the responsive layout; venueStyles.css contains page-specific styling. -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Venue details | CourtOne</title>
+    <link rel="stylesheet" href="bootstrap-5.3.8-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="customCSS/style.css">
+    <link rel="stylesheet" href="customCSS/venueStyles.css">
+</head>
+<body>
+    <!-- Standard customer navigation across the booking pages. -->
+    <header class="container">
+        <nav class="d-flex flex-wrap align-items-center gap-3 py-3" aria-label="Main navigation">
+            <a class="brand-mark text-dark fw-bold me-auto" href="index.html">CourtOne</a>
+            <a href="index.html">Home</a>
+            <a href="browseVenues.html">Venues</a>
+            <a href="chat.html">Chat</a>
+            <a href="login.html" class="btn btn-outline-primary">Sign in</a>
+        </nav>
+    </header>
+    <main class="container my-4">
+        <p class="mb-3"><a href="browseVenues.html">&larr; Back to venues</a></p>
+        <!-- JavaScript hides the details and shows this notice when the selected venue is unavailable. -->
+        <div id="not-found" class="alert alert-warning d-none" role="alert">This venue is unavailable or has been unlisted. <a href="browseVenues.html">Browse other venues</a>.</div>
+        <!-- Venue fields and court options are filled from the selected venue record. -->
+        <div id="venue-content" class="row g-4">
+            <section class="col-lg-7">
+                <img id="venue-image" class="hero-photo rounded-3 shadow-sm" src="" alt="">
+                <div class="card border-0 shadow-sm mt-3">
+                    <div class="card-body">
+                        <p class="text-uppercase small fw-semibold text-primary mb-1" id="venue-sport"></p>
+                        <h1 class="h2 mb-2" id="venue-name"></h1>
+                        <p class="text-secondary mb-3" id="venue-location"></p>
+                        <p id="venue-description"></p>
+                        <h2 class="h5 mt-4">Venue details</h2>
+                        <dl class="row mb-0">
+                            <dt class="col-sm-4">Courts</dt><dd class="col-sm-8" id="venue-courts"></dd>
+                            <dt class="col-sm-4">Operating hours</dt><dd class="col-sm-8" id="venue-hours"></dd>
+                            <dt class="col-sm-4">Facilities</dt><dd class="col-sm-8" id="venue-amenities"></dd>
+                        </dl>
+                    </div>
+                </div>
+            </section>
+            <aside class="col-lg-5">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <p class="text-secondary mb-1">Court rental</p>
+                        <p class="h3 fw-bold mb-1" id="venue-price"></p>
+                        <p class="small text-secondary mb-4">per court, per hour</p>
+                        <!-- The date, court, and generated time-slot buttons determine a demo reservation. -->
+                        <div class="mb-3">
+                            <label for="booking-date" class="form-label fw-semibold">Choose a date</label>
+                            <input type="date" id="booking-date" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="court-choice" class="form-label fw-semibold">Choose a court</label>
+                            <select id="court-choice" class="form-select"></select>
+                        </div>
+                        <div class="mb-3">
+                            <h2 class="h6">Available hourly slots</h2>
+                            <div id="slot-list" class="d-flex flex-wrap gap-2" role="group" aria-label="Available time slots"></div>
+                            <p id="no-slots" class="small text-secondary d-none mb-0">No slots are available for this date.</p>
+                        </div>
+                        <div id="booking-summary" class="alert alert-light border d-none" aria-live="polite"></div>
+                        <button id="reserve-button" class="btn btn-primary w-100" type="button" disabled>Reserve selected slot</button>
+                        <p class="small text-secondary mt-3 mb-0">Demo only: reservations are saved in this browser. No payment or backend booking is processed.</p>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </main>
+    <!-- Loads venue details, creates available slots, and stores demo reservations. -->
+    <script src="customScripts/venueScripts.js"></script>
+</body>
+</html>
