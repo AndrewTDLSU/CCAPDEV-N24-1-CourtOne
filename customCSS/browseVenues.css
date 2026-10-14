@@ -1,0 +1,92 @@
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f5f7fa;
+}
+
+.bv-nav {
+    background-color: white;
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.bv-nav h2 {
+    color: #0066ff;
+}
+
+.bv-nav a {
+    margin-left: 15px;
+    text-decoration: none;
+    color: black;
+}
+
+.bv-container {
+    max-width: 1100px;
+    margin: 40px auto;
+    padding: 20px;
+}
+
+.bv-filters {
+    display: flex;
+    gap: 10px;
+    margin: 25px 0;
+    flex-wrap: wrap;
+}
+
+.bv-filters input,
+.bv-filters select {
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.bv-filters input {
+    flex: 1;
+    min-width: 180px;
+}
+
+.bv-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+}
+
+.bv-card {
+    background-color: white;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px #ddd;
+    text-align: center;
+}
+
+.bv-card[hidden] {
+    display: none;
+}
+
+.bv-image {
+    background-color: #e9f1ff;
+    padding: 35px;
+    font-size: 50px;
+    border-radius: 8px;
+}
+
+.bv-card a {
+    display: block;
+    background-color: #0066ff;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    text-decoration: none;
+}
+
+.bv-card a:hover {
+    background-color: #004bbb;
+}
+
+#noResults {
+    text-align: center;
+    padding: 20px;
+}
