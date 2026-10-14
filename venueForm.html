@@ -1,86 +1,113 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
-<head>
-    <!-- Bootstrap and shared styles set the form layout; venueStyles.css adds venue-page styling. -->
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Venue form | CourtOne</title>
-    <link rel="stylesheet" href="bootstrap-5.3.8-dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="customCSS/style.css">
-    <link rel="stylesheet" href="customCSS/venueStyles.css">
-</head>
-<body>
-    <!-- Navigation returns owners to the main site or the venue administration view. -->
-    <header class="container">
-        <nav class="d-flex flex-wrap align-items-center gap-3 py-3" aria-label="Main navigation">
-            <a class="brand-mark text-dark fw-bold me-auto" href="index.html">CourtOne</a>
-            <a href="index.html">Home</a>
-            <a href="browseVenues.html">Venues</a>
-            <a href="adminDashboard.html">Admin dashboard</a>
-        </nav>
-    </header>
-    <main class="container my-4">
-        <p class="mb-3"><a href="ownerDashboard.html">&larr; Back to venues</a></p>
-        <div class="mb-4">
-            <p class="text-uppercase small fw-semibold text-primary mb-1">Venue management</p>
-            <!-- The script changes this heading when loading an existing venue for editing. -->
-            <h1 class="h2 mb-1" id="form-title">Add a venue</h1>
-            <p class="text-secondary mb-0">Share the essential details customers need to find and book your courts.</p>
-        </div>
-        <!-- JavaScript uses this live region to report save and validation results. -->
-        <div id="form-message" class="alert d-none" role="status" aria-live="polite"></div>
-        <form id="venue-form">
-            <div class="row g-4">
-                <!-- Selected images are previewed here before the venue is saved. -->
-                <div class="col-lg-4">
-                    <section class="card form-card">
-                        <div class="card-body">
-                            <h2 class="h5">Venue photo</h2>
-                            <img id="photo-preview" class="photo-preview rounded mb-3" src="media/icons/sports.png" alt="Venue photo preview">
-                            <label for="venue-photo" class="form-label">Upload a photo</label>
-                            <input type="file" id="venue-photo" class="form-control" accept="image/*">
-                            <div class="form-text">Choose an image under 750 KB for this browser-only demo.</div>
-                        </div>
-                    </section>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Venue Form</title>
+
+        <link rel="stylesheet" href="customCSS/ownerMgmt.css"> <!-- Custom CSS -->
+
+        <!-- bootstrap link -->
+        <link rel="stylesheet" href="bootstrap-5.3.8-dist/css/bootstrap.min.css"> <!-- bootstrap css for grid -->
+        <!--<script src="[filepath]"></script>  bootstrap js script, Not used yet, remove when unncessary -->
+    </head>
+
+    <body>
+        <!-- Navigation -->
+        <header class="container">
+            <nav class="navbar navbar-expand-lg py-3" aria-label="Main navigation">
+                <a class="navbar-brand fw-bold" href="index.html">CourtOne</a>
+
+                <div class="d-flex gap-2 ms-auto order-lg-3">
+                    <a href="login.html" class="btn btn-primary">Sign In</a>
+
+                    <button class="navbar-toggler" type="button"
+                            data-bs-toggle="collapse" data-bs-target="#mainMenu"
+                            aria-controls="mainMenu" aria-expanded="false"
+                            aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
                 </div>
-                <!-- Venue identity, pricing, court count, and listing status. -->
-                <div class="col-lg-8">
-                    <section class="card form-card">
-                        <div class="card-body p-4">
-                            <h2 class="h5 mb-3">Venue information</h2>
-                            <div class="row g-3">
-                                <div class="col-md-8">
-                                    <label for="venue-name" class="form-label">Venue name</label>
-                                    <input type="text" id="venue-name" class="form-control" maxlength="100" required>
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="sport-choice" class="form-label">Sport</label>
-                                    <select id="sport-choice" class="form-select" required>
-                                        <option value="">Choose sport</option>
-                                        <option>Basketball</option><option>Badminton</option><option>Football</option>
-                                        <option>Futsal</option><option>Tennis</option><option>Volleyball</option><option>Multi-sport</option>
-                                    </select>
-                                </div>
-                                <div class="col-12">
-                                    <label for="venue-location" class="form-label">Address / location</label>
-                                    <input type="text" id="venue-location" class="form-control" maxlength="180" required>
-                                </div>
-                                <div class="col-12">
-                                    <label for="venue-description" class="form-label">Description</label>
-                                    <textarea id="venue-description" class="form-control" rows="3" maxlength="600" placeholder="Describe your venue and what makes it a good place to play."></textarea>
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="court-count" class="form-label">Number of courts</label>
-                                    <input type="number" id="court-count" class="form-control" min="1" max="99" step="1" required>
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="price-per-hour" class="form-label">Price per court / hour (PHP)</label>
-                                    <input type="number" id="price-per-hour" class="form-control" min="1" step="1" required>
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="venue-status" class="form-label">Listing status</label>
-                                    <select id="venue-status" class="form-select"><option value="true">Listed</option><option value="false">Unlisted</option></select>
-                                </div>
+
+                <div class="collapse navbar-collapse order-lg-2" id="mainMenu">
+                    <ul class="navbar-nav mx-lg-auto gap-lg-3">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="index.html">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="browseVenues.html">Venues</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#how-it-works">How It Works</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="chat.html">Chat</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </header>
+        
+        <!-- Bootstrap grid container -->
+        <main class="container my-4">
+
+            <div id="venue-link" class="bg-light rounded px-3 py-2 mb-3 ">
+                <a href="ownerDashboard.html" class="text-decoration-none">← Back to Venues</a>
+            </div>
+
+            <h1 class="h4 mb-3">Add / edit venue</h1>
+
+            <form id="venue-form" enctype="multipart/form-data" method="POST">
+
+                <div class="row g-4">
+
+                    <!-- photos -->
+                    <div class="col-12 col-md-4">
+                        <label for="photos" class="photo-upload border rounded p-4 text-center mb-2 d-block">
+                            Photo upload
+                            <span class="d-block text-muted small">Click to add (up to 5)</span>
+                        </label>
+                        <input type="file" id="photos" name="photos" accept="image/*" multiple class="d-none">
+
+                        <div id="photo-previews" class="row g-2">
+                            <div class="col-4"><div class="thumb border rounded"></div></div>
+                            <div class="col-4"><div class="thumb border rounded"></div></div>
+                            <div class="col-4"><div class="thumb border rounded"></div></div>
+                        </div>
+                    </div>
+
+                    <!-- details -->
+                    <div class="col-12 col-md-8">
+                        <div class="row g-3">
+
+                            <div class="col-12 col-sm-8">
+                                <label for="name" class="form-label">Venue name</label>
+                                <input type="text" id="venue-name" class="form-control" required>
+                            </div>
+                            <div class="col-12 col-sm-4">
+                                <label for="sport" class="form-label">Sport</label>
+                                <select id="sport-choice" class="form-select" required>
+                                    <option value="">Select</option>
+                                </select>
+                            </div>
+
+                            <div class="col-12">
+                                <label for="location" class="form-label">Location</label>
+                                <input type="text" id="venue-location" class="form-control" required>
+                            </div>
+
+                            <div class="col-12">
+                                <label for="description" class="form-label">Description</label>
+                                <textarea id="venue-description" class="form-control" rows="3"></textarea>
+                            </div>
+
+                            <div class="col-6 col-sm-4">
+                                <label for="courts" class="form-label">Number of courts</label>
+                                <input type="number" id="venue-court-number" class="form-control" min="1" required>
+                            </div>
+                            <div class="col-6 col-sm-8">
+                                <label for="price" class="form-label">Price per hour (PHP)</label>
+                                <input type="number" id="price-per-session" class="form-control" min="0" required>
                             </div>
                         </div>
                     </section>
@@ -91,39 +118,35 @@
                 <div class="card-body p-4">
                     <h2 class="h5 mb-3">Operating hours and facilities</h2>
                     <div class="row g-3">
-                        <div class="col-sm-6 col-md-3">
-                            <label for="opens-at" class="form-label">Opens</label>
-                            <input type="time" id="opens-at" class="form-control" required>
+                        <div class="col-12 col-sm-6">
+                            <label for="opens" class="form-label">Opens</label>
+                            <input type="time" id="venue-open-time" class="form-control" required>
                         </div>
-                        <div class="col-sm-6 col-md-3">
-                            <label for="closes-at" class="form-label">Closes</label>
-                            <input type="time" id="closes-at" class="form-control" required>
-                        </div>
-                        <div class="col-12">
-                            <fieldset>
-                                <legend class="form-label">Facilities available</legend>
-                                <div class="d-flex flex-wrap gap-3">
-                                    <div class="form-check"><input class="form-check-input amenity" type="checkbox" id="amenity-parking" value="Parking"><label class="form-check-label" for="amenity-parking">Parking</label></div>
-                                    <div class="form-check"><input class="form-check-input amenity" type="checkbox" id="amenity-restrooms" value="Restrooms"><label class="form-check-label" for="amenity-restrooms">Restrooms</label></div>
-                                    <div class="form-check"><input class="form-check-input amenity" type="checkbox" id="amenity-changing" value="Changing rooms"><label class="form-check-label" for="amenity-changing">Changing rooms</label></div>
-                                    <div class="form-check"><input class="form-check-input amenity" type="checkbox" id="amenity-seating" value="Spectator seating"><label class="form-check-label" for="amenity-seating">Spectator seating</label></div>
-                                    <div class="form-check"><input class="form-check-input amenity" type="checkbox" id="amenity-equipment" value="Equipment rental"><label class="form-check-label" for="amenity-equipment">Equipment rental</label></div>
-                                </div>
-                            </fieldset>
+                        <div class="col-12 col-sm-6">
+                            <label for="closes" class="form-label">Closes</label>
+                            <input type="time" id="venue-close-time" class="form-control" required>
                         </div>
                     </div>
                 </div>
-            </section>
-            <!-- Save submits the form; delete is shown only while editing an existing venue. -->
-            <div class="d-flex flex-wrap gap-2 mt-4">
-                <button type="submit" class="btn btn-primary">Save venue</button>
-                <a href="ownerDashboard.html" class="btn btn-outline-secondary">Cancel</a>
-                <button type="button" id="delete-venue" class="btn btn-outline-danger ms-md-auto d-none">Delete venue</button>
-            </div>
-            <p class="small text-secondary mt-3">Prototype only: venue data is stored in this browser, not submitted to a server.</p>
-        </form>
-    </main>
-    <!-- Handles add/edit mode, image preview, validation, saving, and deletion. -->
-    <script src="customScripts/venueScripts.js"></script>
-</body>
+
+                <!-- buttons -->
+                <div class="d-flex flex-wrap gap-2 mt-4">
+                    <button type="submit" class="btn btn-primary">Save venue</button>
+                    <a href="ownerDashboard.html"><button type="button" class="btn btn-outline-secondary">Cancel</button></a>
+                    <button type="button" id="delete-venue" class="btn btn-danger ms-md-auto">Delete venue</button>
+                </div>
+
+            </form>
+        </main>  
+
+        <!-- Footer -->
+        <footer class="container border-top py-3 mt-5">
+            <p class="text-secondary small mb-0">
+                &copy; 2026 CourtOne. All rights reserved.
+            </p>
+        </footer>
+        
+    </body>
+
+    
 </html>

@@ -1,1 +1,42 @@
 
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CourtOne Chat</title>
+    <link rel="stylesheet" href="customCSS/chat.css">
+</head>
+
+<body>
+    <h1>CourtOne Chat</h1>
+    <p>Message our venue staff</p>
+
+    <div class="chat-box">
+        <div id="messages">
+            <p>Staff: Hello! How can we help?</p>
+        </div>
+
+        <input type="text" id="messageInput"
+               placeholder="Type your message">
+
+        <button onclick="sendMessage()">Send</button>
+    </div>
+
+    <script>
+        function sendMessage() {
+            let input = document.getElementById("messageInput");
+            let message = input.value.trim();
+
+            if (message === "") {
+                return;
+            }
+
+            let newMessage = document.createElement("p");
+            newMessage.textContent = "You: " + message;
+
+            document.getElementById("messages").appendChild(newMessage);
+
+            input.value = "";
+        }
+    </script>
+</body>
+</html>
