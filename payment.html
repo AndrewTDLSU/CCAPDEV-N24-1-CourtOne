@@ -1,1 +1,73 @@
 
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CourtOne Payment</title>
+    <link rel="stylesheet" href="customCSS/payment.css">
+</head>
+
+<body>
+
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="browseVenues.html">Venues</a>
+        <a href="chat.html">Chat</a>
+    </nav>
+
+    <div class="payment-box">
+        <h1>Payment</h1>
+        <h2>Booking Summary</h2>
+
+        <p>Venue: Picklers Lounge</p>
+        <p>Court: Court 1</p>
+        <p>Date: October 20, 2026</p>
+        <p>Time: 2:00 PM - 3:00 PM</p>
+
+        <hr>
+
+        <h3>Total: ₱600</h3>
+
+        <h2>Select Payment Method</h2>
+
+        <label>
+            <input type="radio" name="payment" value="GCash">
+            GCash
+        </label>
+
+        <br><br>
+
+        <label>
+            <input type="radio" name="payment" value="Card">
+            Credit / Debit Card
+        </label>
+
+        <br><br>
+
+        <button onclick="confirmPayment()">
+            Confirm Payment
+        </button>
+
+        <p id="paymentMessage"></p>
+    </div>
+
+    <script>
+        function confirmPayment() {
+            let selected = document.querySelector(
+                'input[name="payment"]:checked'
+            );
+
+            if (selected === null) {
+                document.getElementById("paymentMessage").textContent =
+                    "Please select a payment method.";
+                return;
+            }
+
+            alert("Demo booking confirmed!");
+
+            window.location.href = "userDashboard.html";
+        }
+    </script>
+
+</body>
+</html>
