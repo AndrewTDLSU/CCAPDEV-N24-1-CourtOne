@@ -1,42 +1,82 @@
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>CourtOne Chat</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat - CourtOne</title>
     <link rel="stylesheet" href="customCSS/chat.css">
 </head>
 
 <body>
-    <h1>CourtOne Chat</h1>
-    <p>Message our venue staff</p>
 
-    <div class="chat-box">
-        <div id="messages">
-            <p>Staff: Hello! How can we help?</p>
+    <!-- Navigation -->
+    <nav class="chat-nav">
+        <h2>CourtOne</h2>
+
+        <div>
+            <a href="index.html">Home</a>
+            <a href="browseVenues.html">Venues</a>
+            <a href="chat.html">Chat</a>
+        </div>
+    </nav>
+
+    <main class="chat-page">
+
+        <a href="index.html" class="chat-close">
+            Close Message Window
+        </a>
+
+        <div class="chat-layout">
+
+            <!-- Left: Conversations -->
+            <aside class="chat-sidebar">
+                <h2>Conversations</h2>
+
+                <button class="chat-contact active"
+                        data-contact="john">
+                    <strong>John Doe</strong>
+                    <span>Hello po...</span>
+                </button>
+
+                <button class="chat-contact"
+                        data-contact="booking">
+                    <strong>Booking Staff</strong>
+                    <span>How can we help?</span>
+                </button>
+            </aside>
+
+            <section class="chat-panel">
+
+                <div class="chat-header">
+                    <h2 id="chatTitle">John Doe</h2>
+                    <p>Sample conversation</p>
+                </div>
+
+                <div id="messages" class="chat-messages"
+                     aria-live="polite">
+                </div>
+
+               
+                <form id="chatForm" class="chat-form">
+
+                    <input type="text"
+                           id="messageInput"
+                           placeholder="Type your message..."
+                           aria-label="Type your message">
+
+                    <button type="submit">Send</button>
+
+                </form>
+
+            </section>
+
         </div>
 
-        <input type="text" id="messageInput"
-               placeholder="Type your message">
+    </main>
 
-        <button onclick="sendMessage()">Send</button>
-    </div>
+    <script src="customScripts/chat.js"></script>
 
-    <script>
-        function sendMessage() {
-            let input = document.getElementById("messageInput");
-            let message = input.value.trim();
-
-            if (message === "") {
-                return;
-            }
-
-            let newMessage = document.createElement("p");
-            newMessage.textContent = "You: " + message;
-
-            document.getElementById("messages").appendChild(newMessage);
-
-            input.value = "";
-        }
-    </script>
 </body>
 </html>
+
