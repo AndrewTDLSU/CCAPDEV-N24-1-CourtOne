@@ -1,28 +1,108 @@
 
-.payment-box {
-    background-color: #f1f1f1;
-    padding: 30px;
-    width: 400px;
-    max-width: 90%;
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: white;
+}
+
+.payment-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px;
+    background-color: white;
+}
+
+.payment-nav h2 {
+    color: #0066ff;
+}
+
+.payment-nav a {
+    margin-left: 20px;
+    text-decoration: none;
+    color: #333;
+}
+
+.payment-container {
+    max-width: 1000px;
     margin: 50px auto;
+    padding: 20px;
+}
+
+.payment-layout {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 20px;
+}
+
+.payment-section {
+    background-color: #f1f1f3;
+    padding: 25px;
+    margin-bottom: 20px;
     border-radius: 10px;
 }
 
-.payment-box h1 {
-    color: blue;
-    text-align: center;
+.payment-section h2 {
+    margin-top: 0;
 }
 
-.payment-box button {
-    background-color: blue;
-    color: white;
-    padding: 12px;
-    border: none;
-    cursor: pointer;
+.payment-section label {
+    display: block;
+    margin: 15px 0 8px;
+}
+
+.payment-section input:not([type="radio"]) {
+    padding: 10px;
     width: 100%;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+#cardFields {
+    margin-top: 20px;
+}
+
+#cardFields[hidden] {
+    display: none;
+}
+
+.pay-button {
+    width: 100%;
+    padding: 20px;
+    background-color: #0066ff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.pay-button:hover {
+    background-color: #004ccc;
 }
 
 #paymentMessage {
-    color: red;
     text-align: center;
+    color: red;
+}
+
+/* Mobile Layout */
+@media (max-width: 700px) {
+    .payment-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .payment-nav {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .payment-nav a {
+        margin: 0 8px;
+    }
+
+    .payment-container {
+        margin: 15px auto;
+    }
 }
