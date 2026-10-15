@@ -1,47 +1,32 @@
 
-
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
+    <title>CourtOne Venues</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Browse Venues - CourtOne</title>
-
     <link rel="stylesheet" href="customCSS/browseVenues.css">
 </head>
 
 <body>
 
-    <!-- Navigation -->
-    <nav class="bv-nav">
-        <a href="index.html" class="bv-logo">CourtOne</a>
-
-        <div class="bv-links">
-            <a href="index.html">Home</a>
-            <a href="browseVenues.html" class="active">Venues</a>
-            <a href="chat.html">Chat</a>
-            <a href="login.html">Sign In</a>
-        </div>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="browseVenues.html">Venues</a>
+        <a href="chat.html">Chat</a>
     </nav>
 
-   
-    <main class="bv-container">
-
+    <main>
         <h1>Browse Sports Venues</h1>
-        <p>Find and book sports courts near you.</p>
+        <p>Find sports courts near you!</p>
 
-        <!-- Search and Filters -->
-        <div class="bv-filters">
+        <!-- Search and Filter -->
+        <div class="filters">
 
-            <input
-                type="search"
-                id="searchInput"
-                placeholder="Search venue, sport, or location..."
-                aria-label="Search venues"
-            >
+            <input type="text" id="searchInput"
+                   placeholder="Search venues or locations"
+                   oninput="filterVenues()">
 
-            <select id="sportFilter" aria-label="Filter by sport">
+            <select id="sportFilter" onchange="filterVenues()">
                 <option value="all">All Sports</option>
                 <option value="basketball">Basketball</option>
                 <option value="gymnastics">Gymnastics</option>
@@ -49,106 +34,57 @@
                 <option value="futsal">Futsal</option>
             </select>
 
-            <button type="button" id="clearFilters">
-                Clear
-            </button>
-
         </div>
 
         <h2>Available Venues</h2>
-        <p id="resultCount" aria-live="polite">4 venues found</p>
+        <p id="count">4 venues found</p>
 
-        <!-- Venue Cards -->
-        <div class="bv-grid">
+        <div class="grid">
+
+            
+            <div class="venue" data-sport="basketball">
+                <img src="media/ph-arena.jpg" alt="PH Arena">
+                <h3>PH Arena</h3>
+                <p>Basketball</p>
+                <p>Location: Bulacan</p>
+                <a href="viewVenue.html?venue=ph-arena">
+                    View Available Slots
+                </a>
+            </div>
+
+            <div class="venue" data-sport="gymnastics">
+                <img src="media/gymnasium.jpg" alt="Gymnasium">
+                <h3>Gymnasium</h3>
+                <p>Gymnastics</p>
+                <p>Location: Quezon City</p>
+                <a href="viewVenue.html?venue=gymnasium">
+                    View Available Slots
+                </a>
+            </div>
+
+            
+            <div class="venue" data-sport="badminton">
+                <img src="media/araneta-coliseum.jpg" alt="Araneta Coliseum">
+                <h3>Araneta Coliseum</h3>
+                <p>Badminton</p>
+                <p>Location: Quezon City</p>
+                <a href="viewVenue.html?venue=araneta-coliseum">
+                    View Available Slots
+                </a>
+            </div>
 
            
-            <div class="bv-card" data-sport="basketball">
-
-                <div class="bv-photo">
-                    
-                    <img src="media/ph-arena.jpg"
-                         alt="PH Arena basketball venue"
-                         onerror="this.style.display='none'">
-                </div>
-
-                <div class="bv-card-content">
-                    <h3>PH Arena</h3>
-                    <p>Basketball</p>
-                    <p>Location: Bulacan</p>
-
-                    <a href="viewVenue.html?venue=ph-arena">
-                        View Available Slots
-                    </a>
-                </div>
-            </div>
-
-            
-            <div class="bv-card" data-sport="gymnastics">
-
-                <div class="bv-photo">
-                    
-                    <img src="media/gymnasium.jpg"
-                         alt="Gymnasium sports facility"
-                         onerror="this.style.display='none'">
-                </div>
-
-                <div class="bv-card-content">
-                    <h3>Gymnasium</h3>
-                    <p>Gymnastics</p>
-                    <p>Location: Quezon City</p>
-
-                    <a href="viewVenue.html?venue=gymnasium">
-                        View Available Slots
-                    </a>
-                </div>
-            </div>
-
-            
-            <div class="bv-card" data-sport="badminton">
-
-                <div class="bv-photo">
-                    
-                    <img src="media/araneta-coliseum.jpg"
-                         alt="Araneta Coliseum venue"
-                         onerror="this.style.display='none'">
-                </div>
-
-                <div class="bv-card-content">
-                    <h3>Araneta Coliseum</h3>
-                    <p>Badminton</p>
-                    <p>Location: Quezon City</p>
-
-                    <a href="viewVenue.html?venue=araneta-coliseum">
-                        View Available Slots
-                    </a>
-                </div>
-            </div>
-
-            <div class="bv-card" data-sport="futsal">
-
-                <div class="bv-photo">
-                    
-                    <img src="media/sports-complex.jpg"
-                         alt="Sports Complex futsal venue"
-                         onerror="this.style.display='none'">
-                </div>
-
-                <div class="bv-card-content">
-                    <h3>Sports Complex</h3>
-                    <p>Futsal</p>
-                    <p>Location: Pasig</p>
-
-                    <a href="viewVenue.html?venue=sports-complex">
-                        View Available Slots
-                    </a>
-                </div>
+            <div class="venue" data-sport="futsal">
+                <img src="media/sports-complex.jpg" alt="Sports Complex">
+                <h3>Sports complex</h3>
+                <p>Futsal</p>
+                <p>Location: Pasig</p>
+                <a href="viewVenue.html?venue=sports-complex">
+                    View Available Slots
+                </a>
             </div>
 
         </div>
-
-        <p id="noResults" hidden>
-            No venues found. Try another search.
-        </p>
 
     </main>
 
