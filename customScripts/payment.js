@@ -1,34 +1,29 @@
 
-let paymentOptions = document.querySelectorAll('input[name="payment"]');
+function toggleCard() {
 
-paymentOptions.forEach(function(option) {
-    option.addEventListener("change", function() {
+    let isCard = document.getElementById("card").checked;
 
-        let isCard = option.value === "Card";
+    document.getElementById("cardFields").hidden = !isCard;
 
-        document.getElementById("cardFields").hidden = !isCard;
+    document.getElementById("cardNumber").required = isCard;
+    document.getElementById("cvn").required = isCard;
+    document.getElementById("expiry").required = isCard;
+}
 
-        document.getElementById("cardNumber").required = isCard;
-        document.getElementById("cvn").required = isCard;
-        document.getElementById("expiry").required = isCard;
-    });
-});
-
-document.getElementById("paymentForm").addEventListener("submit", function(event) {
+function payNow(event) {
 
     event.preventDefault();
 
     let selected = document.querySelector('input[name="payment"]:checked');
 
+    let message = document.getElementById("message");
+
     if (selected === null) {
-        document.getElementById("paymentMessage").textContent =
-            "Please select a payment method.";
+        message.textContent = "Please select a payment method.";
+        message.style.color = "red";
         return;
     }
 
-    document.getElementById("paymentMessage").textContent =
-        "Demo booking confirmed! No actual payment was made.";
-
-    document.getElementById("paymentMessage").style.color = "green";
-
-});
+    message.textContent = "Demo checkout complete. No payment was made.";
+    message.style.color = "green";
+}
