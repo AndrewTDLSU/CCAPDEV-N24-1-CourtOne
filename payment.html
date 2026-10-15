@@ -1,73 +1,91 @@
-
-
 <!DOCTYPE html>
 <html>
 <head>
-    <title>CourtOne Payment</title>
+    <title>Payment - CourtOne</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="customCSS/payment.css">
 </head>
-
 <body>
 
-    <nav>
-        <a href="index.html">Home</a>
-        <a href="browseVenues.html">Venues</a>
-        <a href="chat.html">Chat</a>
+    <nav class="payment-nav">
+        <h2>CourtOne</h2>
+        <div>
+            <a href="index.html">Home</a>
+            <a href="browseVenues.html">Venues</a>
+            <a href="chat.html">Chat</a>
+        </div>
     </nav>
 
-    <div class="payment-box">
-        <h1>Payment</h1>
-        <h2>Booking Summary</h2>
+    <main class="payment-container">
+        <h1>Checkout</h1>
 
-        <p>Venue: Picklers Lounge</p>
-        <p>Court: Court 1</p>
-        <p>Date: October 20, 2026</p>
-        <p>Time: 2:00 PM - 3:00 PM</p>
+        <form id="paymentForm">
+            <div class="payment-layout">
 
-        <hr>
+                
+                <div>
+                    <section class="payment-section">
+                        <h2>Payment Method</h2>
 
-        <h3>Total: ₱600</h3>
+                        <label>
+                            <input type="radio" name="payment" value="GCash">
+                            GCash
+                        </label>
 
-        <h2>Select Payment Method</h2>
+                        <label>
+                            <input type="radio" name="payment" value="Card">
+                            Credit / Debit
+                        </label>
+                    </section>
 
-        <label>
-            <input type="radio" name="payment" value="GCash">
-            GCash
-        </label>
+                    <section class="payment-section">
+                        <h2>Billing Information</h2>
 
-        <br><br>
+                        <label for="fullName">Full Name</label>
+                        <input type="text" id="fullName" required>
 
-        <label>
-            <input type="radio" name="payment" value="Card">
-            Credit / Debit Card
-        </label>
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" required>
 
-        <br><br>
+                        <div id="cardFields" hidden>
+                            
 
-        <button onclick="confirmPayment()">
-            Confirm Payment
-        </button>
+                            <label for="cardNumber">Card Number</label>
+                            <input type="text" id="cardNumber">
 
-        <p id="paymentMessage"></p>
-    </div>
+                            <label for="cvn">CVN</label>
+                            <input type="text" id="cvn">
 
-    <script>
-        function confirmPayment() {
-            let selected = document.querySelector(
-                'input[name="payment"]:checked'
-            );
+                            <label for="expiry">Expiry Date</label>
+                            <input type="text" id="expiry" placeholder="MM/YY">
+                        </div>
+                    </section>
+                </div>
 
-            if (selected === null) {
-                document.getElementById("paymentMessage").textContent =
-                    "Please select a payment method.";
-                return;
-            }
+                <div>
+                    <section class="payment-section">
+                        <h2>Order Summary</h2>
 
-            alert("Demo booking confirmed!");
+                        <p>Araneta Coliseum</p>
+                        <p>Court 1</p>
+                        <p>2:00 PM - 3:00 PM</p>
 
-            window.location.href = "userDashboard.html";
-        }
-    </script>
+                        <hr>
 
+                        <h3>Total: ₱200.00</h3>
+                    </section>
+
+                    <button type="submit" class="pay-button">
+                        Pay Now (Demo)
+                    </button>
+
+                    <p id="paymentMessage" role="status"></p>
+                </div>
+
+            </div>
+        </form>
+    </main>
+
+    <script src="customScripts/payment.js"></script>
 </body>
 </html>
