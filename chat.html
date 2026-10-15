@@ -1,78 +1,63 @@
 
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
+    <title>CourtOne Chat</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat - CourtOne</title>
     <link rel="stylesheet" href="customCSS/chat.css">
 </head>
 
 <body>
 
-    <!-- Navigation -->
-    <nav class="chat-nav">
-        <h2>CourtOne</h2>
-
-        <div>
-            <a href="index.html">Home</a>
-            <a href="browseVenues.html">Venues</a>
-            <a href="chat.html">Chat</a>
-        </div>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="browseVenues.html">Venues</a>
+        <a href="chat.html">Chat</a>
     </nav>
 
-    <main class="chat-page">
+    <main>
+        <h1>Messages</h1>
+        <a href="index.html">Close Message Window</a>
 
-        <a href="index.html" class="chat-close">
-            Close Message Window
-        </a>
+        <div class="layout">
 
-        <div class="chat-layout">
+            <!-- Conversations -->
+            <aside>
+                <h3>Conversations</h3>
 
-            <!-- Left: Conversations -->
-            <aside class="chat-sidebar">
-                <h2>Conversations</h2>
-
-                <button class="chat-contact active"
-                        data-contact="john">
-                    <strong>John Doe</strong>
-                    <span>Hello po...</span>
+                <button onclick="openChat('john')">
+                    John Doe
                 </button>
 
-                <button class="chat-contact"
-                        data-contact="booking">
-                    <strong>Booking Staff</strong>
-                    <span>How can we help?</span>
+                <button onclick="openChat('staff')">
+                    Booking Staff
                 </button>
             </aside>
 
-            <section class="chat-panel">
+            <!-- Chat Window -->
+            <section>
+                <h2 id="chatTitle">John Doe</h2>
 
-                <div class="chat-header">
-                    <h2 id="chatTitle">John Doe</h2>
-                    <p>Sample conversation</p>
+                <div id="john" class="messages">
+                    <p class="received">Hello po!</p>
+                    <p class="sent">Hi! Is Court 1 available?</p>
+                    <p class="received">Yes, it is available!</p>
                 </div>
 
-                <div id="messages" class="chat-messages"
-                     aria-live="polite">
+                <div id="staff" class="messages" hidden>
+                    <p class="received">Welcome to CourtOne!</p>
+                    <p class="received">How can we help you?</p>
                 </div>
 
-               
-                <form id="chatForm" class="chat-form">
-
-                    <input type="text"
-                           id="messageInput"
-                           placeholder="Type your message..."
-                           aria-label="Type your message">
+                <form onsubmit="sendMessage(); return false;">
+                    <input type="text" id="messageInput"
+                           placeholder="Type a message...">
 
                     <button type="submit">Send</button>
-
                 </form>
-
             </section>
 
         </div>
-
     </main>
 
     <script src="customScripts/chat.js"></script>
