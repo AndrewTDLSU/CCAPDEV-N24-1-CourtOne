@@ -16,3 +16,18 @@ a {
 a:hover { 
     color: indigo; 
 }
+
+/* Hover effect for add venue card in ownerDashboard.html */
+.hov-card {
+    transition: filter 0.2s ease;
+}
+
+@media (hover: hover) {
+    .card-link:hover .hov-card {
+        filter: brightness(0.9);
+    }
+}
+
+.card-link:focus-visible .venue-card {
+    filter: brightness(0.9);
+}
