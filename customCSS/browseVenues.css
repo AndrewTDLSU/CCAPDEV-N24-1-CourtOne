@@ -1,217 +1,82 @@
-* {
-    box-sizing: border-box;
-}
 
 body {
+    font-family: Arial;
     margin: 0;
-    font-family: Arial, sans-serif;
     background-color: #f7f9fc;
-    color: #122044;
 }
 
-/* Navigation */
-.bv-nav {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px 40px;
-    background-color: white;
-    border-bottom: 1px solid #ddd;
-}
-
-.bv-logo {
-    font-size: 25px;
-    font-weight: bold;
-    color: #0066ff;
-    text-decoration: none;
-}
-
-.bv-links {
-    display: flex;
-    gap: 20px;
-    flex-wrap: wrap;
-}
-
-.bv-links a {
-    color: #122044;
-    text-decoration: none;
-}
-
-.bv-links a.active,
-.bv-links a:hover {
-    color: #0066ff;
-}
-
-/* Main Container */
-.bv-container {
-    max-width: 1200px;
-    margin: 40px auto;
+nav {
+    text-align: center;
     padding: 20px;
-}
-
-.bv-container h1 {
-    font-size: 32px;
-}
-
-.bv-container h2 {
-    margin-top: 30px;
-}
-
-/* Search  */
-.bv-filters {
-    display: flex;
-    gap: 12px;
-    margin: 25px 0;
-    flex-wrap: wrap;
-}
-
-.bv-filters input,
-.bv-filters select {
-    padding: 13px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    font-size: 15px;
-}
-
-.bv-filters input {
-    flex: 1;
-    min-width: 180px;
-}
-
-#clearFilters {
-    padding: 12px 20px;
-    background-color: #e6eaf0;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-}
-
-/* Venue Grid */
-.bv-grid {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 20px;
-}
-
-/* Venue Cards */
-.bv-card {
     background-color: white;
-    border: 1px solid #e1e5ec;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 2px 8px #ddd;
 }
 
-.bv-card[hidden] {
-    display: none;
+nav a {
+    margin: 15px;
+    color: blue;
 }
 
-.bv-photo {
-    height: 160px;
-    background-color: #e3eeff;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-}
-
-.bv-photo span {
-    font-size: 55px;
-}
-
-.bv-photo img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    position: absolute;
-    top: 0;
-    left: 0;
-}
-
-.bv-card-content {
+main {
+    max-width: 1100px;
+    margin: 30px auto;
     padding: 15px;
 }
 
-.bv-card h3 {
-    margin-top: 0;
-    margin-bottom: 15px;
+.filters {
+    display: flex;
+    gap: 10px;
+    margin: 25px 0;
 }
 
-.bv-card p {
-    color: #555;
-    font-size: 14px;
+.filters input {
+    flex: 1;
+    min-width: 0;
 }
 
-.bv-card a {
+.filters input,
+.filters select {
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 15px;
+}
+
+.venue {
+    background-color: white;
+    padding: 12px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px #ddd;
+}
+
+.venue[hidden] {
+    display: none;
+}
+
+.venue img {
+    width: 100%;
+    height: 130px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.venue a {
     display: block;
     background-color: #0066ff;
     color: white;
     text-align: center;
+    padding: 10px;
     text-decoration: none;
-    padding: 12px;
-    border-radius: 7px;
-    margin-top: 15px;
-    font-size: 14px;
+    border-radius: 5px;
 }
 
-.bv-card a:hover {
-    background-color: #004ccc;
-}
-
-/* No Results */
-#noResults {
-    padding: 30px;
-    text-align: center;
-    color: #666;
-}
-
-#noResults[hidden] {
-    display: none;
-}
-
-
-
-/* Mobile */
-@media (max-width: 600px) {
-    .bv-nav {
-        flex-direction: column;
-        gap: 15px;
-        padding: 15px;
-    }
-
-    .bv-links {
-        justify-content: center;
-        gap: 12px;
-    }
-
-    .bv-container {
-        margin: 15px auto;
-        padding: 12px;
-    }
-
-    .bv-container h1 {
-        font-size: 25px;
-    }
-
-    .bv-grid {
-        gap: 10px;
-    }
-
-    .bv-photo {
-        height: 110px;
-    }
-
-    .bv-card-content {
-        padding: 10px;
-    }
-
-    .bv-card h3 {
-        font-size: 15px;
-    }
-
-    .bv-card p,
-    .bv-card a {
-        font-size: 12px;
+@media (max-width: 800px) {
+    .grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
 
