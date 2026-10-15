@@ -1,46 +1,76 @@
+* {
+    box-sizing: border-box;
+}
 
 body {
     margin: 0;
     font-family: Arial, sans-serif;
-    background-color: #f5f7fa;
+    background-color: #f7f9fc;
+    color: #122044;
 }
 
+/* Navigation */
 .bv-nav {
-    background-color: white;
-    padding: 15px 30px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding: 20px 40px;
+    background-color: white;
+    border-bottom: 1px solid #ddd;
 }
 
-.bv-nav h2 {
+.bv-logo {
+    font-size: 25px;
+    font-weight: bold;
+    color: #0066ff;
+    text-decoration: none;
+}
+
+.bv-links {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.bv-links a {
+    color: #122044;
+    text-decoration: none;
+}
+
+.bv-links a.active,
+.bv-links a:hover {
     color: #0066ff;
 }
 
-.bv-nav a {
-    margin-left: 15px;
-    text-decoration: none;
-    color: black;
-}
-
+/* Main Container */
 .bv-container {
-    max-width: 1100px;
+    max-width: 1200px;
     margin: 40px auto;
     padding: 20px;
 }
 
+.bv-container h1 {
+    font-size: 32px;
+}
+
+.bv-container h2 {
+    margin-top: 30px;
+}
+
+/* Search  */
 .bv-filters {
     display: flex;
-    gap: 10px;
+    gap: 12px;
     margin: 25px 0;
     flex-wrap: wrap;
 }
 
 .bv-filters input,
 .bv-filters select {
-    padding: 12px;
+    padding: 13px;
     border: 1px solid #ccc;
-    border-radius: 5px;
+    border-radius: 8px;
+    font-size: 15px;
 }
 
 .bv-filters input {
@@ -48,45 +78,140 @@ body {
     min-width: 180px;
 }
 
+#clearFilters {
+    padding: 12px 20px;
+    background-color: #e6eaf0;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+/* Venue Grid */
 .bv-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 20px;
 }
 
+/* Venue Cards */
 .bv-card {
     background-color: white;
-    padding: 15px;
-    border-radius: 10px;
-    box-shadow: 0 2px 6px #ddd;
-    text-align: center;
+    border: 1px solid #e1e5ec;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px #ddd;
 }
 
 .bv-card[hidden] {
     display: none;
 }
 
-.bv-image {
-    background-color: #e9f1ff;
-    padding: 35px;
-    font-size: 50px;
-    border-radius: 8px;
+.bv-photo {
+    height: 160px;
+    background-color: #e3eeff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.bv-photo span {
+    font-size: 55px;
+}
+
+.bv-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.bv-card-content {
+    padding: 15px;
+}
+
+.bv-card h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+}
+
+.bv-card p {
+    color: #555;
+    font-size: 14px;
 }
 
 .bv-card a {
     display: block;
     background-color: #0066ff;
     color: white;
-    padding: 10px;
-    border-radius: 5px;
+    text-align: center;
     text-decoration: none;
+    padding: 12px;
+    border-radius: 7px;
+    margin-top: 15px;
+    font-size: 14px;
 }
 
 .bv-card a:hover {
-    background-color: #004bbb;
+    background-color: #004ccc;
 }
 
+/* No Results */
 #noResults {
+    padding: 30px;
     text-align: center;
-    padding: 20px;
+    color: #666;
 }
+
+#noResults[hidden] {
+    display: none;
+}
+
+
+
+/* Mobile */
+@media (max-width: 600px) {
+    .bv-nav {
+        flex-direction: column;
+        gap: 15px;
+        padding: 15px;
+    }
+
+    .bv-links {
+        justify-content: center;
+        gap: 12px;
+    }
+
+    .bv-container {
+        margin: 15px auto;
+        padding: 12px;
+    }
+
+    .bv-container h1 {
+        font-size: 25px;
+    }
+
+    .bv-grid {
+        gap: 10px;
+    }
+
+    .bv-photo {
+        height: 110px;
+    }
+
+    .bv-card-content {
+        padding: 10px;
+    }
+
+    .bv-card h3 {
+        font-size: 15px;
+    }
+
+    .bv-card p,
+    .bv-card a {
+        font-size: 12px;
+    }
+}
+
