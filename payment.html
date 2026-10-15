@@ -1,69 +1,71 @@
+
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Payment - CourtOne</title>
+    <title>CourtOne Payment</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="customCSS/payment.css">
 </head>
+
 <body>
 
-    <nav class="payment-nav">
-        <h2>CourtOne</h2>
-        <div>
-            <a href="index.html">Home</a>
-            <a href="browseVenues.html">Venues</a>
-            <a href="chat.html">Chat</a>
-        </div>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="browseVenues.html">Venues</a>
+        <a href="chat.html">Chat</a>
     </nav>
 
-    <main class="payment-container">
-        <h1>Checkout</h1>
+    <main>
+        <h1>Payment</h1>
 
-        <form id="paymentForm">
+        <form onsubmit="payNow(event)">
+
             <div class="payment-layout">
 
-                
                 <div>
-                    <section class="payment-section">
+                    <section class="box">
                         <h2>Payment Method</h2>
 
                         <label>
-                            <input type="radio" name="payment" value="GCash">
+                            <input type="radio" name="payment"
+                                   value="GCash" onclick="toggleCard()">
                             GCash
                         </label>
 
                         <label>
-                            <input type="radio" name="payment" value="Card">
-                            Credit / Debit
+                            <input type="radio" name="payment"
+                                   id="card" value="Card"
+                                   onclick="toggleCard()">
+                            Credit/Debit
                         </label>
                     </section>
 
-                    <section class="payment-section">
+                    <section class="box">
                         <h2>Billing Information</h2>
 
-                        <label for="fullName">Full Name</label>
+                        <label>Full Name</label>
                         <input type="text" id="fullName" required>
 
-                        <label for="email">Email Address</label>
+                        <label>Email Address</label>
                         <input type="email" id="email" required>
 
                         <div id="cardFields" hidden>
-                            
+                            <p>Demo only. Do not enter real card details.</p>
 
-                            <label for="cardNumber">Card Number</label>
+                            <label>Card Number</label>
                             <input type="text" id="cardNumber">
 
-                            <label for="cvn">CVN</label>
+                            <label>CVN</label>
                             <input type="text" id="cvn">
 
-                            <label for="expiry">Expiry Date</label>
+                            <label>Expiry Date</label>
                             <input type="text" id="expiry" placeholder="MM/YY">
                         </div>
                     </section>
                 </div>
 
                 <div>
-                    <section class="payment-section">
+                    <section class="box">
                         <h2>Order Summary</h2>
 
                         <p>Araneta Coliseum</p>
@@ -75,11 +77,9 @@
                         <h3>Total: ₱200.00</h3>
                     </section>
 
-                    <button type="submit" class="pay-button">
-                        Pay Now (Demo)
-                    </button>
+                    <button type="submit">Pay Now (Demo)</button>
 
-                    <p id="paymentMessage" role="status"></p>
+                    <p id="message" role="status"></p>
                 </div>
 
             </div>
@@ -87,5 +87,7 @@
     </main>
 
     <script src="customScripts/payment.js"></script>
+
 </body>
 </html>
+
