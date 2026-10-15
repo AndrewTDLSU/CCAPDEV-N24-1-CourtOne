@@ -1,91 +1,70 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <!-- Shared site styles, Bootstrap layout utilities, and sign-up-specific styles. -->
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Sign Up | CourtOne</title>
-
-        <link rel="stylesheet" href="customCSS/style.css">
-        <link rel="stylesheet" href="bootstrap-5.3.8-dist/css/bootstrap.min.css">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>CourtOne | Sign Up</title>
         <link rel="stylesheet" href="customCSS/signupStyles.css">
     </head>
-
     <body>
-        <main class="container my-4 signup-page">
-            <!-- Brand heading matches the login page's authentication layout. -->
-            <div class="row">
-                <div class="col-12 p-5 text-center">
-                    <h1>CourtOne</h1>
-                    <small>Court Booking Website</small>
-                </div>
-            </div>
+        <div class="page-shell">
+            <header class="topbar">
+                <nav class="main-nav" id="main-navigation" aria-label="Main navigation">
+                    <a href="index.html">Home</a>
+                    <a href="browseVenues.html">Venues</a>
+                    <a href="#how-it-works">How It Works</a>
+                    <a href="#about">About</a>
+                </nav>
+                <button class="menu-button" type="button" aria-label="Toggle navigation" aria-expanded="false" aria-controls="main-navigation">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </header>
 
-            <!-- Account form is centered in a responsive Bootstrap card. -->
-            <div class="row g-4 justify-content-center">
-                <div class="col-12 col-sm-10 col-md-8 col-lg-5">
-                    <div class="card">
-                        <div class="card-body">
-                            <h2 class="text-center h4 mb-3">Create an Account</h2>
+            <main class="auth-layout">
+                <h1 class="brand">CourtOne</h1>
 
-                            <!-- JavaScript displays success or duplicate-email feedback here. -->
-                            <div id="signup-message" class="alert d-none" role="status" aria-live="polite"></div>
-
-                            <form id="signup-form" class="border rounded p-3">
-                                <!-- Choosing Venue Owner reveals the required business-name field. -->
-                                <div class="mb-3">
-                                    <label for="account-role" class="form-label">Account type:</label>
-                                    <select id="account-role" name="role" class="form-select" required>
-                                        <option value="customer">Customer</option>
-                                        <option value="owner">Venue Owner</option>
-                                    </select>
-                                </div>
-
-                                <!-- Identity fields are saved as a browser-only demo profile. -->
-                                <div class="mb-3">
-                                    <label for="full-name" class="form-label">Full name:</label>
-                                    <input type="text" id="full-name" name="name" class="form-control" autocomplete="name" maxlength="80" required>
-                                </div>
-
-                                <div class="mb-3">
-                                    <label for="email" class="form-label">Email address:</label>
-                                    <input type="email" id="email" name="email" class="form-control" autocomplete="email" maxlength="120" required>
-                                </div>
-
-                                <div id="business-name-group" class="mb-3 d-none">
-                                    <label for="business-name" class="form-label">Venue or business name:</label>
-                                    <input type="text" id="business-name" name="businessName" class="form-control" maxlength="100" disabled>
-                                </div>
-
-                                <!-- Passwords are checked for a match and never saved to browser storage. -->
-                                <div class="mb-3">
-                                    <label for="password" class="form-label">Password:</label>
-                                    <input type="password" id="password" name="password" class="form-control" autocomplete="new-password" minlength="8" required aria-describedby="password-help">
-                                    <div id="password-help" class="form-text">Use at least 8 characters.</div>
-                                </div>
-
-                                <div class="mb-3">
-                                    <label for="confirm-password" class="form-label">Confirm password:</label>
-                                    <input type="password" id="confirm-password" class="form-control" autocomplete="new-password" minlength="8" required>
-                                </div>
-
-                                <div class="form-check mb-3">
-                                    <input type="checkbox" id="terms" class="form-check-input" required>
-                                    <label for="terms" class="form-check-label">I agree to use this prototype for demonstration purposes.</label>
-                                </div>
-
-                                <button type="submit" class="btn btn-primary w-100">Sign Up</button>
-                            </form>
+                <section class="auth-panel" id="signup-panel" aria-label="Sign up form">
+                    <form class="auth-form" id="signup-form">
+                        <input class="auth-input" type="text" id="name" name="name" aria-label="Full name" placeholder="full name" autocomplete="name" required>
+                        <input class="auth-input" type="email" id="email" name="email" aria-label="Email" placeholder="email" autocomplete="email" required>
+                        <select class="auth-input" id="account-role" name="role" aria-label="Account type" required>
+                            <option value="customer">Customer account</option>
+                            <option value="owner">Venue owner account</option>
+                        </select>
+                        <div class="auth-field-group d-none" id="business-name-group">
+                            <input class="auth-input" type="text" id="business-name" name="businessName" aria-label="Business name" placeholder="business name" autocomplete="organization">
                         </div>
-                    </div>
-                </div>
-            </div>
+                        <input class="auth-input" type="password" id="password" name="password" aria-label="Password" placeholder="password" autocomplete="new-password" minlength="8" required>
+                        <input class="auth-input" type="password" id="confirm-password" name="confirmPassword" aria-label="Confirm password" placeholder="confirm password" autocomplete="new-password" minlength="8" required>
+                        <button class="auth-button" type="submit">
+                            <svg aria-hidden="true" viewBox="0 0 24 24">
+                                <path d="M12 12a4.2 4.2 0 1 0 0-8.4 4.2 4.2 0 0 0 0 8.4Zm0 2c-4 0-7.2 2.1-7.2 4.7V21h11.5a6.8 6.8 0 0 1-.7-3c0-1.5.5-2.9 1.4-4-.9-.2-2-.3-3-.3Zm8.1 1.1h-2v2h-2v2h2v2h2v-2h2v-2h-2v-2Z"/>
+                            </svg>
+                            Create Account
+                        </button>
+                    </form>
+                    <p class="signup-link">Already have an account? <button class="auth-switch" type="button" data-show-panel="login-panel">Sign in</button></p>
+                    <p class="auth-message" id="signup-message" role="status" hidden></p>
+                </section>
 
-            <p class="text-center mt-2">Already have an account? <a href="login.html">Log in</a></p>
-            <p class="text-center small text-secondary">Prototype only: accounts are stored in this browser. Authentication is not connected.</p>
-        </main>
-
-        <!-- Handles owner/customer fields, password matching, and demo-profile saving. -->
+                <section class="auth-panel" id="login-panel" aria-label="Sign in form" hidden>
+                    <form class="auth-form" id="login-form">
+                        <input class="auth-input" type="email" id="login-email" name="email" aria-label="Email" placeholder="email" autocomplete="email" required>
+                        <input class="auth-input" type="password" id="login-password" name="password" aria-label="Password" placeholder="password" autocomplete="current-password" required>
+                        <button class="auth-button" type="submit">
+                            <svg aria-hidden="true" viewBox="0 0 24 24">
+                                <path d="M12 12a4.2 4.2 0 1 0 0-8.4 4.2 4.2 0 0 0 0 8.4ZM3.8 21v-1.4c0-3 3.7-5.4 8.2-5.4s8.2 2.4 8.2 5.4V21H3.8Z"/>
+                            </svg>
+                            Sign In
+                        </button>
+                    </form>
+                    <p class="signup-link">New here? <button class="auth-switch" type="button" data-show-panel="signup-panel">Sign up now</button></p>
+                    <p class="auth-message" id="login-message" role="status" hidden></p>
+                </section>
+            </main>
+        </div>
         <script src="customScripts/signupScripts.js"></script>
     </body>
 </html>
