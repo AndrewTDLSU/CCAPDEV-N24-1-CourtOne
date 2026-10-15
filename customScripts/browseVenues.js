@@ -1,21 +1,19 @@
 
-let searchInput = document.getElementById("searchInput");
-let sportFilter = document.getElementById("sportFilter");
-let venues = document.querySelectorAll(".bv-card");
-
 function filterVenues() {
 
-    let search = searchInput.value.toLowerCase().trim();
-    let sport = sportFilter.value;
+    let search = document.getElementById("searchInput").value.toLowerCase();
+
+    let sport = document.getElementById("sportFilter").value;
+
+    let venues = document.querySelectorAll(".venue");
+
     let count = 0;
 
     venues.forEach(function(venue) {
 
-        let venueText = venue.textContent.toLowerCase();
-        let venueSport = venue.dataset.sport;
+        let matchesSearch = venue.textContent.toLowerCase().includes(search);
 
-        let matchesSearch = venueText.includes(search);
-        let matchesSport = sport === "all" || sport === venueSport;
+        let matchesSport = sport === "all" || venue.dataset.sport === sport;
 
         if (matchesSearch && matchesSport) {
             venue.hidden = false;
@@ -26,23 +24,6 @@ function filterVenues() {
 
     });
 
-    document.getElementById("resultCount").textContent =
-        count + (count === 1 ? " venue found" : " venues found");
-
-    document.getElementById("noResults").hidden = count !== 0;
+    document.getElementById("count").textContent = count + " venues found";
 }
 
-searchInput.addEventListener("input", filterVenues);
-
-sportFilter.addEventListener("change", filterVenues);
-
-document.getElementById("clearFilters").addEventListener("click", function() {
-
-    searchInput.value = "";
-    sportFilter.value = "all";
-
-    filterVenues();
-});
-
-
-filterVenues();
