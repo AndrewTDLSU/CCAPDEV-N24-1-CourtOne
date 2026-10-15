@@ -1,31 +1,948 @@
+/* Define shared colors and shadows for the venue page and booking states. */
+:root {
+    --blue: #0757e8;
+    --navy: #0c2850;
+    --muted: #8095b0;
+    --green: #08bd75;
+    --booked: #b6b6b6;
+    --page: #ffffff;
+    --soft: #f1f2f5;
+    --line: #e4e8ee;
+    --shadow: 0 8px 28px rgba(33, 67, 112, 0.08);
+}
+
+/* Use border-box sizing so padding stays inside declared element dimensions. */
+* {
+    box-sizing: border-box;
+}
+
+/* Reset page spacing and apply the shared background and text styles. */
+html,
+/* Add a small outer gutter around the venue detail page. */
 body {
-    background: #f5f7fb;
+    margin: 0;
+    min-height: 100%;
+    background: var(--page);
+    color: var(--navy);
+    font-family: Arial, Helvetica, sans-serif;
 }
 
-.brand-mark {
-    letter-spacing: .03em;
+body {
+    padding: 0 12px 24px;
 }
 
-.hero-photo {
+/* Make native controls use the same typography as surrounding content. */
+button,
+/* Apply the primary accent color to ordinary text links. */
+a {
+    font: inherit;
+}
+
+a {
+    color: var(--blue);
+}
+
+/* Center the page and cap its width on large desktop screens. */
+.page-shell {
+    width: min(1440px, 100%);
+    margin: 0 auto;
+}
+
+/* Arrange the back link, site navigation, and sign-in action in the header. */
+.topbar {
+    min-height: 108px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-rows: 64px 44px;
+    align-items: center;
+    column-gap: 24px;
+    padding: 0 8px;
+}
+
+/* Align the return link on the lower row of the header grid. */
+.back-link {
+    grid-column: 1;
+    grid-row: 2;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 220px;
+    color: var(--blue);
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+/* Size the back-arrow character relative to its text. */
+.arrow {
+    font-size: 28px;
+    line-height: 1;
+}
+
+/* Center the site navigation across the top row. */
+.site-nav {
+    grid-column: 1;
+    grid-row: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: clamp(28px, 5vw, 72px);
+    flex: 1;
+    align-self: stretch;
+}
+
+/* Keep navigation labels aligned and prevent them from wrapping. */
+.site-nav a {
+    position: relative;
+    display: flex;
+    align-items: center;
+    color: var(--navy);
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 16px;
+    white-space: nowrap;
+}
+
+/* Mark the current public-site destination with the accent color. */
+.site-nav a.active {
+    color: var(--blue);
+}
+
+/* Style the primary sign-in action in the navigation. */
+.sign-in {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    grid-column: 2;
+    grid-row: 1;
+    min-width: 112px;
+    padding: 12px 18px;
+    border-radius: 12px;
+    background: var(--blue);
+    color: #fff;
+    font-size: 16px;
+    font-weight: 700;
+    text-align: center;
+    text-decoration: none;
+    white-space: nowrap;
+    box-shadow: 0 3px 9px rgba(7, 87, 232, 0.18);
+}
+
+/* Reserve a small box for the sign-in user icon. */
+.user-icon {
+    position: relative;
+    display: inline-block;
+    width: 14px;
+    height: 16px;
+}
+
+/* Draw the user's head inside the sign-in icon. */
+.user-icon::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 4px;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #fff;
+}
+
+/* Draw the user's shoulders inside the sign-in icon. */
+.user-icon::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 1px;
+    width: 13px;
+    height: 8px;
+    border-radius: 7px 7px 2px 2px;
+    background: #fff;
+}
+
+/* Pair the venue photo with its information in responsive columns. */
+.venue-overview {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(340px, 1fr);
+    align-items: center;
+    gap: 36px;
+    padding: 0 4px;
+    margin-top: 8px;
+}
+
+/* Crop the venue image inside a rounded, fixed-height viewport. */
+.hero-image-wrap {
+    display: flex;
+    flex-direction: column;
+    height: 230px;
+    overflow: hidden;
+    border-radius: 12px;
+    background: #e6edf5;
+}
+
+/* Scale the hero photo to fill its frame without distorting it. */
+.hero-image-wrap img {
+    display: block;
+    flex: 1;
+    width: 100%;
+    min-height: 0;
+    object-fit: cover;
+}
+
+/* Keep optional photo attribution compact beneath the image. */
+.photo-credit {
+    min-height: 20px;
+    padding: 3px 8px;
+    overflow: hidden;
+    color: var(--muted);
+    font-size: 10px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Reuse the surrounding link color for attribution links. */
+.photo-credit a {
+    color: inherit;
+}
+
+/* Emphasize the selected venue name. */
+.venue-info-panel h1 {
+    margin: 0;
+    color: var(--navy);
+    font-size: clamp(30px, 3.5vw, 42px);
+    line-height: 1.05;
+    letter-spacing: -1.5px;
+}
+
+/* Display the venue's sport beneath its name in the accent color. */
+.venue-info-panel h2 {
+    margin: 4px 0 20px;
+    color: var(--blue);
+    font-size: clamp(22px, 2.4vw, 28px);
+    line-height: 1.12;
+    letter-spacing: -0.8px;
+}
+
+/* Lay out location, sport, and court metadata as a clean list. */
+.venue-meta {
+    display: grid;
+    gap: 12px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    font-size: 18px;
+}
+
+/* Align each metadata icon and its text. */
+.venue-meta li {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+/* Give metadata symbols a consistent colored footprint. */
+.icon {
+    display: inline-flex;
+    flex: 0 0 24px;
+    width: 24px;
+    height: 24px;
+    align-items: center;
+    justify-content: center;
+    color: var(--blue);
+    font-size: 20px;
+    font-weight: 700;
+}
+
+/* Draw the sport symbol inside a circular outline. */
+.sport-icon {
+    border: 2px solid var(--blue);
+    border-radius: 50%;
+    font-size: 15px;
+}
+
+/* Tighten the people icon so its three marks read as a single symbol. */
+.people-icon {
+    font-size: 12px;
+    letter-spacing: -4px;
+    justify-content: flex-start;
+}
+
+/* Indent the descriptive sentence under venue details. */
+.venue-description {
+    margin: 16px 0 0 38px;
+    color: var(--muted);
+    font-size: 14px;
+}
+
+/* Separate the booking schedule from the venue overview. */
+.timeslot-section {
+    margin-top: 20px;
+}
+
+/* Style the Available Timeslots heading. */
+.timeslot-section h2 {
+    margin: 0;
+    color: var(--navy);
+    font-size: 28px;
+    line-height: 1.15;
+    letter-spacing: -0.7px;
+}
+
+/* Style the short instruction below the schedule heading. */
+.section-intro {
+    margin: 2px 0 24px;
+    color: var(--muted);
+    font-size: 16px;
+}
+
+/* Place the desktop date selector and schedule table on a soft panel. */
+.desktop-schedule {
+    padding: 18px;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    background: #f8faff;
+}
+
+/* Center the date tabs between their previous/next controls. */
+.date-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    min-height: 52px;
+    margin-bottom: 14px;
+}
+
+/* Style the previous and next date controls. */
+.date-arrow {
+    display: inline-flex;
+    flex: 0 0 42px;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    border: 1px solid #dce5f1;
+    border-radius: 12px;
+    background: #fff;
+    color: var(--navy);
+    font-size: 26px;
+    line-height: 1;
+    cursor: pointer;
+    transition: border-color 160ms ease, background-color 160ms ease, color 160ms ease;
+}
+
+/* Highlight date navigation controls when hovered. */
+.date-arrow:hover {
+    border-color: var(--blue);
+    background: #edf4ff;
+    color: var(--blue);
+}
+
+/* Show a visible keyboard focus ring around date controls. */
+.date-arrow:focus-visible,
+.date-choice:focus-visible {
+    outline: 3px solid rgba(7, 87, 232, 0.28);
+    outline-offset: 2px;
+}
+
+/* Distribute the visible date tabs evenly within the toolbar. */
+.date-strip {
+    display: flex;
+    flex: 1;
+    gap: 10px;
+    width: min(100%, 620px);
+    max-width: 620px;
+}
+
+/* Display weekday and date as a single selectable date tab. */
+.date-choice {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    min-width: 0;
+    min-height: 62px;
+    padding: 8px 6px;
+    border: 1px solid #dce6f4;
+    border-radius: 14px;
+    background: #fff;
+    color: var(--navy);
+    box-shadow: 0 2px 6px rgba(33, 67, 112, 0.04);
+    cursor: pointer;
+    transition: border-color 160ms ease, background-color 160ms ease, color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+
+/* Use compact uppercase text for each tab's weekday label. */
+.date-weekday {
+    color: #71839d;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    line-height: 1;
+    text-transform: uppercase;
+}
+
+/* Make the calendar day text larger than its weekday label. */
+.date-label {
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+/* Give unselected tabs subtle pointer feedback. */
+.date-choice:hover {
+    transform: translateY(-1px);
+    border-color: #9bbcf4;
+    background: #f3f7ff;
+}
+
+/* Make the currently selected date stand out from other dates. */
+.date-choice[aria-pressed="true"] {
+    border-color: var(--blue);
+    background: linear-gradient(145deg, #1768f4, #0750d2);
+    color: #fff;
+    box-shadow: 0 6px 14px rgba(7, 87, 232, 0.24);
+}
+
+/* Preserve contrast for the weekday on the selected blue tab. */
+.date-choice[aria-pressed="true"] .date-weekday {
+    color: rgba(255, 255, 255, 0.78);
+}
+
+/* Bound the schedule height while allowing table scrolling. */
+.table-scroll {
+    max-height: 270px;
+    overflow: auto;
+}
+
+/* Keep the court grid readable by reserving a minimum width. */
+.availability-table {
+    width: 100%;
+    min-width: 760px;
+    border-collapse: separate;
+    border-spacing: 3px;
+    table-layout: fixed;
+}
+
+/* Align the time and court cells within the availability grid. */
+.availability-table th,
+.availability-table td {
+    height: 50px;
+    padding: 8px 10px;
+    text-align: center;
+    color: #fff;
+}
+
+/* Keep the court headings fixed above the vertically scrolling table. */
+.availability-table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: var(--blue);
+    font-size: 15px;
+    font-weight: 700;
+}
+
+/* Keep time labels visible while the court schedule scrolls horizontally. */
+.availability-table tbody th {
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    width: 132px;
+    background: var(--blue);
+    font-size: 14px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+/* Make each availability slot fill its table cell and accept selection. */
+.slot-cell {
     width: 100%;
     height: 100%;
-    min-height: 280px;
-    max-height: 420px;
-    object-fit: cover;
-}
-
-.slot-button {
-    min-width: 105px;
-}
-
-.photo-preview {
-    width: 100%;
-    height: 220px;
-    object-fit: cover;
-    background: #e9ecef;
-}
-
-.form-card {
+    min-height: 46px;
     border: 0;
-    box-shadow: 0 .125rem .5rem #14213d12;
+    color: #fff;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+/* Color and emphasize courts that can be reserved. */
+.slot-cell.available {
+    background: var(--green);
+    font-weight: 700;
+}
+
+/* Grey out reserved or past courts and prevent clicks. */
+.slot-cell.booked,
+.slot-cell.past {
+    background: var(--booked);
+    cursor: not-allowed;
+}
+
+/* Outline the chosen court and time inside its slot. */
+.slot-cell.selected {
+    box-shadow: inset 0 0 0 3px #0649c6;
+}
+
+/* Hide mobile date cards on layouts that use the desktop schedule. */
+.mobile-date-list {
+    display: none;
+}
+
+/* Draw each mobile date as a rounded expandable card. */
+.mobile-date-card {
+    overflow: hidden;
+    border: 1px solid #edf1f7;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.92);
+    box-shadow: var(--shadow);
+}
+
+/* Align a date icon, summary, and action within each mobile card. */
+.mobile-date-row {
+    min-height: 86px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 16px;
+}
+
+/* Give the mobile calendar icon a stable, colored square. */
+.calendar-icon {
+    width: 58px;
+    height: 58px;
+    display: flex;
+    flex: 0 0 58px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    background: #e9f1ff;
+    color: var(--blue);
+    font-size: 26px;
+}
+
+/* Let the date title and available-time range use remaining card width. */
+.mobile-date-copy {
+    flex: 1;
+    min-width: 0;
+}
+
+/* Emphasize the date title within a mobile card. */
+.mobile-date-copy h3 {
+    margin: 0;
+    color: var(--navy);
+    font-size: 21px;
+    line-height: 1.15;
+}
+
+/* Display the card's available-time range below its date. */
+.mobile-date-copy p {
+    margin: 3px 0 0;
+    color: var(--muted);
+    font-size: 18px;
+}
+
+/* Stack the date-card actions and center them together. */
+.mobile-date-action {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Style the primary action shown inside the first date card. */
+.mobile-date-action button {
+    min-width: 132px;
+    padding: 12px 16px;
+    border: 0;
+    border-radius: 10px;
+    background: var(--blue);
+    color: #fff;
+    font-size: 17px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+/* Give the expand/collapse control a round shape. */
+.mobile-date-action .mobile-date-toggle {
+    width: 42px;
+    min-width: 42px;
+    height: 42px;
+    padding: 0;
+    border-radius: 50%;
+    background: #f0f5fc;
+    color: var(--blue);
+    font-size: 30px;
+    font-weight: 400;
+}
+
+/* Highlight the expanded card's toggle. */
+.mobile-date-action .mobile-date-toggle.is-open {
+    background: var(--blue);
+    color: #fff;
+}
+
+/* Highlight the third date card's collapsed toggle for visual emphasis. */
+.mobile-date-card:nth-child(3) .mobile-date-toggle:not(.is-open) {
+    background: var(--blue);
+    color: #fff;
+}
+
+/* Style the short hint beneath the first mobile date action. */
+.mobile-date-action small {
+    color: var(--muted);
+    font-size: 12px;
+}
+
+/* Align and draw the reusable mobile-card expand/collapse button. */
+.mobile-date-toggle {
+    display: flex;
+    width: 42px;
+    height: 42px;
+    align-items: center;
+    justify-content: center;
+    border: 0;
+    border-radius: 50%;
+    background: #f0f5fc;
+    color: var(--blue);
+    font-size: 30px;
+    cursor: pointer;
+}
+
+/* Lay out expandable time slots in wrapped rows below the date summary. */
+.mobile-slot-list {
+    display: none;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 0 16px 16px 90px;
+}
+
+/* Reveal the slot list only while its parent date card is expanded. */
+.mobile-date-card.expanded .mobile-slot-list {
+    display: flex;
+}
+
+/* Style each selectable mobile court-and-time option. */
+.mobile-slot {
+    padding: 9px 12px;
+    border: 1px solid var(--blue);
+    border-radius: 8px;
+    background: #fff;
+    color: var(--blue);
+    font-size: 13px;
+    cursor: pointer;
+}
+
+/* Disable mobile options that are already booked or in the past. */
+.mobile-slot:disabled {
+    border-color: #d1d5db;
+    background: #eceef1;
+    color: #78818c;
+    cursor: not-allowed;
+}
+
+/* Show the currently selected mobile court and time. */
+.mobile-slot.selected {
+    background: var(--blue);
+    color: #fff;
+}
+
+/* Separate the reservation controls from the schedule. */
+.reservation-actions {
+    margin-top: 14px;
+}
+
+/* Highlight the selected court/date/time summary for the user. */
+.booking-summary {
+    margin: 0 0 10px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: #eaf2ff;
+    color: var(--navy);
+}
+
+/* Style the action used to confirm a selected timeslot. */
+.reserve-button {
+    min-height: 44px;
+    padding: 10px 18px;
+    border: 0;
+    border-radius: 8px;
+    background: var(--blue);
+    color: white;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+/* Make the reserve action visibly unavailable until a slot is selected. */
+.reserve-button:disabled {
+    background: #aeb8c7;
+    cursor: not-allowed;
+}
+
+/* Explain that bookings on this page are demo-only. */
+.demo-note {
+    margin: 8px 0 0;
+    color: var(--muted);
+    font-size: 12px;
+}
+
+/* Present the message used when a venue cannot be displayed. */
+.notice {
+    margin: 28px 0;
+    padding: 16px;
+    border-radius: 8px;
+    background: #fff3cd;
+    color: #664d03;
+}
+
+/* Ensure hidden content is not revealed by component display rules. */
+[hidden] {
+    display: none !important;
+}
+
+/* Switch the venue page into its tablet and mobile layout. */
+@media (max-width: 980px) {
+    body {
+        padding: 0 8px 18px;
+        background: #f5f7fb;
+    }
+
+    .page-shell {
+        min-height: 100vh;
+        padding: 0 10px 18px;
+        border: 1px solid #e0e6ef;
+        border-radius: 18px;
+        background: linear-gradient(180deg, #f7f9ff 0%, #fff 100%);
+        box-shadow: 0 5px 18px rgba(20, 50, 90, 0.08);
+    }
+
+    .topbar {
+        min-height: 108px;
+        grid-template-columns: minmax(0, 1fr) auto;
+        grid-template-rows: 64px 44px;
+        column-gap: 16px;
+        padding: 0 8px;
+    }
+
+    .back-link {
+        display: inline-flex;
+        min-width: 0;
+        font-size: 16px;
+    }
+
+    .site-nav {
+        grid-column: 1;
+        grid-row: 1;
+        gap: clamp(20px, 4vw, 36px);
+        justify-content: flex-end;
+    }
+
+    .site-nav a {
+        font-size: 14px;
+    }
+
+    .sign-in {
+        grid-column: 2;
+        grid-row: 1;
+    }
+
+    .sign-in {
+        min-width: 92px;
+        padding: 10px 12px;
+        font-size: 14px;
+    }
+
+    .venue-overview {
+        grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.95fr);
+        gap: 18px;
+        margin-top: 10px;
+        padding: 0 6px;
+    }
+
+    .hero-image-wrap {
+        height: clamp(170px, 25vw, 230px);
+        border-radius: 12px;
+    }
+
+    .venue-info-panel {
+        padding: 0;
+    }
+
+    .venue-info-panel h1 {
+        font-size: clamp(22px, 4vw, 30px);
+        letter-spacing: -0.8px;
+    }
+
+    .venue-info-panel h2 {
+        margin: 3px 0 14px;
+        font-size: clamp(18px, 3.3vw, 24px);
+    }
+
+    .venue-meta {
+        gap: 8px;
+        font-size: clamp(13px, 2vw, 16px);
+    }
+
+    .venue-meta li {
+        gap: 8px;
+    }
+
+    .icon {
+        flex-basis: 20px;
+        width: 20px;
+        height: 20px;
+        font-size: 16px;
+    }
+
+    .venue-description {
+        display: none;
+    }
+
+    .timeslot-section {
+        margin-top: 28px;
+    }
+
+    .timeslot-section h2 {
+        font-size: 25px;
+    }
+
+    .section-intro {
+        margin-bottom: 10px;
+        font-size: 14px;
+    }
+
+    .desktop-schedule {
+        display: none;
+    }
+
+    .mobile-date-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .reservation-actions {
+        margin-top: 14px;
+    }
+}
+
+/* Stack the venue image above its details on narrow screens. */
+@media (max-width: 760px) {
+    .venue-overview {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    .hero-image-wrap {
+        height: 18rem;
+    }
+
+    .venue-info-panel {
+        padding: 0 2px;
+    }
+}
+
+/* Reduce header, typography, and date-card spacing for small phones. */
+@media (max-width: 480px) {
+    .topbar {
+        min-height: 66px;
+        gap: 12px;
+        padding: 0 4px;
+    }
+
+    .site-nav {
+        gap: clamp(12px, 4vw, 20px);
+    }
+
+    .site-nav a {
+        font-size: 12px;
+    }
+
+    .sign-in {
+        min-width: auto;
+        padding: 9px 10px;
+        font-size: 12px;
+    }
+
+    .venue-overview {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    .hero-image-wrap {
+        height: 210px;
+    }
+
+    .venue-info-panel {
+        padding: 0 2px;
+    }
+
+    .venue-info-panel h1 {
+        font-size: 28px;
+    }
+
+    .venue-info-panel h2 {
+        font-size: 22px;
+        margin-bottom: 12px;
+    }
+
+    .venue-meta {
+        font-size: 15px;
+    }
+
+    .timeslot-section {
+        margin-top: 24px;
+    }
+
+    .mobile-date-row {
+        min-height: 78px;
+        gap: 12px;
+        padding: 10px;
+    }
+
+    .calendar-icon {
+        width: 48px;
+        height: 48px;
+        flex-basis: 48px;
+        font-size: 22px;
+    }
+
+    .mobile-date-copy h3 {
+        font-size: 17px;
+    }
+
+    .mobile-date-copy p {
+        font-size: 14px;
+    }
+
+    .mobile-date-action button {
+        min-width: 92px;
+        padding: 10px 8px;
+        font-size: 13px;
+    }
+
+    .mobile-date-action .mobile-date-toggle {
+        width: 36px;
+        min-width: 36px;
+        height: 36px;
+        padding: 0;
+        font-size: 25px;
+    }
+
+    .mobile-date-action small {
+        display: none;
+    }
+
+    .mobile-date-toggle {
+        width: 36px;
+        height: 36px;
+        font-size: 25px;
+    }
+
+    .mobile-slot-list {
+        padding-left: 70px;
+    }
 }

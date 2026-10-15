@@ -1,7 +1,6 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Shared Bootstrap and project styles; admin-specific layout rules are in adminStyles.css. -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Admin dashboard | CourtOne</title>
@@ -10,87 +9,121 @@
     <link rel="stylesheet" href="customCSS/adminStyles.css">
 </head>
 <body>
-    <!-- Admin navigation links back to the public pages and sign-up flow. -->
-    <header class="container">
-        <nav class="d-flex flex-wrap align-items-center gap-3 py-3" aria-label="Main navigation">
-            <a class="brand-mark text-dark fw-bold me-auto" href="index.html">CourtOne <span class="badge text-bg-dark">Admin</span></a>
+    <!-- Show the logged-in role, desktop links, profile avatar, and mobile menu. -->
+    <header class="admin-header">
+        <div class="admin-header-inner">
+        <p class="admin-identity">Logged in as: <strong>Admin</strong></p>
+        <nav class="admin-top-nav" id="admin-top-nav" aria-label="Main navigation">
             <a href="index.html">Home</a>
             <a href="browseVenues.html">Venues</a>
-            <a href="signup.html">Sign up</a>
+            <a href="index.html#how-it-works">How It Works</a>
+            <a href="index.html#about">About</a>
         </nav>
+        <div class="admin-profile">
+            <span class="profile-avatar" aria-hidden="true"></span>
+            <details class="mobile-menu">
+                <summary aria-label="Open navigation menu"><span aria-hidden="true">☰</span></summary>
+                <nav aria-label="Mobile navigation">
+                    <a href="index.html">Home</a>
+                    <a href="browseVenues.html">Venues</a>
+                    <a href="index.html#how-it-works">How It Works</a>
+                    <a href="index.html#about">About</a>
+                </nav>
+            </details>
+        </div>
+        </div>
     </header>
-    <main class="container my-4">
-        <!-- Summary values are filled from browser-stored demo records by adminScripts.js. -->
-        <div class="d-flex flex-wrap align-items-end justify-content-between gap-3 mb-4">
-            <div>
-                <p class="text-uppercase small fw-semibold text-primary mb-1">Administration</p>
-                <h1 class="h2 mb-1">Dashboard</h1>
-                <p class="text-secondary mb-0">Review demo accounts, venue listings, and booking activity.</p>
-            </div>
-            <span class="badge text-bg-warning">Local prototype data</span>
-        </div>
-
-        <!-- These IDs are targets for the dashboard counts rendered in JavaScript. -->
-        <div class="row g-3 mb-4">
-            <div class="col-sm-6 col-xl-3"><article class="card stat-card h-100"><div class="card-body"><p class="text-secondary mb-1">Registered profiles</p><p class="display-6 fw-semibold mb-0" id="user-count">0</p><small class="text-secondary">Customer and owner demo profiles</small></div></article></div>
-            <div class="col-sm-6 col-xl-3"><article class="card stat-card h-100"><div class="card-body"><p class="text-secondary mb-1">Listed venues</p><p class="display-6 fw-semibold mb-0" id="venue-count">0</p><small class="text-secondary">Active listings</small></div></article></div>
-            <div class="col-sm-6 col-xl-3"><article class="card stat-card h-100"><div class="card-body"><p class="text-secondary mb-1">Demo bookings</p><p class="display-6 fw-semibold mb-0" id="booking-count">0</p><small class="text-secondary">Reservations saved in this browser</small></div></article></div>
-            <div class="col-sm-6 col-xl-3"><article class="card stat-card h-100"><div class="card-body"><p class="text-secondary mb-1">Owner profiles</p><p class="display-6 fw-semibold mb-0" id="owner-count">0</p><small class="text-secondary">Venue-owner sign-ups</small></div></article></div>
-        </div>
-
-        <!-- Venue rows and the empty-state message are populated from saved venue data. -->
-        <section class="card stat-card mb-4 section-anchor" id="venues">
-            <div class="card-body">
-                <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
-                    <div><h2 class="h4 mb-1">Venue listings</h2><p class="small text-secondary mb-0">Unlisting hides a venue from customer availability. Restore it at any time.</p></div>
-                    <a class="btn btn-primary btn-sm" href="venueForm.html">Add a venue</a>
-                </div>
-                <div class="table-responsive">
-                    <table class="table align-middle mb-0">
-                        <thead><tr><th scope="col">Venue</th><th scope="col">Sport</th><th scope="col">Location</th><th scope="col">Status</th><th scope="col">Action</th></tr></thead>
-                        <tbody id="venue-rows"></tbody>
-                    </table>
-                </div>
-                <p id="empty-venues" class="text-secondary py-3 mb-0 d-none">No venues have been added yet.</p>
-            </div>
-        </section>
-
-        <!-- User and booking table bodies are rendered from localStorage demo data. -->
-        <div class="row g-4">
-            <section class="col-lg-6 section-anchor" id="users">
-                <div class="card stat-card h-100">
-                    <div class="card-body">
-                        <h2 class="h4">User profiles</h2>
-                        <p class="small text-secondary">Demo profiles created through sign-up. Passwords are never stored.</p>
-                        <div class="table-responsive">
-                            <table class="table table-sm align-middle">
-                                <thead><tr><th scope="col">Name</th><th scope="col">Role</th><th scope="col">Status</th><th scope="col">Action</th></tr></thead>
-                                <tbody id="user-rows"></tbody>
-                            </table>
-                        </div>
-                        <p id="empty-users" class="text-secondary mb-0 d-none">No sign-up profiles yet. <a href="signup.html">Create a demo profile</a>.</p>
-                    </div>
-                </div>
+    <!-- Arrange dashboard navigation beside the summary and selected content panel. -->
+    <main class="admin-layout">
+        <!-- Provide keyboard-accessible tabs for the four admin dashboard sections. -->
+        <aside class="admin-sidebar" aria-label="Dashboard sections">
+            <nav class="dashboard-tabs" role="tablist" aria-label="Dashboard sections" aria-orientation="vertical">
+                <a class="sidebar-link is-current" id="users-tab" href="#users" role="tab" aria-controls="users" aria-selected="true">Manage Users</a>
+                <a class="sidebar-link" id="venues-tab" href="#venues" role="tab" aria-controls="venues" aria-selected="false" tabindex="-1">Manage Venues</a>
+                <a class="sidebar-link" id="bookings-tab" href="#bookings" role="tab" aria-controls="bookings" aria-selected="false" tabindex="-1">Reservations</a>
+                <a class="sidebar-link" id="settings-tab" href="#settings" role="tab" aria-controls="settings" aria-selected="false" tabindex="-1">Settings</a>
+            </nav>
+        </aside>
+        <!-- Hold the dashboard metrics and the panel controlled by the selected tab. -->
+        <div class="admin-content">
+            <!-- Display browser-stored account, venue, reservation, and owner totals. -->
+            <section class="summary-grid" aria-label="Dashboard summary">
+                <article class="summary-card">
+                    <p>Total Users</p>
+                    <strong id="user-count">0</strong>
+                </article>
+                <article class="summary-card">
+                    <p>Total Venues</p>
+                    <strong id="venue-count">0</strong>
+                </article>
+                <article class="summary-card">
+                    <p>Total Reservations</p>
+                    <strong id="booking-count">0</strong>
+                </article>
+                <article class="summary-card">
+                    <p>Venue Owners</p>
+                    <strong id="owner-count">0</strong>
+                </article>
             </section>
-            <section class="col-lg-6 section-anchor" id="bookings">
-                <div class="card stat-card h-100">
-                    <div class="card-body">
-                        <h2 class="h4">Recent bookings</h2>
-                        <p class="small text-secondary">Reservations made from the venue detail page on this device.</p>
-                        <div class="table-responsive">
-                            <table class="table table-sm align-middle">
-                                <thead><tr><th scope="col">Venue</th><th scope="col">Date</th><th scope="col">Court / time</th></tr></thead>
-                                <tbody id="booking-rows"></tbody>
-                            </table>
+
+            <!-- Each tab panel contains one manageable category and starts hidden unless selected. -->
+            <div class="dashboard-panels">
+                <!-- Render the account list and controls for toggling account status. -->
+                <section class="dashboard-panel section-anchor" id="users" role="tabpanel" aria-labelledby="users-tab" tabindex="0">
+                    <div class="panel-heading">
+                        <div>
+                            <h1>User profiles</h1>
+                            <p>Manage demo accounts and their access status.</p>
                         </div>
-                        <p id="empty-bookings" class="text-secondary mb-0 d-none">No demo reservations yet.</p>
                     </div>
-                </div>
-            </section>
+                    <div class="table-responsive">
+                        <table class="table align-middle user-table">
+                            <thead><tr><th scope="col">Name</th><th scope="col">Email</th><th scope="col">Role</th><th scope="col">Status</th><th scope="col">Action</th></tr></thead>
+                            <tbody id="user-rows"></tbody>
+                        </table>
+                    </div>
+                    <p id="empty-users" class="empty-message d-none">No sign-up profiles yet. <a href="signup.html">Create a demo profile</a>.</p>
+                </section>
+
+                <!-- Render editable venue listings, photos, status, and management actions. -->
+                <section class="dashboard-panel section-anchor" id="venues" role="tabpanel" aria-labelledby="venues-tab" tabindex="0" hidden>
+                    <div class="panel-heading">
+                        <div><h2>Venue listings</h2><p>Unlisting hides a venue from customer availability. Restore it at any time.</p></div>
+                        <a class="btn btn-primary btn-sm" href="venueForm.html">Add a venue</a>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table align-middle mb-0 venue-table">
+                            <thead><tr><th scope="col">Venue</th><th scope="col">Sport</th><th scope="col">Location</th><th scope="col">Status</th><th scope="col">Action</th></tr></thead>
+                            <tbody id="venue-rows"></tbody>
+                        </table>
+                    </div>
+                    <p id="empty-venues" class="empty-message d-none">No venues have been added yet.</p>
+                </section>
+
+                <!-- Render the recent reservation records saved in browser storage. -->
+                <section class="dashboard-panel section-anchor" id="bookings" role="tabpanel" aria-labelledby="bookings-tab" tabindex="0" hidden>
+                    <div class="panel-heading">
+                        <div><h2>Recent bookings</h2><p>Reservations made from the venue detail page on this device.</p></div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table align-middle mb-0">
+                            <thead><tr><th scope="col">Venue</th><th scope="col">Date</th><th scope="col">Court / time</th></tr></thead>
+                            <tbody id="booking-rows"></tbody>
+                        </table>
+                    </div>
+                    <p id="empty-bookings" class="empty-message d-none">No demo reservations yet.</p>
+                </section>
+
+                <!-- Explain the prototype's local-storage-only data behavior. -->
+                <section class="dashboard-panel section-anchor" id="settings" role="tabpanel" aria-labelledby="settings-tab" tabindex="0" hidden>
+                    <div class="panel-heading">
+                        <div><h2>Settings</h2><p>About this dashboard and its data.</p></div>
+                    </div>
+                    <p class="settings-note">This dashboard uses browser storage and sample listings only. It is not connected to authentication, a database, or a server.</p>
+                </section>
+            </div>
         </div>
-        <p class="small text-secondary mt-4">This dashboard uses browser storage and sample listings only; it is not connected to authentication, a database, or a server.</p>
     </main>
-    <!-- Handles dashboard rendering and venue/profile status buttons. -->
     <script src="customScripts/adminScripts.js"></script>
 </body>
 </html>
