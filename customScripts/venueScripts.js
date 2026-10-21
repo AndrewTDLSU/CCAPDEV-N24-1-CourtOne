@@ -525,6 +525,7 @@
             reservationActions.hidden = false;
             savePageState();
             renderSchedule();
+            window.location.href = "payment.html";
         });
 
         // Start on today, restore prior choices, then render the initial schedule.

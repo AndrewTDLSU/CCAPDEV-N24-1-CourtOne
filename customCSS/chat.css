@@ -5,16 +5,6 @@ body {
     background-color: white;
 }
 
-nav {
-    padding: 20px;
-    text-align: center;
-}
-
-nav a {
-    margin: 15px;
-    color: blue;
-}
-
 main {
     max-width: 1000px;
     margin: 30px auto;

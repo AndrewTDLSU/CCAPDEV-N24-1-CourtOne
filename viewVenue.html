@@ -4,23 +4,61 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Venue details | CourtOne</title>
+    <link rel="stylesheet" href="customCSS/style.css">
+    <link rel="stylesheet" href="bootstrap-5.3.8-dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="customCSS/venueStyles.css">
+    <link rel="stylesheet" href="customCSS/darkMode.css">
+    <script src="customScripts/theme.js"></script>
 </head>
 <body>
     <div class="page-shell">
-        <header class="topbar">
-            <a class="back-link" href="browseVenues.html">
-                <span class="arrow" aria-hidden="true">←</span>
-                <span>Back to Venues</span>
-            </a>
-            <nav class="site-nav" aria-label="Primary navigation">
-                <a href="index.html">Home</a>
-                <a href="browseVenues.html" class="active">Venues</a>
-                <a href="index.html#how-it-works">How It Works</a>
-                <a href="index.html#about">About</a>
-            </nav>
-            <a class="sign-in" href="login.html"><span class="user-icon" aria-hidden="true"></span>Sign In</a>
-        </header>
+        <header class="container">
+        <nav class="navbar navbar-expand-lg py-3" aria-label="Main navigation">
+            <a class="navbar-brand fw-bold" href="index.html">CourtOne</a>
+
+            <div class="d-flex gap-2 ms-auto order-lg-3">
+                
+                <!-- Temporary: to access dashboards w/out login and account roles -->
+                <div class="dropdown position-relative">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                        Dashboard
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="userDashboard.html">User Dashboard</a></li>
+                        <li><a class="dropdown-item" href="staffDashboard.html">Staff Dashboard</a></li>
+                        <li><a class="dropdown-item" href="ownerDashboard.html">Owner Dashboard</a></li>
+                        <li><a class="dropdown-item" href="adminDashboard.html">Admin Dashboard</a></li>
+                    </ul>
+                </div>
+
+                <a href="login.html" class="btn btn-primary">Sign In</a>
+
+                <button class="navbar-toggler" type="button"
+                        data-bs-toggle="collapse" data-bs-target="#mainMenu"
+                        aria-controls="mainMenu" aria-expanded="false"
+                        aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+            </div>
+
+            <div class="collapse navbar-collapse order-lg-2" id="mainMenu">
+                <ul class="navbar-nav mx-lg-auto gap-lg-3">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="browseVenues.html">Venues</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#how-it-works">How It Works</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="chat.html">Chat</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
 
         <main>
             <!-- Display a recovery message when the requested venue is missing or inactive. -->
@@ -82,5 +120,6 @@
         </main>
     </div>
     <script src="customScripts/venueScripts.js"></script>
+    <script src="bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

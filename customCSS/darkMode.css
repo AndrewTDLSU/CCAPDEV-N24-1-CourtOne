@@ -1,0 +1,190 @@
+
+/* Dark mode toggle button */
+.courtone-theme-toggle {
+    position: fixed;
+    right: 18px;
+    bottom: 18px;
+    z-index: 9999;
+    width: auto;
+    padding: 10px 16px;
+    border: 1px solid #9ba9bc;
+    border-radius: 999px;
+    background: #ffffff;
+    color: #14243a;
+    font: 600 14px Arial, sans-serif;
+    box-shadow: 0 3px 14px rgba(0, 0, 0, 0.18);
+    cursor: pointer;
+}
+
+.courtone-theme-toggle:focus-visible {
+    outline: 3px solid #73a9ff;
+    outline-offset: 3px;
+}
+
+/* Dark mode color variables */
+html[data-bs-theme="dark"] {
+    color-scheme: dark;
+    --background: #0d1524;
+    --text: #e9eff9;
+    --card: #1a2a40;
+    --primary: #8ab8ff;
+
+    /* Signup */
+    --page-bg: #0d1524;
+    --field-bg: #223149;
+    --brand-blue: #8ab8ff;
+    --brand-blue-dark: #5e9fff;
+
+    /* Venue details */
+    --page: #0d1524;
+    --navy: #e9eff9;
+    --muted: #aebed1;
+    --soft: #1a2a40;
+    --line: #354963;
+    --blue: #8ab8ff;
+    --booked: #53637a;
+
+    /* Admin dashboard */
+    --admin-ink: #e9eff9;
+    --admin-muted: #aebed1;
+    --admin-panel: #19283d;
+    --admin-border: #354963;
+    --admin-blue: #2875e6;
+}
+
+/* General page background */
+html[data-bs-theme="dark"] body {
+    background: var(--background);
+    color: var(--text);
+}
+
+html[data-bs-theme="dark"] .courtone-theme-toggle {
+    background: #243750;
+    color: #f4f7ff;
+    border-color: #526680;
+}
+
+/* Bootstrap backgrounds */
+html[data-bs-theme="dark"] .bg-light,
+html[data-bs-theme="dark"] .bg-white {
+    background-color: #19283d !important;
+}
+
+html[data-bs-theme="dark"] .table-light {
+    --bs-table-bg: #243750;
+    --bs-table-color: #e9eff9;
+    --bs-table-border-color: #354963;
+}
+
+/* Navigation */
+html[data-bs-theme="dark"] body > nav,
+html[data-bs-theme="dark"] .admin-header {
+    background: #172438;
+    border-color: #354963;
+}
+
+html[data-bs-theme="dark"] body > nav a,
+html[data-bs-theme="dark"] .nav-pills .nav-link:not(.active) {
+    color: #8ab8ff;
+}
+
+/* Venue cards, chat panels and payment boxes */
+html[data-bs-theme="dark"] .venue,
+html[data-bs-theme="dark"] .box,
+html[data-bs-theme="dark"] .layout aside,
+html[data-bs-theme="dark"] .layout section,
+html[data-bs-theme="dark"] .received {
+    background: #1a2a40;
+    color: #e9eff9;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.16);
+}
+
+/* Chat sent messages */
+html[data-bs-theme="dark"] .sent {
+    background: #1262d4;
+    color: white;
+}
+
+/* Inputs and forms */
+html[data-bs-theme="dark"] input:not([type="radio"]):not([type="checkbox"]),
+html[data-bs-theme="dark"] textarea,
+html[data-bs-theme="dark"] select,
+html[data-bs-theme="dark"] .layout aside button {
+    background: #223149;
+    color: #e9eff9;
+    border-color: #526680;
+}
+
+html[data-bs-theme="dark"] input::placeholder,
+html[data-bs-theme="dark"] textarea::placeholder,
+html[data-bs-theme="dark"] .auth-input::placeholder {
+    color: #b5c2d3;
+}
+
+html[data-bs-theme="dark"] .auth-input:is(select) {
+    color-scheme: dark;
+}
+
+html[data-bs-theme="dark"] .menu-button span {
+    background: #d1dcec;
+}
+
+/* Admin dashboard */
+html[data-bs-theme="dark"] .sidebar-link {
+    background: #273950;
+    color: #e9eff9;
+}
+
+html[data-bs-theme="dark"] .sidebar-link:hover {
+    background: #354963;
+    color: white;
+}
+
+html[data-bs-theme="dark"] .sidebar-link.is-current {
+    background: #2875e6;
+    color: white;
+}
+
+html[data-bs-theme="dark"] .panel-heading p {
+    color: #aebed1;
+}
+
+html[data-bs-theme="dark"] .user-table {
+    --bs-table-hover-bg: #263950;
+}
+
+/* Venue booking calendar */
+html[data-bs-theme="dark"] .desktop-schedule,
+html[data-bs-theme="dark"] .date-arrow,
+html[data-bs-theme="dark"] .date-choice:not([aria-pressed="true"]),
+html[data-bs-theme="dark"] .mobile-date-card,
+html[data-bs-theme="dark"] .mobile-slot:not(.selected):not(:disabled),
+html[data-bs-theme="dark"] .booking-summary {
+    background: #19283d;
+    color: #e9eff9;
+    border-color: #354963;
+}
+
+html[data-bs-theme="dark"] .date-weekday,
+html[data-bs-theme="dark"] .mobile-date-copy p {
+    color: #aebed1;
+}
+
+html[data-bs-theme="dark"] .date-choice[aria-pressed="true"] .date-weekday {
+    color: rgba(255, 255, 255, 0.85);
+}
+
+html[data-bs-theme="dark"] .date-choice:not([aria-pressed="true"]):hover,
+html[data-bs-theme="dark"] .date-arrow:hover,
+html[data-bs-theme="dark"] .calendar-icon,
+html[data-bs-theme="dark"] .mobile-date-toggle:not(.is-open) {
+    background: #273e5c;
+}
+
+/* Mobile venue layout */
+@media (max-width: 980px) {
+    html[data-bs-theme="dark"] .page-shell {
+        background: #122034;
+        border-color: #354963;
+    }
+}
