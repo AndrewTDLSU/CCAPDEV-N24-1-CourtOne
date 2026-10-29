@@ -26,4 +26,5 @@ function payNow(event) {
 
     message.textContent = "Demo checkout complete. No payment was made.";
     message.style.color = "green";
+    window.location.href = "bookingConfirmation.html";
 }

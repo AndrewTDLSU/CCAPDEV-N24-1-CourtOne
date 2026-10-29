@@ -456,6 +456,7 @@
             reservationActions.hidden = false;
             savePageState();
             renderSchedule();
+            window.location.href = "payment.html";
         });
 
         selectedDate = localDateString(dateAtOffset(0));

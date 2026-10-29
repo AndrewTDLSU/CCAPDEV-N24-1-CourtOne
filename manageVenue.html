@@ -17,6 +17,8 @@
         <link rel="stylesheet" href="customCSS/style.css"> 
         <link rel="stylesheet" href="customCSS/ownerMgmt.css"> 
 
+        <link rel="stylesheet" href="customCSS/darkMode.css">
+        <script src="customScripts/theme.js"></script>
     </head>
 
     <body>
@@ -26,6 +28,20 @@
                 <a class="navbar-brand fw-bold" href="index.html">CourtOne</a>
 
                 <div class="d-flex gap-2 ms-auto order-lg-3">
+                    
+                    <!-- Temporary: to access dashboards w/out login and account roles -->
+                    <div class="dropdown position-relative">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                            Dashboard
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="userDashboard.html">User Dashboard</a></li>
+                            <li><a class="dropdown-item" href="staffDashboard.html">Staff Dashboard</a></li>
+                            <li><a class="dropdown-item" href="ownerDashboard.html">Owner Dashboard</a></li>
+                            <li><a class="dropdown-item" href="adminDashboard.html">Admin Dashboard</a></li>
+                        </ul>
+                    </div>
+
                     <a href="login.html" class="btn btn-primary">Sign In</a>
 
                     <button class="navbar-toggler" type="button"
@@ -39,13 +55,13 @@
                 <div class="collapse navbar-collapse order-lg-2" id="mainMenu">
                     <ul class="navbar-nav mx-lg-auto gap-lg-3">
                         <li class="nav-item">
-                            <a class="nav-link active" href="index.html">Home</a>
+                            <a class="nav-link" href="index.html">Home</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="browseVenues.html">Venues</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#how-it-works">How It Works</a>
+                            <a class="nav-link" href="index.html#how-it-works">How It Works</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="chat.html">Chat</a>
@@ -67,9 +83,9 @@
             </div>
 
 
-            <!-- statistics 1st row (total reservations, total revenue) col size 6 -->
+            <!-- statistics 1st row (total reservations, total revenue, total number of staff) col size 6 -->
+            <!-- Values should dynamically change w/ JS/PHP -->
             <div class="row p-3 my-3 g-2">
-
                 <div class="col-md-4 col-12">
                     <div class="card bg-light rounded">
                         <p class="p-3"><strong>Total Revenue:</strong> PHP <span id="total-revenue">21000</span> </p>
@@ -189,6 +205,7 @@
 
             <!-- table col size 12 -->
             <!-- table here is view only, should be editable through staffDashboard --> 
+            <!-- values should change w/ JS/PHP -->
             <div class="row">
                 <div class="table-responsive"> 
                     <table id="reservations-table" class="table table-condensed table-striped">
@@ -230,7 +247,8 @@
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> 
         <script src="customScripts/charts.js"></script>
         
-    </body>
+        <script src="bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
+</body>
 </html>
 
 

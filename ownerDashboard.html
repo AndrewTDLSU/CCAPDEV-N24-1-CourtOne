@@ -15,6 +15,8 @@
         <link rel="stylesheet" href="customCSS/style.css"> 
         <link rel="stylesheet" href="customCSS/ownerMgmt.css"> 
    
+        <link rel="stylesheet" href="customCSS/darkMode.css">
+        <script src="customScripts/theme.js"></script>
     </head>
 
     <body>
@@ -24,6 +26,20 @@
                 <a class="navbar-brand fw-bold" href="index.html">CourtOne</a>
 
                 <div class="d-flex gap-2 ms-auto order-lg-3">
+                    
+                    <!-- Temporary: to access dashboards w/out login and account roles -->
+                    <div class="dropdown position-relative">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                            Dashboard
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="userDashboard.html">User Dashboard</a></li>
+                            <li><a class="dropdown-item" href="staffDashboard.html">Staff Dashboard</a></li>
+                            <li><a class="dropdown-item" href="ownerDashboard.html">Owner Dashboard</a></li>
+                            <li><a class="dropdown-item" href="adminDashboard.html">Admin Dashboard</a></li>
+                        </ul>
+                    </div>
+
                     <a href="login.html" class="btn btn-primary">Sign In</a>
 
                     <button class="navbar-toggler" type="button"
@@ -37,13 +53,13 @@
                 <div class="collapse navbar-collapse order-lg-2" id="mainMenu">
                     <ul class="navbar-nav mx-lg-auto gap-lg-3">
                         <li class="nav-item">
-                            <a class="nav-link active" href="index.html">Home</a>
+                            <a class="nav-link" href="index.html">Home</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="browseVenues.html">Venues</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#how-it-works">How It Works</a>
+                            <a class="nav-link" href="index.html#how-it-works">How It Works</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="chat.html">Chat</a>
@@ -79,6 +95,7 @@
 
             <!-- List of owned venues displayed using bootstrap card -->
             <div class="row g-4">
+                <!-- Add venue card (clickable) -->
                 <div id="add-venue-card" class="col-6 col-lg-3 ">
                     <a href="venueForm.html?from=ownerDashboard.html" class="text-decoration-none text-reset card-link">
                         <div class="box-shadow card text-center h-100 hov-card" >
@@ -88,7 +105,7 @@
                     </a>  
                 </div> 
                 
-                <!-- only one card should be coded, the rest should be displayed by JS -->
+                <!-- only one card should be coded, the rest should be displayed by JS/php -->
                 <div id="venue-card" class="col-6 col-lg-3 ">
                     <div class="card h-100 box-shadow" >
                         <img src="media/venues/pasay-sports-complex.jpg" id="venue-image" class="card-img-top" alt="photo not found" height="200" > 
@@ -136,7 +153,8 @@
             </p>
         </footer>
         
-    </body>
+        <script src="bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
+</body>
 
     
 </html>
