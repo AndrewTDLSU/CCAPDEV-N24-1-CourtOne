@@ -8,9 +8,26 @@
     --danger: #dc2626;
 }
 
+*, *::before, *::after {
+    box-sizing: border-box; /* Crucial: forces padding and borders into the height calculation */
+}
+
 * {
     box-sizing: border-box;
+    -webkit-appearance: none; /* Safari, Chrome, iOS */
+    -moz-appearance: none;    /* Firefox */
+    appearance: none;         /* Standard */
+    
 }
+
+select {
+    cursor: pointer;
+    border-radius: 10px;
+    width: 100%;
+    height: 40px;
+    padding: 8px 12px;
+}
+
 
 body {
     margin: 0;
@@ -33,3 +50,9 @@ button {
     max-width: 1200px;
     margin: 0 auto;
 }
+
+.businessName {
+    display: none; 
+}
+
+

@@ -13,100 +13,122 @@
     </head>
 
     <body>
-        <nav class="navbar navbar-expand-lg py-3" aria-label="Main navigation">
+        <div class="page-shell">
+            <main class="auth-layout">
+                <header class="container">
+                    <nav class="navbar navbar-expand-lg py-3" aria-label="Main navigation">
+                        
+                    <a class="navbar-brand fw-bold" href="index.html">CourtOne</a>
+                    <div class="collapse navbar-collapse order-lg-2" id="mainMenu">
+                        <ul class="navbar-nav mx-lg-auto gap-lg-3">
+                            <li class="nav-item">
+                                <a class="nav-link active" href="index.html">Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="browseVenues.html">Venues</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#how-it-works">How It Works</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="chat.html">Chat</a>
+                            </li>
+                        </ul>
+                    </div>
+                    </nav>
+                </header>
+                <div class="container my-4"> 
 
-            <a class="navbar-brand fw-bold" href="index.html">CourtOne</a>
-            <div class="collapse navbar-collapse order-lg-2" id="mainMenu">
-                <ul class="navbar-nav mx-lg-auto gap-lg-3">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="index.html">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="browseVenues.html">Venues</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#how-it-works">How It Works</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="chat.html">Chat</a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-        <div class="container my-4"> 
-
-            <!-- Logo and tagline (WIP) -->
-            <div class="row">
-                <div class="col-md-12 p-5 text-center">
-                    <h1>CourtOne</h1>
-                    <small>Court Booking Website</small>
+                <!-- Logo and tagline (WIP) -->
+                <div class="row">
+                    <div class="col-md-12 p-5 text-center">
+                        <h1>CourtOne</h1>
+                        <small>Court Booking Website</small>
+                    </div>
                 </div>
-            </div>
 
-            <!-- Username and Password form -->
-            <div class="row g-4 justify-content-center">
-                <div class="col-12 col-sm-10 col-md-6 col-lg-4">
-                    <div class="card">
-                        <div class="card-body">
-                            <h2 class="text-center h4 mb-3">Sign Up</h2>
+                <!-- Signup form -->
+                <div class="row g-4 justify-content-center">
+                    <div class="col-12 col-sm-10 col-md-6 col-lg-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h2 class="text-center h4 mb-3">Sign Up</h2>
 
-                            <!-- Show with JS when login fails (remove d-none) -->
-                            <div id="login-error" class="alert alert-danger d-none" role="alert">
-                                Incorrect email or password.
-                            </div>
+                                <!-- Show with JS when login fails (remove d-none) -->
+                                <div id="login-error" class="alert alert-danger d-none" role="alert">
+                                    Incorrect email or password.
+                                </div>
 
-                            <form action="" method="POST" class="border rounded p-3">
+                                <form action="" method="POST" class="border rounded p-3">
                                 <!-- Let the user input Last name -->
                                 <div class="mb-3">
-                                    <label for="username" class="form-label">Last name:</label>
-                                    <input type="text" id="username" name="username" value="" class="form-control autofocus" > <!-- removed required attributes to access index.html -->
+                                    <label for="lastname" class="form-label">Last name:</label>
+                                    <input type="text" id="lastname" name="lastname" value="" class="form-control autofocus" placeholder="Last Name"> <!-- removed required attributes to access index.html -->
                                 </div>
                                 <!-- Let the user input firstname -->
                                 <div class="mb-3">
-                                    <label for="username" class="form-label">First name:</label>
-                                    <input type="text" id="username" name="username" value="" class="form-control autofocus" > <!-- removed required attributes to access index.html -->
+                                    <label for="firstname" class="form-label">First name:</label>
+                                    <input type="text" id="firstname" name="firstname" value="" class="form-control autofocus" placeholder="First Name" > <!-- removed required attributes to access index.html -->
                                 </div>
                                 <!-- Let the user input email -->
                                 <div class="mb-3">
-                                    <label for="password" class="form-label">Email:</label>
-                                    <input type="password" id="password" name="password" class="form-control" > <!-- removed required attributes to access index.html -->
+                                    <label for="email" class="form-label">Email:</label>
+                                    <input type="text" id="email" name="email" class="form-control" placeholder="Email" required> <!-- removed required attributes to access index.html -->
                                 </div>
                                 <!-- Let the user input username -->
                                 <div class="mb-3">
                                     <label for="username" class="form-label">Username:</label>
-                                    <input type="text" id="username" name="username" value="" class="form-control autofocus" > <!-- removed required attributes to access index.html -->
+                                    <input type="text" id="username" name="username" value="" class="form-control autofocus" placeholder="Username"> <!-- removed required attributes to access index.html -->
                                 </div>
 
                                 <!-- Let the registrant choose a customer or venue-owner account. -->
-                                <select class="auth-input" id="account-role" name="role" aria-label="Account type" required>
+                                <div class="mb-3">
+                                    <label for="accountType" class="form-label">Account Type:</label>
+                                    <select class="auth-input" id="account-role" name="role" aria-label="Account type" required>
                                     <option value="customer">Customer account</option>
                                     <option value="owner">Venue owner account</option>
-                                </select>
+                                    </select>
+                                </div>
 
                                 <!-- The script reveals and requires this field only for venue-owner accounts. -->
-                                <div class="auth-field-group d-none" id="business-name-group">
-                                    <input class="auth-input" type="text" id="business-name" name="businessName" aria-label="Business name" placeholder="business name" autocomplete="organization">
+
+                                <div class="businessName mb-3" id="business-name-group">
+                                    <label for="businessName" class="form-label">Business Name:</label>
+                                    <input  type="text" id="business-name" name="businessName" class="form-control autofocus" placeholder="Business Name" autocomplete="organization">
                                 </div>
+
                                 <!-- Collect and confirm a password; the registration script checks that both match. -->
-                                <input class="auth-input" type="password" id="password" name="password" aria-label="Password" placeholder="password" autocomplete="new-password" minlength="8" required>
-                                <input class="auth-input" type="password" id="confirm-password" name="confirmPassword" aria-label="Confirm password" placeholder="confirm password" autocomplete="new-password" minlength="8" required>
+                                <div class="mb-3">
+                                    <label for="username" class="form-label">Password:</label>
+                                    <input  type="text" id="password" name="password" class="form-control autofocus" placeholder="Password" required>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="username" class="form-label">Confirm Password:</label>
+                                    <input  type="text" id="confirmPassword" name="confirmPassword" class="form-control autofocus" placeholder="Confirm Password" required>
+                                </div>
+
                                 <!-- Submit the form to run client-side validation and show account-service status. -->
-                                <button class="auth-button" type="submit">
-                                    <svg aria-hidden="true" viewBox="0 0 24 24">
-                                        <path d="M12 12a4.2 4.2 0 1 0 0-8.4 4.2 4.2 0 0 0 0 8.4Zm0 2c-4 0-7.2 2.1-7.2 4.7V21h11.5a6.8 6.8 0 0 1-.7-3c0-1.5.5-2.9 1.4-4-.9-.2-2-.3-3-.3Zm8.1 1.1h-2v2h-2v2h2v2h2v-2h2v-2h-2v-2Z"/>
-                                    </svg>
-                                    Create Account
-                                </button>
-                            </form>       
+                                <a href="index.html"><button type="button" class="btn btn-primary">Sign Up</button></a>
+                                <!-- <button class="auth-button" type="submit">
+                                <svg aria-hidden="true" viewBox="0 0 24 24">
+                                <path d="M12 12a4.2 4.2 0 1 0 0-8.4 4.2 4.2 0 0 0 0 8.4Zm0 2c-4 0-7.2 2.1-7.2 4.7V21h11.5a6.8 6.8 0 0 1-.7-3c0-1.5.5-2.9 1.4-4-.9-.2-2-.3-3-.3Zm8.1 1.1h-2v2h-2v2h2v2h2v-2h2v-2h-2v-2Z"/>
+                                </svg>
+                                Create Account
+                                </button> -->
+                                </form>       
+                                </div>
+                            </div>
                         </div>
                     </div>
+
+                    <!-- Switch to the login panel without leaving this page. -->
+                    <p class="text-center mt-2">Already have an account? <span></span>
+                    <a href="login.html" class="btn btn-primary">Login</a>
+
                 </div>
-            </div>
-
-            <!-- Switch to the login panel without leaving this page. -->
-            <p class="text-center mt-2">Already have an account? <span></span>
-            <a href="login.html" class="btn btn-primary">Sign In</a>
-
+            </main>
         </div>
+        <script src="customScripts/signupScripts.js"></script>
     </body>
 </html>
