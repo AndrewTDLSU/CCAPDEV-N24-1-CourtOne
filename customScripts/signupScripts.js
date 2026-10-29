@@ -38,7 +38,7 @@
         });
     }
 
-    // Find the registration form before wiring its validation and local save behavior.
+    // Find the registration form before wiring its client-side validation behavior.
     const signupForm = document.getElementById("signup-form");
     if (!signupForm) return;
 
@@ -79,46 +79,17 @@
     // Initialize the conditional business-name field for the default role.
     updateRoleFields();
 
-    // Validate and save the demo profile when the form is submitted.
+    // Validate the submitted registration details without sending or storing them.
     signupForm.addEventListener("submit", (event) => {
-        // Keep submission on this page so the profile can be handled locally.
+        // Keep submission on this page; this prototype has no connected account service.
         event.preventDefault();
-        // Update mismatch feedback before asking the browser to validate the form.
+        // Check the password pair before asking the browser to validate required fields.
         validatePasswords();
         if (!signupForm.reportValidity()) return;
 
-        // Save only public demo profile details; never persist either password field.
-        // Read the submitted fields and normalize the email for duplicate checking.
-        const formData = new FormData(signupForm);
-        const email = String(formData.get("email")).trim().toLowerCase();
-        // Load existing local demo accounts before adding another account.
-        const users = JSON.parse(localStorage.getItem("courtOneUsers") || "[]");
-        // Reject an email already registered in this browser.
-        if (users.some((user) => user.email === email)) {
-            signupMessage.className = "auth-message alert-warning";
-            signupMessage.textContent = "A demo profile with this email already exists in this browser.";
-            signupMessage.hidden = false;
-            return;
-        }
-
-        // Store profile fields only; passwords are deliberately never persisted.
-        users.push({
-            id: `user-${Date.now()}`,
-            name: String(formData.get("name")).trim(),
-            email,
-            role: String(formData.get("role")),
-            businessName: String(formData.get("businessName") || "").trim(),
-            active: true,
-            createdAt: new Date().toISOString()
-        });
-        // Persist the updated profile list and reset the form for another entry.
-        localStorage.setItem("courtOneUsers", JSON.stringify(users));
-        signupForm.reset();
-        // Reapply the default role's field visibility after clearing the form.
-        updateRoleFields();
-        // Tell the user that this browser now has the demo profile.
-        signupMessage.className = "auth-message alert-success";
-        signupMessage.textContent = "Demo profile created on this device. Sign-in and authentication are not connected in this prototype.";
+        // Explain that validation passed but account creation is not connected.
+        signupMessage.className = "auth-message alert-info";
+        signupMessage.textContent = "The form is valid, but account creation is unavailable because no account service is connected.";
         signupMessage.hidden = false;
     });
 })();
