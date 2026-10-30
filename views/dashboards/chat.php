@@ -4,11 +4,11 @@
 <head>
     <title>CourtOne Chat</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="customCSS/style.css">
+    <link rel="stylesheet" href="public/customCSS/style.css">
     <link rel="stylesheet" href="bootstrap-5.3.8-dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="customCSS/chat.css">
-    <link rel="stylesheet" href="customCSS/darkMode.css">
-    <script src="customScripts/theme.js"></script>
+    <link rel="stylesheet" href="public/customCSS/chat.css">
+    <link rel="stylesheet" href="public/customCSS/darkMode.css">
+    <script src="public/customScripts/theme.js"></script>
 </head>
 
 <body>

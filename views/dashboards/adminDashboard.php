@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Admin dashboard | CourtOne</title>
     <link rel="stylesheet" href="bootstrap-5.3.8-dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="customCSS/style.css">
-    <link rel="stylesheet" href="customCSS/adminStyles.css">
-    <link rel="stylesheet" href="customCSS/darkMode.css">
-    <script src="customScripts/theme.js"></script>
+    <link rel="stylesheet" href="public/customCSS/style.css">
+    <link rel="stylesheet" href="public/customCSS/adminStyles.css">
+    <link rel="stylesheet" href="public/customCSS/darkMode.css">
+    <script src="public/customScripts/theme.js"></script>
 </head>
 <body>
     <!-- Show the logged-in role, desktop links, profile avatar, and mobile menu. -->

@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Login</title>
 
-        <link rel="stylesheet" href="customCSS/style.css"> <!-- Custom CSS -->
+        <link rel="stylesheet" href="public/customCSS/style.css"> <!-- Custom CSS -->
 
         <!-- bootstrap link -->
         <link rel="stylesheet" href="bootstrap-5.3.8-dist/css/bootstrap.min.css"> <!-- bootstrap css for grid -->

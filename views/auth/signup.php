@@ -5,8 +5,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Login</title>
 
-        <link rel="stylesheet" href="customCSS/style.css"> <!-- Custom CSS -->
-        <link rel="stylesheet" href="customCSS/home.css">
+        <link rel="stylesheet" href="public/customCSS/style.css"> <!-- Custom CSS -->
+        <link rel="stylesheet" href="public/customCSS/home.css">
         <!-- bootstrap link -->
         <link rel="stylesheet" href="bootstrap-5.3.8-dist/css/bootstrap.min.css"> <!-- bootstrap css for grid -->
         <!--<script src="[filepath]"></script>  bootstrap js script, Not used yet, remove when unncessary -->
@@ -129,6 +129,6 @@
                 </div>
             </main>
         </div>
-        <script src="customScripts/signupScripts.js"></script>
+        <script src="public/customScripts/signupScripts.js"></script>
     </body>
 </html>

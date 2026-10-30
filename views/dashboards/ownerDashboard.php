@@ -12,11 +12,11 @@
         <!--<script src="[filepath]"></script>  bootstrap js script, Not used yet, remove when unncessary -->
 
         <!-- Custom CSS -->
-        <link rel="stylesheet" href="customCSS/style.css"> 
-        <link rel="stylesheet" href="customCSS/ownerMgmt.css"> 
+        <link rel="stylesheet" href="public/customCSS/style.css"> 
+        <link rel="stylesheet" href="public/customCSS/ownerMgmt.css"> 
    
-        <link rel="stylesheet" href="customCSS/darkMode.css">
-        <script src="customScripts/theme.js"></script>
+        <link rel="stylesheet" href="public/customCSS/darkMode.css">
+        <script src="public/customScripts/theme.js"></script>
     </head>
 
     <body>
