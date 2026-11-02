@@ -1,35 +1,48 @@
 <?php
-/**
- * Application Front Controller Router System
- * Acts as the centralized entrance gateway routing all requests to their target components
- */
+// 1. Unhide hidden syntax or runtime compiling errors inside your university network
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 session_start();
 
-// 1. Dependency Auto-loader
+// 2. Load basic framework core foundation layers
 require_once '../core/Database.php';
 require_once '../core/Controller.php';
 require_once '../core/Model.php';
 
-// 2. Simple fallback routing system parser (Splits parameters from domain paths: index.php?url=controller/method)
+// 3. Parse incoming URL parameters
 $url = $_GET['url'] ?? 'home/index';
 $urlParts = explode('/', filter_var(rtrim($url, '/'), FILTER_SANITIZE_URL));
 
-$controllerName = ucfirst($urlParts[0]) . 'Controller';
-$methodName = $urlParts[1] ?? 'index';
+$controllerInput = !empty($urlParts[0]) ? strtolower($urlParts[0]) : 'home';
+$controllerName = '';
+
+if ($controllerInput === 'home') $controllerName = 'HomeController';
+elseif ($controllerInput === 'auth') $controllerName = 'AuthController';
+elseif ($controllerInput === 'dashboard') $controllerName = 'DashboardController';
+elseif ($controllerInput === 'venue') $controllerName = 'VenueController';
+elseif ($controllerInput === 'booking') $controllerName = 'BookingController';
+else $controllerName = ucfirst($controllerInput) . 'Controller';
+
+$methodName = isset($urlParts[1]) && !empty($urlParts[1]) ? $urlParts[1] : 'index';
 $params = array_slice($urlParts, 2);
 
 $controllerFile = '../controllers/' . $controllerName . '.php';
 
+// 4. Execution check matching routing variables
 if (file_exists($controllerFile)) {
     require_once $controllerFile;
     if (class_exists($controllerName)) {
-        $controller = new $controllerName();
-        if (method_exists($controller, $methodName)) {
-            call_user_func_array([$controller, $methodName], $params);
+        $controllerObject = new $controllerName();
+        if (method_exists($controllerObject, $methodName)) {
+            call_user_func_array([$controllerObject, $methodName], $params);
             exit;
         }
     }
 }
 
-header("HTTP/1.0 404 Not Found");
-echo "<h1>404 Error: Destination controller or method mapping path is broken.</h1>";
+// Global System Fallback
+require_once '../controllers/HomeController.php';
+$fallback = new HomeController();
+$fallback->index();
