@@ -1,85 +1,22 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Login</title>
-
-        <link rel="stylesheet" href="public/customCSS/style.css"> <!-- Custom CSS -->
-
-        <!-- bootstrap link -->
-        <link rel="stylesheet" href="bootstrap-5.3.8-dist/css/bootstrap.min.css"> <!-- bootstrap css for grid -->
-        <!--<script src="[filepath]"></script>  bootstrap js script, Not used yet, remove when unncessary -->
-    </head>
-
-    <body>
-        <header class="container">
-            <nav class="navbar navbar-expand-lg py-3" aria-label="Main navigation">
-                <a class="navbar-brand fw-bold" href="index.html">CourtOne</a>
-                <div class="collapse navbar-collapse order-lg-2" id="mainMenu">
-                    <ul class="navbar-nav mx-lg-auto gap-lg-3">
-                        <li class="nav-item">
-                            <a class="nav-link active" href="index.html">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="browseVenues.html">Venues</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#how-it-works">How It Works</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="chat.html">Chat</a>
-                        </li>
-                    </ul>
+<?php include_once '../views/partials/header.php'; ?>
+<div class="row justify-content-center my-5">
+    <div class="col-md-5">
+        <div class="card border shadow-sm p-4 bg-white">
+            <h4 class="card-title fw-bold text-center mb-4">Account Login</h4>
+            <?php if (isset($error)): ?><div class="alert alert-danger small p-2"><?php echo $error; ?></div><?php endif; ?>
+            <form action="/auth/login" method="POST">
+                <div class="mb-3"><label class="small form-label fw-bold">System Email</label><input type="email" name="email" class="form-control form-control-sm" required></div>
+                <div class="mb-3"><label class="small form-label fw-bold">Access Secret Key</label><input type="password" name="password" class="form-control form-control-sm" required></div>
+                <div class="mb-3">
+                    <label class="small form-label fw-bold">Login Destination Scope</label>
+                    <select name="loginType" class="form-select form-select-sm">
+                        <option value="customer_app">Customer Client Terminal</option>
+                        <option value="staff_app">Venue Operations Employee Roster</option>
+                    </select>
                 </div>
-            </nav>
-        </header>
-        <div class="container my-4"> 
-
-            <!-- Logo and tagline (WIP) -->
-            <div class="row">
-                <div class="col-md-12 p-5 text-center">
-                    <h1>CourtOne</h1>
-                    <small>Court Booking Website</small>
-                </div>
-            </div>
-
-            <!-- Username and Password form -->
-            <div class="row g-4 justify-content-center">
-                <div class="col-12 col-sm-10 col-md-6 col-lg-4">
-                    <div class="card">
-                        <div class="card-body">
-                            <h2 class="text-center h4 mb-3">Login</h2>
-
-                            <!-- Show with JS when login fails (remove d-none) -->
-                            <div id="login-error" class="alert alert-danger d-none" role="alert">
-                                Incorrect email or password.
-                            </div>
-
-                            <form action="" method="POST" class="border rounded p-3">
-
-                                <div class="mb-3">
-                                    <label for="username" class="form-label">Username:</label>
-                                    <input type="text" id="username" name="username" value="" class="form-control autofocus" > <!-- removed required attributes to access index.html -->
-                                </div>
-
-                                <div class="mb-3">
-                                    <label for="password" class="form-label">Password:</label>
-                                    <input type="password" id="password" name="password" class="form-control" > <!-- removed required attributes to access index.html -->
-                                </div>
-
-                                <a href="index.html"><button type="button" class="btn btn-primary">Log In</button></a> <!-- achor link to index.html instead of type="submit" to skip backend for now -->
-                                
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Switch to the signup panel without leaving this page. -->
-            <p class="text-center mt-2">New here? <span></span>
-            <a href="signup.html" class="btn btn-primary">Sign up now</a>
-
+                <button type="submit" class="btn btn-sm btn-primary w-100 mt-3">Verify Credentials</button>
+            </form>
         </div>
-    </body>
-</html>
+    </div>
+</div>
+<?php include_once '../views/partials/footer.php'; ?>
