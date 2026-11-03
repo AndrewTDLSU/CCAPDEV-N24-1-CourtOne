@@ -1,28 +1,86 @@
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background-color: #f4f6f9; color: #333333; line-height: 1.6; padding-bottom: 60px; }
-main.container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 20px; display: block; }
-div.card { background: #ffffff; border: 1px solid #e3e6f0; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 24px; padding: 24px; }
-div.row { display: flex; flex-wrap: wrap; margin-right: -12px; margin-left: -12px; }
-div.col-md-4 { flex: 0 0 33.333333%; max-width: 33.333333%; padding: 12px; }
-div.col-md-5 { flex: 0 0 41.666667%; max-width: 41.666667%; padding: 12px; }
-div.col-md-6 { flex: 0 0 50%; max-width: 50%; padding: 12px; }
-div.col-md-7 { flex: 0 0 58.333333%; max-width: 58.333333%; padding: 12px; }
-div.col-12 { flex: 0 0 100%; max-width: 100%; padding: 12px; }
-label.form-label { display: block; font-size: 0.85rem; font-weight: 600; color: #4e73df; margin-bottom: 6px; text-transform: uppercase; }
-input.form-control, select.form-select, textarea.form-control { width: 100%; padding: 8px 12px; font-size: 0.95rem; border: 1px solid #ced4da; border-radius: 4px; }
-.btn { display: inline-block; font-weight: 600; text-align: center; cursor: pointer; padding: 8px 16px; border-radius: 4px; border: 1px solid transparent; text-decoration: none; }
-.btn-primary { background-color: #4e73df; color: #ffffff; }
-.btn-success { background-color: #1cc88a; color: #ffffff; }
-.btn-dark { background-color: #343a40; color: #ffffff; }
-.w-100 { width: 100% !important; }
-.table-responsive { display: block; width: 100%; overflow-x: auto; margin-top: 15px; }
-table { width: 100%; border-collapse: collapse; background-color: #ffffff; margin-bottom: 1rem; }
-table th, table td { padding: 12px; border: 1px solid #dee2e6; text-align: center; }
-table th { color: #ffffff; background-color: #343a40; text-transform: uppercase; }
-table tr.table-secondary td { background-color: #eaecf4; font-weight: bold; color: #4e73df; }
-.badge { display: inline-block; padding: 6px 12px; font-size: 0.75rem; font-weight: 700; border-radius: 4px; text-transform: uppercase; }
-.bg-danger { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
-.bg-success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+/* ==========================================================================
+   COURT ARENA PLATFORM MINIMALIST PURE WHITE STYLESHEET
+   ========================================================================== */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    background-color: #ffffff; /* Pure white baseline layout background */
+    color: #000000; /* Crisp pure black typography text color map */
+    line-height: 1.6;
+    padding-bottom: 60px;
+}
+
+main.container {
+    width: 100%;
+    max-width: 600px; /* Center-aligned single flow column envelope */
+    margin: 0 auto;
+    padding: 0 16px;
+    display: block;
+}
+
+div.card {
+    background: #ffffff;
+    border: 1px solid #000000; /* Minimalist solid black boundary line parameter */
+    border-radius: 4px;
+    margin-bottom: 24px;
+    padding: 24px;
+}
+
+div.mb-3 {
+    margin-bottom: 16px;
+}
+
+label.form-label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #000000; /* Pure black form text headers */
+    margin-bottom: 6px;
+}
+
+input.form-control, select.form-select, textarea.form-control {
+    width: 100%;
+    padding: 10px;
+    font-size: 0.95rem;
+    color: #000000;
+    background-color: #ffffff;
+    border: 1px solid #000000; /* Solid black border fields mapping rules */
+    border-radius: 4px;
+}
+
+.btn {
+    display: inline-block;
+    font-weight: 700;
+    text-align: center;
+    cursor: pointer;
+    padding: 12px 24px;
+    font-size: 0.9rem;
+    border-radius: 4px;
+    text-decoration: none;
+    width: 100%;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: background 0.1s ease;
+}
+
+/* Black & White Active Button UI Elements */
+.btn-primary, .btn-success { 
+    background-color: #000000; 
+    color: #ffffff; 
+    border: 1px solid #000000;
+}
+.btn-primary:hover, .btn-success:hover { 
+    background-color: #333333; 
+}
+
 .text-center { text-align: center !important; }
-.text-muted { color: #858796 !important; }
-.mb-4 { margin-bottom: 1.5rem !important; }
+.text-muted { color: #666666 !important; }
+.w-100 { width: 100% !important; }
+.badge.bg-danger { display: block; padding: 12px; background-color: #000000; color: #ffffff; border: 1px solid #000000; margin-bottom: 16px; font-weight: 700; text-align: left; }
+EOF

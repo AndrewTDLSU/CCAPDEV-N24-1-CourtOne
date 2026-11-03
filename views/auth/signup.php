@@ -1,24 +1,45 @@
-<?php include_once '../views/partials/header.php'; ?>
-<div class="row justify-content-center my-5">
-    <div class="col-md-6">
-        <div class="card border shadow-sm p-4 bg-white">
-            <h4 class="card-title fw-bold text-center mb-4">Registration Matrix Onboarding</h4>
-            <form action="/auth/signup" method="POST">
-                <div class="mb-3"><label class="small form-label fw-bold">Full Identity Name</label><input type="text" name="name" class="form-control form-control-sm" required></div>
-                <div class="mb-3"><label class="small form-label fw-bold">Operational Email</label><input type="email" name="email" class="form-control form-control-sm" required></div>
-                <div class="mb-3"><label class="small form-label fw-bold">Secure Access Key Password</label><input type="password" name="password" class="form-control form-control-sm" placeholder="Stored securely inside a minimum VARCHAR(255) slot" required></div>
-                <div class="mb-4">
-                    <label class="small form-label fw-bold">System Allocation Role Class</label>
-                    <select name="userTypeID" class="form-select form-select-sm">
-                        <option value="1">Customer Client Profile</option>
-                        <option value="2">System Admin Overseer</option>
-                        <option value="3">Sports Facility Complex Owner (Court Owner)</option>
-                    </select>
-                </div>
-                <button type="submit" class="btn btn-sm btn-success w-100">Commit User Matrix Record</button>
-            </form>
+<?php require_once dirname(__DIR__) . '/partials/header.php'; ?>
+
+<div class="card">
+    <h2 class="text-center" style="color: #000000; font-size: 1.5rem; font-weight: 900; text-transform: uppercase; margin-bottom: 24px;">Registration Sheet</h2>
+
+    <?php if (isset($error)): ?>
+        <div class="badge bg-danger">
+            <strong>Registration Alert:</strong> <?php echo htmlspecialchars($error, ENT_QUOTES, 'UTF-8'); ?>
         </div>
+    <?php endif; ?>
+
+    <form action="index.php?url=auth/signup" method="POST">
+        <div class="mb-3">
+            <label class="form-label">Select Account Profile Type</label>
+            <select name="userTypeID" class="form-select">
+                <option value="1">Customer (Player Node)</option>
+                <option value="3">Venue Property Owner</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Full Account Name</label>
+            <input type="text" name="name" class="form-control" placeholder="John Doe" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Email Address</label>
+            <input type="email" name="email" class="form-control" placeholder="name@university.edu" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Security Password</label>
+            <input type="password" name="password" class="form-control" placeholder="••••••••" required>
+        </div>
+
+        <button type="submit" class="btn btn-success" style="margin-top: 12px;">Commit Account Record</button>
+    </form>
+
+    <div class="text-center" style="margin-top: 24px; font-size: 0.85rem; font-weight: 700; text-transform: uppercase;">
+        <a href="index.php?url=auth/login" style="color: #000000; text-decoration: underline;">Access Login Gate</a>
     </div>
 </div>
-<?php include_once '../views/partials/footer.php'; ?>
+
+<?php require_once dirname(__DIR__) . '/partials/footer.php'; ?>
 

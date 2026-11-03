@@ -7,7 +7,6 @@
     
     <style>
         <?php
-        // Hard-code a direct server include stream block from your separate public asset sheet
         $styleSource = '/var/www/html/public/css/custom.css';
         if (file_exists($styleSource)) {
             include $styleSource;
@@ -15,7 +14,7 @@
         ?>
     </style>
 </head>
-<body class="bg-light">
+<body>
 
 <?php
 $scriptDir = dirname($_SERVER['SCRIPT_NAME']);
@@ -23,16 +22,12 @@ $baseUrl = ($scriptDir === '/' || $scriptDir === '\\') ? '' : $scriptDir;
 $baseUrl = rtrim($baseUrl, '/');
 ?>
 
-<nav style="background-color: #343a40; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; color: #ffffff; margin-bottom: 30px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-    <a href="<?php echo $baseUrl; ?>/index.php?url=home/index" style="color: #ffffff; text-decoration: none; font-weight: bold; font-size: 1.3rem;">🏟️ Court Arena</a>
-    <div style="font-size: 0.95rem; font-weight: 600;">
-        <?php if (isset($_SESSION['role'])): ?>
-            <span style="margin-right: 20px; color: #a3b6ee;">Space: <?php echo strtoupper($_SESSION['role']); ?></span>
-            <a href="<?php echo $baseUrl; ?>/index.php?url=auth/logout" style="color: #ff6b6b; text-decoration: none;">Sign Out</a>
-        <?php else: ?>
-            <a href="<?php echo $baseUrl; ?>/index.php?url=auth/login" style="color: #ffffff; text-decoration: none; margin-right: 20px;">Login Gate</a>
-            <a href="<?php echo $baseUrl; ?>/index.php?url=auth/signup" style="color: #20c997; text-decoration: none;">Join Matrix</a>
-        <?php endif; ?>
-    </div>
-</nav>
+<!-- Centered Pure Black Title Component Framework Blueprint -->
+<header style="text-align: center; margin-top: 40px; margin-bottom: 40px; border-bottom: 1px dashed #000000; padding-bottom: 30px;">
+    <h1 style="color: #000000; font-size: 2.5rem; font-weight: 900; text-transform: uppercase; letter-spacing: -1px; margin-bottom: 4px;">
+        <a href="<?php echo $baseUrl; ?>/index.php?url=home/index" style="color: #000000; text-decoration: none;">Court Arena</a>
+    </h1>
+    <p style="color: #000000; font-size: 1.1rem; font-weight: 500; letter-spacing: 0.5px;">Court Booking Website</p>
+</header>
+
 <main class="container">

@@ -1,22 +1,39 @@
-<?php include_once '../views/partials/header.php'; ?>
-<div class="row justify-content-center my-5">
-    <div class="col-md-5">
-        <div class="card border shadow-sm p-4 bg-white">
-            <h4 class="card-title fw-bold text-center mb-4">Account Login</h4>
-            <?php if (isset($error)): ?><div class="alert alert-danger small p-2"><?php echo $error; ?></div><?php endif; ?>
-            <form action="/auth/login" method="POST">
-                <div class="mb-3"><label class="small form-label fw-bold">System Email</label><input type="email" name="email" class="form-control form-control-sm" required></div>
-                <div class="mb-3"><label class="small form-label fw-bold">Access Secret Key</label><input type="password" name="password" class="form-control form-control-sm" required></div>
-                <div class="mb-3">
-                    <label class="small form-label fw-bold">Login Destination Scope</label>
-                    <select name="loginType" class="form-select form-select-sm">
-                        <option value="customer_app">Customer Client Terminal</option>
-                        <option value="staff_app">Venue Operations Employee Roster</option>
-                    </select>
-                </div>
-                <button type="submit" class="btn btn-sm btn-primary w-100 mt-3">Verify Credentials</button>
-            </form>
+<?php require_once dirname(__DIR__) . '/partials/header.php'; ?>
+
+<div class="card">
+    <h2 class="text-center" style="color: #000000; font-size: 1.5rem; font-weight: 900; text-transform: uppercase; margin-bottom: 24px;">Login Gateway</h2>
+
+    <?php if (isset($error)): ?>
+        <div class="badge bg-danger">
+            <strong>Authentication Alert:</strong> <?php echo htmlspecialchars($error, ENT_QUOTES, 'UTF-8'); ?>
         </div>
+    <?php endif; ?>
+
+    <form action="index.php?url=auth/login" method="POST">
+        <div class="mb-3">
+            <label class="form-label">System Access Interface</label>
+            <select name="loginType" class="form-select">
+                <option value="customer_portal">Customer User Matrix</option>
+                <option value="staff_app">Venue Management / Staff Terminal</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Email Address</label>
+            <input type="email" name="email" class="form-control" placeholder="name@university.edu" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Security Password</label>
+            <input type="password" name="password" class="form-control" placeholder="••••••••" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="margin-top: 12px;">Authenticate Identity</button>
+    </form>
+
+    <div class="text-center" style="margin-top: 24px; font-size: 0.85rem; font-weight: 700; text-transform: uppercase;">
+        <a href="index.php?url=auth/signup" style="color: #000000; text-decoration: underline;">Register an Account</a>
     </div>
 </div>
-<?php include_once '../views/partials/footer.php'; ?>
+
+<?php require_once dirname(__DIR__) . '/partials/footer.php'; ?>

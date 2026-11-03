@@ -1,6 +1,6 @@
 </main>
-<footer style="text-align: center; margin-top: 50px; padding: 20px 0; border-top: 1px solid #dee2e6; font-size: 0.85rem; color: #858796;">
-    <p>&copy; 2026 Court Arena Platform Framework System. Configured locally on a Proxmox virtual network node environment.</p>
+<footer style="text-align: center; margin-top: 64px; padding: 24px 0; border-top: 1px solid #edf2f7; font-size: 0.85rem; color: #a0aec0;">
+    <p>&copy; 2026 Court Arena Platform System. Local single-node container deployment framework.</p>
 </footer>
 
 <script>

@@ -23,9 +23,11 @@ class Database {
                 $options
             );
         } catch (PDOException $e) {
-            die("Proxmox Internal Database connection error: " . $e->getMessage());
+            error_log("Database Connection Failure: " . $e->getMessage());
+            die("Critical Error: Database connection dropped.");
         }
     }
+
     public static function getInstance() {
         if (!self::$instance) {
             self::$instance = new self();
@@ -33,3 +35,4 @@ class Database {
         return self::$instance->pdo;
     }
 }
+?>
