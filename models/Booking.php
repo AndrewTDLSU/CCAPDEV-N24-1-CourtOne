@@ -203,3 +203,4 @@ class Booking extends Model {
     
 }
 
+?>

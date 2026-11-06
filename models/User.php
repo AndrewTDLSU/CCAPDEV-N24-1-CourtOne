@@ -39,3 +39,5 @@ class User extends Model {
         return false;
     }
 }
+
+?>

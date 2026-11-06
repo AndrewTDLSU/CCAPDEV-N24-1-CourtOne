@@ -11,3 +11,5 @@ abstract class Model {
         $this->db = Database::getInstance();
     }
 }
+
+?>
