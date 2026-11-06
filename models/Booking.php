@@ -2,6 +2,11 @@
 /**
  * Transaction and Reservation Handling Model
  * Manages cellular checking rules inside the booking grid matrix array
+ * 
+ * activeSlot convention (relies on a UNIQUE index, see notes):
+ *   1    = this booking is occupying its court/date/time slot
+ *   NULL = slot is released (cancelled). MySQL allows many NULLs in a
+ * UNIQUE index, so only one *active* booking per slot can exist.
  */
 class Booking extends Model {
 
