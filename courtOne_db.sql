@@ -32,6 +32,7 @@ CREATE TABLE `bookings` (
   `activeSlot` int DEFAULT NULL,
   PRIMARY KEY (`bookingID`),
   UNIQUE KEY `unique_slot` (`courtID`,`bookingDate`,`bookingTime`,`activeSlot`),
+  UNIQUE KEY `uq_active_slot` (`courtID`,`bookingDate`,`bookingTime`,`activeSlot`),
   KEY `userID` (`userID`),
   CONSTRAINT `bookings_ibfk_1` FOREIGN KEY (`courtID`) REFERENCES `courts` (`courtID`) ON DELETE CASCADE,
   CONSTRAINT `bookings_ibfk_2` FOREIGN KEY (`userID`) REFERENCES `users` (`userID`) ON DELETE CASCADE
@@ -169,7 +170,8 @@ CREATE TABLE `users` (
   `email` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `password_hash` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `userType` enum('user','admin','court_owner','staff') COLLATE utf8mb4_unicode_ci NOT NULL,
-  PRIMARY KEY (`userID`)
+  PRIMARY KEY (`userID`),
+  UNIQUE KEY `uq_users_email` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -222,4 +224,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-11-06 21:28:36
+-- Dump completed on 2026-11-06 23:14:28
