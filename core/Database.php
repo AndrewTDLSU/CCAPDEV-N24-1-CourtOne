@@ -7,7 +7,7 @@ class Database {
         $host = "localhost";
         $dbname = "courtbooking";
         $username = "root";
-        $password = "623Excelsus";
+        $password = "623Excelsus"; /* change depending on what machine you're using */
         
         $options = [
             PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
