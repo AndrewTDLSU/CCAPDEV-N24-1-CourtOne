@@ -84,7 +84,7 @@ DROP TABLE IF EXISTS `images`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `images` (
   `imageID` int NOT NULL AUTO_INCREMENT,
-  `imageFilePath` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `imageFilePath` varchar(299) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `venueID` int DEFAULT NULL,
   PRIMARY KEY (`imageID`),
   KEY `venueID_idx` (`venueID`),
@@ -226,4 +226,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-11-07 12:08:01
+-- Dump completed on 2026-11-07 13:47:12
