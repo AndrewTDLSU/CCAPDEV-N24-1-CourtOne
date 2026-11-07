@@ -202,6 +202,7 @@ CREATE TABLE `venues` (
   `openHour` time NOT NULL,
   `closeHour` time NOT NULL,
   `ownerID` int NOT NULL,
+  `hourlyRate` decimal(10,2) NOT NULL,
   PRIMARY KEY (`venueID`),
   KEY `ownerID_idx` (`ownerID`),
   CONSTRAINT `ownerID` FOREIGN KEY (`ownerID`) REFERENCES `users` (`userID`)
@@ -226,4 +227,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-11-07 13:47:12
+-- Dump completed on 2026-11-07 18:51:57
