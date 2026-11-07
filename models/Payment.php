@@ -51,6 +51,8 @@ class Payment extends Model {
         fetchPaymentByBooking($bookingID) - get payment by it's booking id
         fetchAllPaymentsByUser($userID, $status = null) - all payments by a user w/ status filter
         fetchPaymentsByVenue($venueID) - all payment entries in 1 venue
+        fetchTotalRevenueByVenue($venueID, $dateFrom = null, $dateTo = null)
+        fetchMonthlyRevenueByVenue($venueID, $year)
     ===============================================================*/
 
     // every payment with payer, booking and venue details (for admin screens)
@@ -101,6 +103,59 @@ class Payment extends Model {
         return $stmt->fetchAll();
     }
 
+    // total money collected for one venue: only 'paid' payments count
+    // (pending = not collected yet, refunded = given back)
+    // optional inclusive date range on paymentDate ('YYYY-MM-DD')
+    public function fetchTotalRevenueByVenue($venueID, $dateFrom = null, $dateTo = null) {
+        $sql = "SELECT COALESCE(SUM(p.amount), 0)
+                FROM payments p
+                JOIN bookings b ON p.bookingID = b.bookingID
+                JOIN courts   c ON b.courtID   = c.courtID
+                WHERE c.venueID = ? AND p.status = 'paid'";
+        $params = [$venueID];
+ 
+        if ($dateFrom !== null) {
+            $sql .= " AND p.paymentDate >= ?";
+            $params[] = $dateFrom . ' 00:00:00';
+        }
+        if ($dateTo !== null) {
+            $sql .= " AND p.paymentDate < ?"; // up to and including the whole $dateTo day
+            $params[] = $this->nextDay($dateTo) . ' 00:00:00';
+        }
+ 
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
+        return (float) $stmt->fetchColumn();
+    }
+ 
+    // revenue per month of one year, for the monthly revenue line chart
+    // always 12 rows (months with no revenue show 0):
+    //   [['month' => 1, 'revenue' => 1250.0], ['month' => 2, 'revenue' => 0.0], ... 12]
+    // counts 'paid' payments by paymentDate
+    public function fetchMonthlyRevenueByVenue($venueID, $year) {
+        $year = $this->assertValidYear($year);
+ 
+        $sql = "SELECT MONTH(p.paymentDate) AS month, SUM(p.amount) AS revenue
+                FROM payments p
+                JOIN bookings b ON p.bookingID = b.bookingID
+                JOIN courts   c ON b.courtID   = c.courtID
+                WHERE c.venueID = ? AND p.status = 'paid'
+                  AND p.paymentDate >= ? AND p.paymentDate < ?
+                GROUP BY MONTH(p.paymentDate)";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$venueID, sprintf('%04d-01-01', $year), sprintf('%04d-01-01', $year + 1)]);
+ 
+        $byMonth = [];
+        foreach ($stmt->fetchAll() as $row) {
+            $byMonth[(int) $row['month']] = (float) $row['revenue'];
+        }
+ 
+        $rows = [];
+        for ($m = 1; $m <= 12; $m++) {
+            $rows[] = ['month' => $m, 'revenue' => $byMonth[$m] ?? 0.0];
+        }
+        return $rows;
+    }
 
     /*=============================================================== 
                         UPDATE FUNCTIONS

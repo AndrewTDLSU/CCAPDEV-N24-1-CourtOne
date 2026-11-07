@@ -50,6 +50,10 @@ class Booking extends Model {
         countBookingsPerCourt($venueID, $dateFrom = null, $dateTo = null) -  court usage, w/ date range filter
         fetchOccupiedGridCells($venueID, $date) - get occupied time slots to block reservation
         fetchBookingExtendedDetails($bookingID) - full booking details
+        countActiveBookingsByVenue($venueID, $from, $to)
+        fetchMonthlyBookingsByVenue($venueID, $year)
+        fetchRecentBookingsByVenue($venueID, $limit, $status)
+        fetchBookingYearsByVenue($venueID)
     ===============================================================*/
 
     // all bookings with court, venue and user names (good for an admin/staff list)
@@ -232,6 +236,114 @@ class Booking extends Model {
         $stmt->execute([$bookingID]);
         return $stmt->fetch();
     } 
+
+    // bookings at one venue that held or used their slot (upcoming + completed),
+    // i.e. everything except cancelled: the "total reservations" figure
+    // optional inclusive date range on bookingDate ('YYYY-MM-DD')
+    public function countActiveBookingsByVenue($venueID, $dateFrom = null, $dateTo = null) {
+        $sql = "SELECT COUNT(*)
+                FROM bookings b
+                JOIN courts c ON b.courtID = c.courtID
+                WHERE c.venueID = ? AND b.status <> 'cancelled'";
+        $params = [$venueID];
+ 
+        if ($dateFrom !== null) {
+            $sql .= " AND b.bookingDate >= ?";
+            $params[] = $dateFrom;
+        }
+        if ($dateTo !== null) {
+            $sql .= " AND b.bookingDate <= ?";
+            $params[] = $dateTo;
+        }
+ 
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
+        return (int) $stmt->fetchColumn();
+    }
+
+    // bookings per month of one year, for the monthly bookings bar graph
+    // always 12 rows (months with no bookings show 0):
+    //   [['month' => 1, 'bookings' => 14], ['month' => 2, 'bookings' => 0], ... 12]
+    // counts upcoming + completed bookings by bookingDate (cancelled ones are left out)
+    public function fetchMonthlyBookingsByVenue($venueID, $year) {
+        $year = $this->assertValidYear($year);
+ 
+        $sql = "SELECT MONTH(b.bookingDate) AS month, COUNT(*) AS bookings
+                FROM bookings b
+                JOIN courts c ON b.courtID = c.courtID
+                WHERE c.venueID = ? AND b.status <> 'cancelled'
+                  AND b.bookingDate >= ? AND b.bookingDate <= ?
+                GROUP BY MONTH(b.bookingDate)";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$venueID, sprintf('%04d-01-01', $year), sprintf('%04d-12-31', $year)]);
+ 
+        $byMonth = [];
+        foreach ($stmt->fetchAll() as $row) {
+            $byMonth[(int) $row['month']] = (int) $row['bookings'];
+        }
+ 
+        $rows = [];
+        for ($m = 1; $m <= 12; $m++) {
+            $rows[] = ['month' => $m, 'bookings' => $byMonth[$m] ?? 0];
+        }
+        return $rows;
+    }
+
+    // most recently MADE bookings at one venue (newest first), for "recent reservations"
+    // same columns as fetchAllBookingsByVenue(): court, customer, payment
+    // $limit is clamped to 1-100; optional $status, e.g. 'completed' for "recent completed bookings"
+    // (the table has no created-at column, so "recent" = highest bookingID;
+    //  add a createdAt column if you ever need real timestamps)
+    public function fetchRecentBookingsByVenue($venueID, $limit = 10, $status = null) {
+        $limit = max(1, min(100, (int) $limit));
+ 
+        $sql = "SELECT b.bookingID, b.bookingDate, b.bookingTime, b.status, b.courtID,
+                       c.courtName,
+                       u.userID, u.name AS userName, u.email AS userEmail,
+                       p.paymentID, p.amount, p.status AS paymentStatus
+                FROM bookings b
+                JOIN courts c ON b.courtID = c.courtID
+                JOIN users  u ON b.userID  = u.userID
+                LEFT JOIN payments p ON b.bookingID = p.bookingID
+                WHERE c.venueID = ?";
+        $params = [$venueID];
+ 
+        if ($status !== null) {
+            if (!in_array($status, self::STATUSES, true)) {
+                throw new InvalidArgumentException("Invalid status: $status");
+            }
+            $sql .= " AND b.status = ?";
+            $params[] = $status;
+        }
+ 
+        $sql .= " ORDER BY b.bookingID DESC LIMIT $limit";
+ 
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->fetchAll();
+    }
+
+    // years that have bookings at this venue, newest first, for the year filters
+    // the current year is always included so the dropdown is never empty
+    public function fetchBookingYearsByVenue($venueID) {
+        $stmt = $this->db->prepare(
+            "SELECT DISTINCT YEAR(b.bookingDate) AS year
+             FROM bookings b
+             JOIN courts c ON b.courtID = c.courtID
+             WHERE c.venueID = ?
+             ORDER BY year DESC"
+        );
+        $stmt->execute([$venueID]);
+ 
+        $years = array_map('intval', array_column($stmt->fetchAll(), 'year'));
+ 
+        $thisYear = (int) date('Y');
+        if (!in_array($thisYear, $years, true)) {
+            array_unshift($years, $thisYear);
+            rsort($years);
+        }
+        return $years;
+    }
 
     /*=============================================================== 
                         UPDATE FUNCTIONS
