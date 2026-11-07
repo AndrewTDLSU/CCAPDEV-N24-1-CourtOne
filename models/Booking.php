@@ -38,35 +38,11 @@ class Booking extends Model {
         }
     }
 
-    // This function interacts with the payment table..?
-    // Enforces concurrency tracking checkpoints using database layout transactions
-    /*public function executePessimisticBooking($date, $time, $courtID, $userID, $calculatedAmount) {
-        try {
-            $this->db->beginTransaction();
-
-            // Insert matching reservation state values into rows structural paths
-            $sql = "INSERT INTO bookings (bookingDate, bookingTime, courtID, userID, status, activeSlot) VALUES (?, ?, ?, ?, 'upcoming', 1)";
-            $stmt = $this->db->prepare($sql);
-            $stmt->execute([$date, $time, $courtID, $userID]);
-            $bookingID = $this->db->lastInsertId();
-
-            // Append matching payment transaction framework tracking row tracking state values
-            $paySql = "INSERT INTO payment (amount, status, bookingID, userID, paymentDate) VALUES (?, 'pending', ?, ?, NOW())";
-            $this->db->prepare($paySql)->execute([$calculatedAmount, $bookingID, $userID]);
-
-            $this->db->commit();
-            return $bookingID;
-        } catch (Exception $e) {
-            $this->db->rollBack();
-            return false;
-        }
-    }*/
-
     /*=============================================================== 
                         READ FUNCTIONS
     ===============================================================*/
 
-    // retrieve all bookings
+    // all bookings with court, venue and user names (good for an admin/staff list)
     public function getAllBookings() {
         $sql = "SELECT b.*, c.courtName, v.venueName, u.name AS userName
                 FROM bookings b
@@ -110,6 +86,114 @@ class Booking extends Model {
         return $stmt->fetchAll();
     }
 
+    // every booking at one venue, for the owner/staff venue management screen
+    // includes court name, customer name/email and the booking's payment (if any)
+    // optional filters: $date ('YYYY-MM-DD') and $status ('upcoming' | 'completed' | 'cancelled')
+    // authorize in the controller first: Venue::isVenueOwner() or Staff::isStaffOfVenue()
+    public function fetchAllBookingsByVenue($venueID, $date = null, $status = null) {
+        $sql = "SELECT b.bookingID, b.bookingDate, b.bookingTime, b.status, b.courtID,
+                       c.courtName,
+                       u.userID, u.name AS userName, u.email AS userEmail,
+                       p.paymentID, p.amount, p.status AS paymentStatus
+                FROM bookings b
+                JOIN courts c ON b.courtID = c.courtID
+                JOIN users  u ON b.userID  = u.userID
+                LEFT JOIN payments p ON b.bookingID = p.bookingID
+                WHERE c.venueID = ?";
+        $params = [$venueID];
+ 
+        if ($date !== null) {
+            $sql .= " AND b.bookingDate = ?";
+            $params[] = $date;
+        }
+ 
+        if ($status !== null) {
+            if (!in_array($status, self::STATUSES, true)) {
+                throw new InvalidArgumentException("Invalid status: $status");
+            }
+            $sql .= " AND b.status = ?";
+            $params[] = $status;
+        }
+ 
+        $sql .= " ORDER BY b.bookingDate DESC, b.bookingTime DESC, c.courtName";
+ 
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->fetchAll();
+    }
+
+    // total number of bookings at one venue (owner dashboard / usage figures)
+    // $status: null = every booking, or 'upcoming' | 'completed' | 'cancelled'
+    // $dateFrom / $dateTo: optional inclusive date range ('YYYY-MM-DD')
+    // for real usage, pass 'completed' or 'upcoming' (cancelled slots were released);
+    // countBookingsPerCourt() below does that split for you
+    public function countBookingByVenue($venueID, $status = null, $dateFrom = null, $dateTo = null) {
+        $sql = "SELECT COUNT(*)
+                FROM bookings b
+                JOIN courts c ON b.courtID = c.courtID
+                WHERE c.venueID = ?";
+        $params = [$venueID];
+ 
+        if ($status !== null) {
+            if (!in_array($status, self::STATUSES, true)) {
+                throw new InvalidArgumentException("Invalid status: $status");
+            }
+            $sql .= " AND b.status = ?";
+            $params[] = $status;
+        }
+        if ($dateFrom !== null) {
+            $sql .= " AND b.bookingDate >= ?";
+            $params[] = $dateFrom;
+        }
+        if ($dateTo !== null) {
+            $sql .= " AND b.bookingDate <= ?";
+            $params[] = $dateTo;
+        }
+ 
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
+        return (int) $stmt->fetchColumn();
+    }
+ 
+    // court usage for one venue: number of COMPLETED bookings per court
+    // one row per court (courts with no completed bookings show 0), most used first
+    // columns: courtID, courtName, completedBookings
+    // optional inclusive date range ('YYYY-MM-DD')
+    public function countBookingsPerCourt($venueID, $dateFrom = null, $dateTo = null) {
+        // the status and date filters sit in the JOIN condition (not WHERE)
+        // so courts with no completed bookings still appear with 0
+        $join = "LEFT JOIN bookings b ON b.courtID = c.courtID AND b.status = 'completed'";
+        $params = [];
+ 
+        if ($dateFrom !== null) {
+            $join .= " AND b.bookingDate >= ?";
+            $params[] = $dateFrom;
+        }
+        if ($dateTo !== null) {
+            $join .= " AND b.bookingDate <= ?";
+            $params[] = $dateTo;
+        }
+        $params[] = $venueID;
+ 
+        $sql = "SELECT c.courtID, c.courtName, COUNT(b.bookingID) AS completedBookings
+                FROM courts c
+                $join
+                WHERE c.venueID = ?
+                GROUP BY c.courtID, c.courtName
+                ORDER BY completedBookings DESC, c.courtName";
+ 
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
+ 
+        $rows = [];
+        foreach ($stmt->fetchAll() as $row) {
+            $row['courtID']            = (int) $row['courtID'];
+            $row['completedBookings']  = (int) $row['completedBookings'];
+            $rows[] = $row;
+        }
+        return $rows;
+    }
+
     // Filters active activeSlots parameters out of system matrices blocks rows
     public function fetchOccupiedGridCells($venueID, $date) {
         $sql = "SELECT b.bookingTime, b.courtID, b.status 
@@ -137,7 +221,7 @@ class Booking extends Model {
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$bookingID]);
         return $stmt->fetch();
-    }
+    } 
 
     /*=============================================================== 
                         UPDATE FUNCTIONS
