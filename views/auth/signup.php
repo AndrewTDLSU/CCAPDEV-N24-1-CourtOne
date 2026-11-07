@@ -12,9 +12,9 @@
     <form action="index.php?url=auth/signup" method="POST">
         <div class="mb-3">
             <label class="form-label">Select Account Profile Type</label>
-            <select name="userTypeID" class="form-select">
-                <option value="1">Customer (Player Node)</option>
-                <option value="3">Venue Property Owner</option>
+            <select name="userType" class="form-select">
+                <option value="user">Customer</option>
+                <option value="court_owner">Venue Owner</option>
             </select>
         </div>
 

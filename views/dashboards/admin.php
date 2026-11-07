@@ -1,4 +1,4 @@
-﻿<?php include_once '../views/partials/header.php'; ?>
+﻿<?php include_once __DIR__ . '/../partials/Header.php'; ?>
 <div class="mb-4"><h3>Global Administrative Overview</h3><p class="text-muted small">Systems monitoring console dashboard mapping all active property entries.</p></div>
 <div class="row g-3">
     <?php foreach ($venues as $v): ?>
@@ -11,4 +11,4 @@
         </div>
     <?php endforeach; ?>
 </div>
-<?php include_once '../views/partials/footer.php'; ?>
+<?php include_once __DIR__ . '/../partials/Footer.php'; ?>

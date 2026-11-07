@@ -1,5 +1,5 @@
 
-<?php include_once '../views/partials/header.php'; ?>
+<?php include_once __DIR__ . '/../partials/Header.php'; ?>
 <div class="card p-4 border bg-white shadow-sm mb-4">
     <h4>Venue Operations Roster Terminal</h4>
     <p class="text-muted small">Real-time localized metrics computed cleanly via joins across facility structural mapping tables.</p>
@@ -10,4 +10,4 @@
     </div>
     <div class="mt-4 text-center"><a href="/booking/chat" class="btn btn-sm btn-outline-primary px-3">Open Operations Support Messaging Feed</a></div>
 </div>
-<?php include_once '../views/partials/footer.php'; ?>
+<?php include_once __DIR__ . '/../partials/Footer.php'; ?>

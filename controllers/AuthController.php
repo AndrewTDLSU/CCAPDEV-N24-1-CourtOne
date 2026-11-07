@@ -5,28 +5,51 @@ class AuthController extends Controller {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
             $password = $_POST['password'];
-            $loginTarget = $_POST['loginType']; // 'customer_app' or 'staff_app'
+            $loginTarget = $_POST['loginType'] ?? ''; // 'customer_app' or 'staff_app'
 
             $userModel = $this->model('User');
             
             if ($loginTarget === 'staff_app') {
-                $staff = $userModel->authenticateStaff($email, $password);
-                if ($staff) {
-                    $_SESSION['staffID'] = $staff['staffID'];
-                    $_SESSION['venueID'] = $staff['venueID'];
-                    $_SESSION['role']    = 'staff';
-                    header('Location: /dashboard/staffDashboard');
-                    exit;
-                }
-            } else {
-                $user = $userModel->authenticateUser($email, $password);
-                if ($user) {
+
+            // Authenticate using the shared users table
+            $user = $userModel->authenticateUser($email, $password);
+
+            // Only allow accounts with the staff role
+            if ($user && $user['userType'] === 'staff') {
+
+                // Retrieve the venue assigned to this staff member
+                $staffModel = $this->model('Staff');
+                $venue = $staffModel->getVenueByStaff($user['userID']);
+
+                if ($venue) {
+                    session_regenerate_id(true);
+
                     $_SESSION['userID'] = $user['userID'];
-                    $_SESSION['role']   = strtolower($user['userType']); // Matches lookup table string values ('customer', 'admin', 'owner')
-                    header('Location: /dashboard/dispatcher');
+                    $_SESSION['staffID'] = $user['userID'];
+                    $_SESSION['venueID'] = $venue['venueID'];
+                    $_SESSION['role'] = 'staff';
+
+                    header('Location: /index.php?url=dashboard/staffDashboard');
                     exit;
                 }
             }
+            } elseif ($loginTarget === 'customer_portal') {
+
+            $user = $userModel->authenticateUser($email, $password);
+
+            if ($user && in_array($user['userType'], ['user', 'court_owner', 'admin'], true)) {
+
+                session_regenerate_id(true);
+
+                $_SESSION['userID'] = $user['userID'];
+                $_SESSION['role'] = $user['userType'];
+
+                unset($_SESSION['staffID'], $_SESSION['venueID']);
+
+                header('Location: /index.php?url=dashboard/dispatcher');
+                exit;
+            }
+        }
             $data['error'] = "Authentication mismatch. Invalid credentials provided.";
         }
         $data['pageTitle'] = 'Login Gateway';
@@ -38,22 +61,30 @@ class AuthController extends Controller {
             $name  = htmlspecialchars($_POST['name'], ENT_QUOTES, 'UTF-8');
             $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
             $pass  = $_POST['password'];
-            $role  = intval($_POST['userTypeID']);
+            $role = $_POST['userType'] ?? '';
 
-            $userModel = $this->model('User');
-            if ($userModel->createUser($name, $email, $pass, $role)) {
-                header('Location: /auth/login');
-                exit;
+            if (!in_array($role, ['user', 'court_owner'], true)) {
+                $data['error'] = "Invalid account type selected.";
+            } else {
+                $userModel = $this->model('User');
+
+                if ($userModel->createUser($name, $email, $pass, $role)) {
+                    header('Location: /index.php?url=auth/login');
+                    exit;
+                }
+
+                $data['error'] = "Database processing error occurred during account creation.";
             }
-            $data['error'] = "Database processing error occurred during account creation.";
         }
+
         $data['pageTitle'] = 'Account Creation Registration Sheet';
         $this->view('auth/signup', $data);
     }
 
+
     public function logout() {
         session_destroy();
-        header('Location: /home/index');
+        header('Location: /index.php?url=home/index');
         exit;
     }
 }

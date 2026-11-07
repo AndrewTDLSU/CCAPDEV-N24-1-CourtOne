@@ -1,4 +1,4 @@
-<?php include_once '../views/partials/header.php'; ?>
+<?php include_once __DIR__ . '/../partials/Header.php'; ?>
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h3>Court Owner Enterprise Terminal</h3>
     <a href="/venue/venueForm" class="btn btn-sm btn-success">+ Register A Facility Profile</a>
@@ -18,5 +18,5 @@
         </div>
     <?php endforeach; ?>
 </div>
-<?php include_once '../views/partials/footer.php'; ?>
+<?php include_once __DIR__ . '/../partials/Footer.php'; ?>
 

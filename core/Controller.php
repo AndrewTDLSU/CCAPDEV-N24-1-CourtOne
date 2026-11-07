@@ -7,7 +7,7 @@ class Controller {
     
     // Instantiates matching data model layers on request
     protected function model($model) {
-        require_once '../models/' . $model . '.php';
+        require_once __DIR__ . '/../models/' . $model . '.php';
         return new $model();
     }
 
@@ -16,11 +16,14 @@ class Controller {
         // Unpacks incoming array strings directly into simple local variable slots
         extract($data);
         
-        if (file_exists('../views/' . $view . '.php')) {
-            require_once '../views/' . $view . '.php';
+        $viewFile = __DIR__ . '/../views/' . $view . '.php';
+
+        if (file_exists($viewFile)) {
+            require_once $viewFile;
         } else {
             die("MVC Structural File Error: View file layout target [$view] cannot be located.");
         }
     }
 }
 
+?>
