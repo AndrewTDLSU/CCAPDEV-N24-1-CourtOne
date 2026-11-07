@@ -60,6 +60,7 @@ CREATE TABLE `courts` (
   `courtName` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `venueID` int NOT NULL,
   PRIMARY KEY (`courtID`),
+  UNIQUE KEY `uq_court_name_per_venue` (`venueID`,`courtName`),
   KEY `venueID` (`venueID`),
   CONSTRAINT `courts_ibfk_1` FOREIGN KEY (`venueID`) REFERENCES `venues` (`venueID`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -115,6 +116,7 @@ CREATE TABLE `payments` (
   `paymentDate` datetime DEFAULT NULL,
   `bookingID` int NOT NULL,
   PRIMARY KEY (`paymentID`),
+  UNIQUE KEY `uq_payment_booking` (`bookingID`),
   KEY `paymentUserID_idx` (`userID`),
   KEY `paymentBookingID_idx` (`bookingID`),
   CONSTRAINT `paymentBookingID` FOREIGN KEY (`bookingID`) REFERENCES `bookings` (`bookingID`),
@@ -224,4 +226,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-11-06 23:14:28
+-- Dump completed on 2026-11-07 12:08:01
