@@ -13,10 +13,12 @@
 
 class Payment extends Model {
 
+    // Enum payment statuses
     private const STATUSES = ['pending', 'paid', 'refunded'];
 
     /*=============================================================== 
                         CREATE FUNCTIONS
+        createPayment($bookingID, $userID, $amount, $status = 'pending') - create a payment entry
     ===============================================================*/
 
     // Inserts the payment for a booking that has no payment yet.
@@ -44,6 +46,11 @@ class Payment extends Model {
 
     /*=============================================================== 
                         READ FUNCTIONS
+        fetchAllPayments() - get all payments
+        fetchPaymentByID($paymentID) - get 1 payment
+        fetchPaymentByBooking($bookingID) - get payment by it's booking id
+        fetchAllPaymentsByUser($userID, $status = null) - all payments by a user w/ status filter
+        fetchPaymentsByVenue($venueID) - all payment entries in 1 venue
     ===============================================================*/
 
     // every payment with payer, booking and venue details (for admin screens)
@@ -97,6 +104,10 @@ class Payment extends Model {
 
     /*=============================================================== 
                         UPDATE FUNCTIONS
+        *The ff. functions only change the payment status
+        updatePaymentStatusToPaid($paymentID)
+        updatePaymentStatusToRefunded($paymentID)
+        updatePaymentStatusToPending($paymentID)
     ===============================================================*/
 
     // pending -> paid. Also stamps paymentDate with the actual time of payment.
@@ -134,6 +145,7 @@ class Payment extends Model {
 
     /*=============================================================== 
                         DELETE FUNCTIONS
+        deletePayment($paymentID) - delete entire payment entry
     ===============================================================*/
 
     /* Only PENDING payments can be deleted, so paid/refunded records stay as a
@@ -144,6 +156,14 @@ class Payment extends Model {
         $stmt->execute([$paymentID]);
         return $stmt->rowCount() > 0;
     }
+
+    /*=============================================================== 
+                        HELPER FUNCTIONS
+        baseSelect() - shared select statement w/ complete information
+        assertValidStatus($status) - enum status validation
+        assertValidAmount($amount) - payment number validation
+        isDuplicateEntry(PDOException $e) - unique index enforcer
+    ===============================================================*/
 
     // shared SELECT: payment + payer + booking + court + venue
     private function baseSelect() {
@@ -165,16 +185,13 @@ class Payment extends Model {
         }
     }
  
+    // rejects negative numbers or non numeric data
     private function assertValidAmount($amount) {
         if (!is_numeric($amount) || (float) $amount <= 0) {
             throw new InvalidArgumentException("Payment amount must be a positive number.");
         }
     }
 
-    /*=============================================================== 
-                        HELPER FUNCTIONS
-    ===============================================================*/
- 
     // MySQL error 1062 = duplicate entry on a UNIQUE index
     private function isDuplicateEntry(PDOException $e) {
         return (int) ($e->errorInfo[1] ?? 0) === 1062;

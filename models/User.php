@@ -5,15 +5,17 @@
  */
 class User extends Model {
 
+    // Enum user types
     private const USER_TYPES = ['user', 'admin', 'court_owner', 'staff'];
 
     /*=============================================================== 
                         CREATE FUNCTIONS
+        createUser($name, $email, $rawPassword, $userType = 'user') - create 1 user, should only be able to register as 'user' or 'court_owner'
     ===============================================================*/ 
 
     // Commits an encrypted hash configuration record matching the VARCHAR(255) requirement
     // Returns the new userID, or false if the email is already registered
-    public function createUser($name, $email, $rawPassword, $userType = 'user') {
+    public function createUser($name, $email, $rawPassword, $userType) {
         $this->assertValidUserType($userType);
  
         $passwordHash = password_hash($rawPassword, PASSWORD_DEFAULT);
@@ -33,6 +35,12 @@ class User extends Model {
 
     /*=============================================================== 
                         READ FUNCTIONS
+        authenticateUser($email, $password) - password verification
+        getUserByID($userID) - get 1 user by entry id
+        getUserByEmail($email) - get 1 user by email
+        emailExists($email) - duplicate email validation
+        getAllUsers() - get all users
+        getUsersByType($userType) - get users by user type
     ===============================================================*/
 
     // Returns the user row (without the hash) or false on bad credentials
@@ -100,6 +108,8 @@ class User extends Model {
 
     /*=============================================================== 
                         UPDATE FUNCTIONS
+        updatePassword($userID, $newRawPassword) - change password
+        updateProfile($userID, $name, $email) - change profile details
     ===============================================================*/
 
     // Hashes the new password and stores it. Returns true on success.
@@ -129,6 +139,7 @@ class User extends Model {
 
     /*=============================================================== 
                         DELETE FUNCTIONS
+        deleteUser($userID) - delete 1 user
     ===============================================================*/
 
     /* Returns true if the user was deleted. Returns false if the user doesn't exist 
@@ -148,7 +159,10 @@ class User extends Model {
     }
 
     /*=============================================================== 
-                        HELPERS
+                        HELPER FUNCTIONS
+        assertValidUserType($userType) - enum user type validation
+        isDuplicateEntry(PDOException $e) - duplicate user validation
+        isForeignKeyViolation(PDOException $e) - protect FK relationship
     ===============================================================*/
  
     // rejects anything that isn't a valid ENUM value before it reaches MySQL

@@ -9,6 +9,7 @@ class Court extends Model {
 
     /*=============================================================== 
                         CREATE FUNCTIONS
+        createCourt($courtName, $venueID) - create new court
     ===============================================================*/
     
     // Returns the new courtID, or false if this venue already has a court with that name.
@@ -28,6 +29,10 @@ class Court extends Model {
 
     /*=============================================================== 
                         READ FUNCTIONS
+        fetchAllCourts() - get all courts
+        fetchCourtByID($courtID) - get 1 court
+        fetchCourtByVenue($venueID) - all courts per venue
+        countCourtsByVenue($venueID) - number of courts per venue
     ===============================================================*/
 
     // every court with its venue name (for admin screens)
@@ -59,14 +64,6 @@ class Court extends Model {
         $stmt->execute([$venueID]);
         return $stmt->fetchAll();
     }
-
-    // validation/authorization helper: is this court part of this venue?
-    // e.g. before a staff member or owner edits or books a court
-    public function courtBelongsToVenue($courtID, $venueID) {
-        $stmt = $this->db->prepare("SELECT 1 FROM courts WHERE courtID = ? AND venueID = ? LIMIT 1");
-        $stmt->execute([$courtID, $venueID]);
-        return (bool) $stmt->fetchColumn();
-    }
  
     // number of courts per venue
     public function countCourtsByVenue($venueID) {
@@ -77,6 +74,7 @@ class Court extends Model {
 
     /*=============================================================== 
                         UPDATE FUNCTIONS
+        updateCourtName($courtID, $courtName) - not part of the specs, just in case...
     ===============================================================*/
 
     /* Returns true if renamed; false if the court doesn't exist, the name is unchanged,
@@ -97,6 +95,7 @@ class Court extends Model {
 
     /*=============================================================== 
                         DELETE FUNCTIONS
+        deleteCourt($courtID) - delete entire entry
     ===============================================================*/
 
     /* Returns true if deleted. Returns false if the court doesn't exist OR it still has
@@ -115,9 +114,21 @@ class Court extends Model {
     }
 
     /*=============================================================== 
-                        HELPERS
+                        HELPER FUNCTIONS
+        courtBelongsToVenue($courtID, $venueID) - court-venue relationship validation
+        - Below are for MySQL errors
+        isDuplicateEntry(PDOException $e) - prevent duplicate entry
+        isForeignKeyViolation(PDOException $e) - enforce FK deletion constraint
     ===============================================================*/
  
+    // validation/authorization helper: is this court part of this venue?
+    // e.g. before a staff member or owner edits or books a court
+    public function courtBelongsToVenue($courtID, $venueID) {
+        $stmt = $this->db->prepare("SELECT 1 FROM courts WHERE courtID = ? AND venueID = ? LIMIT 1");
+        $stmt->execute([$courtID, $venueID]);
+        return (bool) $stmt->fetchColumn();
+    }
+
     // MySQL error 1062 = duplicate entry on a UNIQUE index
     private function isDuplicateEntry(PDOException $e) {
         return (int) ($e->errorInfo[1] ?? 0) === 1062;

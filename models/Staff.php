@@ -9,6 +9,7 @@
 class Staff extends Model {
     /*=============================================================== 
                         CREATE FUNCTIONS
+        createStaffAccount($name, $email, $rawPassword, $venueID) - create staff entry
     ===============================================================*/ 
  
     // Creates the login account AND the venue assignment in one transaction, so a failure can't leave a staff user with no venue.
@@ -41,6 +42,10 @@ class Staff extends Model {
  
     /*=============================================================== 
                         READ FUNCTIONS
+        getStaffByVenue($venueID) - get all staff from 1 venue
+        getVenueByStaff($staffID) - get the staff's venue
+        isStaffOfVenue($staffID, $venueID) - staff-venue FK validation
+        countStaffByVenue($venueID) - number of staff in 1 venue
     ===============================================================*/
  
     // all staff working at a venue (name/email come from users; no password hash)
@@ -76,6 +81,7 @@ class Staff extends Model {
         return (bool) $stmt->fetchColumn();
     }
  
+    // count number of staff per venue
     public function countStaffByVenue($venueID) {
         $stmt = $this->db->prepare("SELECT COUNT(*) FROM staff WHERE venueID = ?");
         $stmt->execute([$venueID]);
@@ -84,9 +90,10 @@ class Staff extends Model {
  
     /*=============================================================== 
                         UPDATE FUNCTIONS
+        transferStaff($staffID, $newVenueID) - change staff member's venue
     ===============================================================*/
  
-    // move a staff member to a different venue
+    // move a staff member to a different venue (not in the specs, just in case...)
     public function transferStaff($staffID, $newVenueID) {
         $stmt = $this->db->prepare("UPDATE staff SET venueID = ? WHERE staffID = ?");
         $stmt->execute([$newVenueID, $staffID]);
@@ -95,6 +102,7 @@ class Staff extends Model {
  
     /*=============================================================== 
                         DELETE FUNCTIONS
+        removeStaff($staffID) - delete entire staff entry
     ===============================================================*/
  
     // Removes the venue assignment only; the user account stays.

@@ -5,10 +5,12 @@
  */
 class Venue extends Model {
 
+    // Enum sports types
     private const SPORTS_TYPES = ['Basketball', 'Badminton', 'Pickleball'];
 
     /*=============================================================== 
                         CREATE FUNCTIONS
+        public function registerVenue($name, $address, $description, $sportsType, $open, $close, $ownerID) - create a new venue
     ===============================================================*/ 
 
     // register a new venue
@@ -24,6 +26,11 @@ class Venue extends Model {
 
     /*=============================================================== 
                         READ FUNCTIONS
+        fetchAllVenues() - get all venues
+        fetchVenueByID($venueID) - get 1 venue
+        fetchVenuesByOwner($ownerID) - get venues of 1 owner
+        fetchVenuesBySportsType($sportsType) - get venues by sports type
+        isVenueOwner($venueID, $userID) - owner-venue FK relationship validation
     ===============================================================*/
 
     // retreive all venues 
@@ -39,13 +46,6 @@ class Venue extends Model {
         $stmt->execute([$venueID]);
         return $stmt->fetch();
     }
-
-    /* move to court model
-    public function fetchCourtsByVenue($venueID) {
-        $stmt = $this->db->prepare("SELECT * FROM courts WHERE venueID = ?");
-        $stmt->execute([$venueID]);
-        return $stmt->fetchAll();
-    }*/
 
     // all venues belonging to one owner (e.g. an owner's dashboard)
     public function fetchVenuesByOwner($ownerID) {
@@ -71,18 +71,12 @@ class Venue extends Model {
         return (bool) $stmt->fetchColumn();
     }
 
-    /* move to image model
-    public function fetchImagesByVenue($venueID) {
-        $stmt = $this->db->prepare("SELECT * FROM images WHERE venueID = ?");
-        $stmt->execute([$venueID]);
-        return $stmt->fetchAll();
-    }*/
-
     /*=============================================================== 
                         UPDATE FUNCTIONS
+        updateVenueDetails($venueID, $name, $address, $description, $sportsType, $open, $close) - update venue details
     ===============================================================*/
 
-    // ownerID is intentionally not editable here; transferring ownership should be its own deliberate action
+    // ownerID is intentionally not editable here; transferring ownership should be its own deliberate action and not part of the specs
     // Returns true if a row changed (false if the venue doesn't exist or nothing changed)
     public function updateVenueDetails($venueID, $name, $address, $description, $sportsType, $open, $close) {
         $this->assertValidSportsType($sportsType);
@@ -97,6 +91,7 @@ class Venue extends Model {
 
     /*=============================================================== 
                         DELETE FUNCTIONS
+        deleteVenue($venueID) - delete entire venue
     ===============================================================*/
 
     // Removes the venue together with its courts, staff assignments and image records.
@@ -128,7 +123,9 @@ class Venue extends Model {
     }
 
     /*=============================================================== 
-                        HELPERS
+                        HELPER FUNCTIONS
+        assertValidSportsType($sportsType) - enum sports type validation
+        isForeignKeyViolation(PDOException $e) - FK protection
     ===============================================================*/
  
     // rejects anything that isn't a valid ENUM value before it reaches MySQL
@@ -143,48 +140,6 @@ class Venue extends Model {
         return (int) ($e->errorInfo[1] ?? 0) === 1451;
     }
 
-    /* move to different models...
-    public function commitImageReference($venueID, $filePath) {
-        $stmt = $this->db->prepare("INSERT INTO images (imageFilePath, venueID) VALUES (?, ?)");
-        return $stmt->execute([$filePath, $venueID]);
-    }
-
-    public function fetchStaffByVenue($venueID) {
-        $stmt = $this->db->prepare("SELECT * FROM staff WHERE venueID = ?");
-        $stmt->execute([$venueID]);
-        return $stmt->fetchAll();
-    }
-
-    public function commitStaffRegistry($name, $email, $rawPassword, $venueID) {
-        $hash = password_hash($rawPassword, PASSWORD_DEFAULT);
-        $stmt = $this->db->prepare("INSERT INTO staff (name, email, password, venueID) VALUES (?, ?, ?, ?)");
-        return $stmt->execute([$name, $email, $hash, $venueID]);
-    }*/
-
-    /* for data aggregation, consider later...
-    // Dynamic aggregations logic achieved cleanly via joins across related tables as required by ERD notes
-    public function computeAggregateMetrics($venueID) {
-        $metrics = [];
-        
-        // Count staff attached to this precise venue
-        $stmt = $this->db->prepare("SELECT COUNT(staffID) as count FROM staff WHERE venueID = ?");
-        $stmt->execute([$venueID]);
-        $metrics['totalStaff'] = $stmt->fetch()['count'];
-
-        // Compute total non-cancelled reservations and financial figures via core court joins
-        $sql = "SELECT COUNT(b.bookingID) as totalBookings, COALESCE(SUM(p.amount), 0) as totalRevenue 
-                FROM courts c
-                LEFT JOIN bookings b ON c.courtID = b.courtID AND b.status != 'cancelled'
-                LEFT JOIN payment p ON b.bookingID = p.bookingID AND p.status = 'paid'
-                WHERE c.venueID = ?";
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute([$venueID]);
-        $data = $stmt->fetch();
-
-        $metrics['totalBookings'] = $data['totalBookings'];
-        $metrics['totalRevenue']  = $data['totalRevenue'];
-        return $metrics;
-    }*/
 }
 
 ?>

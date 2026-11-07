@@ -9,10 +9,12 @@
  */
 class Image extends Model {
 
+    // Max file path string lenth
     private const MAX_PATH_LENGTH = 299;
 
     /*=============================================================== 
                         CREATE FUNCTIONS
+        createImage($filePath, $venueID) - create image entry
     ===============================================================*/
 
     // Stores the reference to an uploaded file. Returns the new imageID.
@@ -27,6 +29,11 @@ class Image extends Model {
     
     /*=============================================================== 
                         READ FUNCTIONS
+        fetchAllImages() - get all images
+        fetchImageByVenue($venueID) - all images per venue
+        fetchImageByID($imageID) - 1 image
+        imageBelongsToVenue($imageID, $venueID) - image-venue relationship validation
+        countImagesByVenue($venueID) - number of images
     ===============================================================*/
 
     // every image with its venue name (for admin screens)
@@ -71,6 +78,9 @@ class Image extends Model {
 
     /*=============================================================== 
                         UPDATE FUNCTIONS
+        *The ff. functions aren't necessary or part of the specs, just in case only...
+        updateImageFilePath($imageID, $filePath) - change image file path
+        updateImageVenue($imageID, $venueID) - change image's venue
     ===============================================================*/
 
     // not necessary and not within specs, just in case
@@ -93,6 +103,8 @@ class Image extends Model {
 
     /*=============================================================== 
                         DELETE FUNCTIONS
+        deleteImage($imageID) - delete 1 image
+        deleteImagesByVenue($venueID) - delete all images from a venue
     ===============================================================*/
 
     // single image deletion (database record only)
@@ -114,6 +126,7 @@ class Image extends Model {
 
     /*=============================================================== 
                         HELPER Functions
+        assertValidPath($filePath) - file path string validation
     ===============================================================*/
  
     // rejects empty or too-long paths before they reach MySQL

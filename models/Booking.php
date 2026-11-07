@@ -10,10 +10,12 @@
  */
 class Booking extends Model {
 
+    // Enum booking statuses
     private const STATUSES = ['upcoming', 'completed', 'cancelled'];
 
     /*=============================================================== 
                         CREATE FUNCTIONS
+        createBooking($date, $time, $courtID, $userID) - booking creation
     ===============================================================*/ 
 
     // create booking function
@@ -40,6 +42,14 @@ class Booking extends Model {
 
     /*=============================================================== 
                         READ FUNCTIONS
+        getAllBookings() - all bookings
+        getBookingByID($bookingID) - 1 booking by ID
+        getBookingByUserID($userID, $status = null) - Bookings per user w/ status filter
+        fetchAllBookingsByVenue($venueID, $date = null, $status = null) - Bookings per venue w/ date and status filter
+        countBookingByVenue($venueID, $status = null, $dateFrom = null, $dateTo = null) - number of bookings per venue w/ status and date range filter
+        countBookingsPerCourt($venueID, $dateFrom = null, $dateTo = null) -  court usage, w/ date range filter
+        fetchOccupiedGridCells($venueID, $date) - get occupied time slots to block reservation
+        fetchBookingExtendedDetails($bookingID) - full booking details
     ===============================================================*/
 
     // all bookings with court, venue and user names (good for an admin/staff list)
@@ -225,6 +235,10 @@ class Booking extends Model {
 
     /*=============================================================== 
                         UPDATE FUNCTIONS
+        - The ff. just changes the booking status
+        updateBookingStatusToCompleted($bookingID)
+        updateBookingStatusToCancelled($bookingID)
+        updateBookingStatusToUpcoming($bookingID)
     ===============================================================*/
 
     // keeps activeSlot = 1: the slot was used, and it's in the past anyway
@@ -258,6 +272,7 @@ class Booking extends Model {
 
     /*=============================================================== 
                         DELETE FUNCTIONS
+        deleteBooking($bookingID) - delete entire booking entry
     ===============================================================*/
 
     // hard delete of the booking
@@ -283,6 +298,7 @@ class Booking extends Model {
 
     /*=============================================================== 
                         HELPER FUNCTIONS
+        isDuplicateSlot(PDOException $e) - prevents duplicate entry
     ===============================================================*/
 
     // MySQL error 1062 = duplicate entry on a UNIQUE index
