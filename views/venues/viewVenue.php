@@ -1,4 +1,4 @@
-<?php include_once '../views/partials/header.php'; ?>
+<?php include_once __DIR__ . '/../partials/Header.php'; ?>
 <div class="card p-3 shadow-sm border bg-white mb-4">
     <div class="row align-items-center">
         <div class="col-md-8">
@@ -7,7 +7,10 @@
             <p class="small mb-0 text-dark"><?php echo htmlspecialchars($venue['description'], ENT_QUOTES, 'UTF-8'); ?></p>
         </div>
         <div class="col-md-4 text-md-end mt-3 mt-md-0 border-start-md px-3">
-            <form action="/venue/viewVenue/<?php echo $venue['venueID']; ?>" method="GET" class="d-inline-block text-start w-100">
+            
+        <form action="/index.php" method="GET" class="d-inline-block text-start w-100">
+            <input type="hidden" name="url" value="venue/viewVenue/<?php echo $venue['venueID']; ?>">
+
                 <label class="form-label small fw-bold text-muted mb-1">Target Matrix Date</label>
                 <input type="date" name="date" value="<?php echo $targetDate; ?>" class="form-control form-control-sm text-center" onchange="this.form.submit()">
             </form>
@@ -52,7 +55,7 @@
                             <?php if (isset($grid[$timeSlotStr][$c['courtID']])): ?>
                                 <button class="btn btn-xs btn-danger w-100 py-1 small" disabled>Booked</button>
                             <?php else: ?>
-                                <form action="/booking/reserve" method="POST" class="m-0">
+                                <form action="/index.php?url=booking/reserve" method="POST" class="m-0">
                                     <input type="hidden" name="date" value="<?php echo $targetDate; ?>">
                                     <input type="hidden" name="time" value="<?php echo $timeSlotStr; ?>">
                                     <input type="hidden" name="courtID" value="<?php echo $c['courtID']; ?>">
@@ -66,5 +69,5 @@
         </tbody>
     </table>
 </div>
-<?php include_once '../views/partials/footer.php'; ?>
+<?php include_once __DIR__ . '/../partials/Footer.php'; ?>
 
