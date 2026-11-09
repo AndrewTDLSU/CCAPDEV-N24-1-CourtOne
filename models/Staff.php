@@ -42,11 +42,49 @@ class Staff extends Model {
  
     /*=============================================================== 
                         READ FUNCTIONS
+        getAllStaff() - gets all staff users
+        getAllStaffByVenueOwner($ownerID, $venueID = null) - gets all staff of all venues owned by 1 owner
         getStaffByVenue($venueID) - get all staff from 1 venue
         getVenueByStaff($staffID) - get the staff's venue
         isStaffOfVenue($staffID, $venueID) - staff-venue FK validation
         countStaffByVenue($venueID) - number of staff in 1 venue
     ===============================================================*/
+
+    // returns all staff users (userType = 'staff'), with the venue each one works at
+    // a staff user not assigned to any venue yet still appears, with venueID/venueName = null
+    // columns: userID, name, email, venueID, venueName  (no password hash)
+    public function getAllStaff() {
+        $sql = "SELECT u.userID, u.name, u.email, v.venueID, v.venueName
+                FROM users u
+                LEFT JOIN staff  s ON s.staffID = u.userID
+                LEFT JOIN venues v ON s.venueID = v.venueID
+                WHERE u.userType = 'staff'
+                ORDER BY u.name";
+        return $this->db->query($sql)->fetchAll();
+    }
+ 
+    // returns all staff of all venues owned by 1 owner (for the owner's manage-staff page)
+    // optional $venueID narrows it to one of that owner's venues; a venue the owner doesn't own simply returns no rows, so this can't leak another owner's staff
+    // columns: userID, name, email, venueID, venueName  (no password hash)
+    public function getAllStaffByVenueOwner($ownerID, $venueID = null) {
+        $sql = "SELECT u.userID, u.name, u.email, v.venueID, v.venueName
+                FROM staff s
+                JOIN users  u ON s.staffID = u.userID
+                JOIN venues v ON s.venueID = v.venueID
+                WHERE v.ownerID = ?";
+        $params = [$ownerID];
+ 
+        if ($venueID !== null) {
+            $sql .= " AND v.venueID = ?";
+            $params[] = $venueID;
+        }
+ 
+        $sql .= " ORDER BY v.venueName, u.name";
+ 
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->fetchAll();
+    }
  
     // all staff working at a venue (name/email come from users; no password hash)
     public function getStaffByVenue($venueID) {
