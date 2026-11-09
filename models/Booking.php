@@ -230,7 +230,7 @@ class Booking extends Model {
                 FROM bookings b
                 JOIN courts c ON b.courtID = c.courtID
                 JOIN venues v ON c.venueID = v.venueID
-                LEFT JOIN payment p ON b.bookingID = p.bookingID
+                LEFT JOIN payments p ON b.bookingID = p.bookingID
                 WHERE b.bookingID = ?";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$bookingID]);
@@ -392,7 +392,7 @@ class Booking extends Model {
         try {
             $this->db->beginTransaction();
  
-            $this->db->prepare("DELETE FROM payment WHERE bookingID = ?")->execute([$bookingID]);
+            $this->db->prepare("DELETE FROM payments WHERE bookingID = ?");
  
             $stmt = $this->db->prepare("DELETE FROM bookings WHERE bookingID = ?");
             $stmt->execute([$bookingID]);

@@ -1,53 +1,159 @@
+
 <?php
 class BookingController extends Controller {
 
     public function reserve() {
-        if (!isset($_SESSION['userID'])) { header('Location: /auth/login'); exit; }
+        if (!isset($_SESSION['userID']) || ($_SESSION['role'] ?? '') !== 'user') {
+            header('Location: /index.php?url=auth/login');
+            exit;
+        }
 
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $bookingModel = $this->model('Booking');
-            
-            // Strictly enforce standard PHP baseline flat rate pricing logic (₱600.00 fallback calculation value since pricing arrays are banned)
-            $flatHourlyFee = 600.00;
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: /index.php?url=venue/browseVenues');
+            exit;
+        }
 
-            $bookingID = $bookingModel->executePessimisticBooking(
-                $_POST['date'], $_POST['time'], $_POST['courtID'], $_SESSION['userID'], $flatHourlyFee
+        $date = $_POST['date'] ?? '';
+        $time = $_POST['time'] ?? '';
+        $courtID = (int) ($_POST['courtID'] ?? 0);
+
+        if ($courtID <= 0 || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $date) ||
+            !preg_match('/^\d{2}:00:00$/', $time) ||
+            strtotime($date) === false || $date < date('Y-m-d')) {
+            die('Invalid booking date, time, or court.');
+        }
+
+        $courtModel = $this->model('Court');
+        $venueModel = $this->model('Venue');
+        $bookingModel = $this->model('Booking');
+        $paymentModel = $this->model('Payment');
+
+        $court = $courtModel->fetchCourtByID($courtID);
+
+        if (!$court) {
+            die('Court not found.');
+        }
+
+        $venue = $venueModel->fetchVenueByID($court['venueID']);
+
+        if (!$venue) {
+            die('Venue not found.');
+        }
+
+        $start = strtotime($venue['openHour']);
+        $end = strtotime($venue['closeHour']);
+        $selected = strtotime($time);
+
+        if ($end <= $start) {
+            $end = strtotime('24:00:00');
+        }
+
+        if ($selected < $start || $selected >= $end) {
+            die('Time is outside the venue opening hours.');
+        }
+
+        $db = Database::getInstance();
+
+        try {
+            $db->beginTransaction();
+
+            $bookingID = $bookingModel->createBooking(
+                $date, $time, $courtID, $_SESSION['userID']
             );
 
-            if ($bookingID) {
-                header("Location: /booking/payment/$bookingID");
-                exit;
+            if (!$bookingID) {
+                $db->rollBack();
+                die('This time slot is already booked.');
             }
-            die("Transaction conflict detected: This specific matrix block has been securely held by another query loop thread context.");
+
+            $paymentID = $paymentModel->createPayment(
+                $bookingID,
+                $_SESSION['userID'],
+                $venue['hourlyRate']
+            );
+
+            if (!$paymentID) {
+                throw new Exception('Could not create payment.');
+            }
+
+            $db->commit();
+
+            header('Location: /index.php?url=booking/payment/' . $bookingID);
+            exit;
+
+        } catch (Throwable $e) {
+            if ($db->inTransaction()) {
+                $db->rollBack();
+            }
+
+            error_log($e->getMessage());
+            die('Booking could not be saved.');
         }
     }
 
     public function payment($bookingID) {
-        $bookingModel = $this->model('Booking');
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $bookingModel->updatePaymentStatusPaid($bookingID);
-            header("Location: /booking/bookingConfirmation/$bookingID");
+        if (!isset($_SESSION['userID'])) {
+            header('Location: /index.php?url=auth/login');
             exit;
         }
+
+        $bookingModel = $this->model('Booking');
+        $paymentModel = $this->model('Payment');
+
+        $booking = $bookingModel->fetchBookingExtendedDetails($bookingID);
+        $payment = $paymentModel->fetchPaymentByBooking($bookingID);
+
+        if (!$booking || !$payment ||
+            (int) $booking['userID'] !== (int) $_SESSION['userID']) {
+            die('Booking not found or access denied.');
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // Demo payment only
+            if ($payment['status'] === 'pending') {
+                $paymentModel->updatePaymentStatusToPaid($payment['paymentID']);
+            } elseif ($payment['status'] !== 'paid') {
+                die('This payment cannot be completed.');
+            }
+
+            header('Location: /index.php?url=booking/bookingConfirmation/' . $bookingID);
+            exit;
+        }
+
         $this->view('bookings/payment', [
-            'pageTitle' => 'Monetary Checkout Module Layout',
-            'booking'   => $bookingModel->fetchBookingExtendedDetails($bookingID)
+            'pageTitle' => 'Booking Payment',
+            'booking' => $booking
         ]);
     }
 
     public function bookingConfirmation($bookingID) {
+        if (!isset($_SESSION['userID'])) {
+            header('Location: /index.php?url=auth/login');
+            exit;
+        }
+
         $bookingModel = $this->model('Booking');
+        $booking = $bookingModel->fetchBookingExtendedDetails($bookingID);
+
+        if (!$booking ||
+            (int) $booking['userID'] !== (int) $_SESSION['userID']) {
+            die('Booking not found or access denied.');
+        }
+
+        if ($booking['paymentStatus'] !== 'paid') {
+            header('Location: /index.php?url=booking/payment/' . $bookingID);
+            exit;
+        }
+
         $this->view('bookings/bookingConfirmation', [
-            'pageTitle' => 'Reservation Confirmed',
-            'booking'   => $bookingModel->fetchBookingExtendedDetails($bookingID)
+            'pageTitle' => 'Booking Confirmation',
+            'booking' => $booking
         ]);
     }
 
     public function chat() {
-        // Serves out the interactive live customer operation support messaging template layout view
-        $this->view('chat/chat', [
-            'pageTitle' => 'Support Desk Chat Feed Console',
-            'scripts'   => ['chat']
+        $this->view('chats/chat', [
+            'pageTitle' => 'Support Chat'
         ]);
     }
 }

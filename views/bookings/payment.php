@@ -1,4 +1,4 @@
-<?php include_once '../views/partials/header.php'; ?>
+<?php include_once __DIR__ . '/../partials/Header.php'; ?>
 <div class="row justify-content-center my-4">
     <div class="col-md-6">
         <div class="card p-4 shadow-sm border bg-white text-center">
@@ -13,10 +13,10 @@
                 <li class="list-group-item px-0">Target Schedule Date: <strong><?php echo htmlspecialchars($booking['bookingDate'], ENT_QUOTES, 'UTF-8'); ?></strong></li>
                 <li class="list-group-item px-0">Hourly Step Start Time: <strong><?php echo date('h:i A', strtotime($booking['bookingTime'])); ?></strong></li>
             </ul>
-            <form action="/booking/payment/<?php echo $booking['bookingID']; ?>" method="POST">
-                <button type="submit" class="btn btn-sm btn-success btn-lg w-100 py-2">Authorize Captured Settlement Payment</button>
+                    <form action="/index.php?url=booking/payment/<?php echo $booking['bookingID']; ?>" method="POST">
+                    <button type="submit" class="btn btn-sm btn-success btn-lg w-100 py-2">Authorize Captured Settlement Payment</button>
             </form>
         </div>
     </div>
 </div>
-<?php include_once '../views/partials/footer.php'; ?>
+<?php include_once __DIR__ . '/../partials/Footer.php'; ?>

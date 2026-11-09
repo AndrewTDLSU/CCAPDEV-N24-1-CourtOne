@@ -96,6 +96,41 @@ class VenueController extends Controller {
         ]);
     }
 
+    
+    public function addCourt($venueID) {
+        if (!isset($_SESSION['userID']) || ($_SESSION['role'] ?? '') !== 'court_owner') {
+            die('Only venue owners can add courts.');
+        }
+
+        $venueModel = $this->model('Venue');
+
+        if (!$venueModel->isVenueOwner($venueID, $_SESSION['userID'])) {
+            die('This is not your venue.');
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: /index.php?url=dashboard/ownerDashboard');
+            exit;
+        }
+
+        $courtName = trim($_POST['courtName'] ?? '');
+
+        if ($courtName === '') {
+            die('Court name is required.');
+        }
+
+        $courtModel = $this->model('Court');
+        $result = $courtModel->createCourt($courtName, $venueID);
+
+        if (!$result) {
+            die('A court with that name already exists.');
+        }
+
+        header('Location: /index.php?url=dashboard/ownerDashboard');
+        exit;
+    }
+
+
     public function manageStaff($venueID) {
         $venueModel = $this->model('Venue');
 
