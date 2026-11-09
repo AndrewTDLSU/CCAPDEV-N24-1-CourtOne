@@ -130,8 +130,8 @@ class VenueController extends Controller {
         exit;
     }
 
-
-    public function manageStaff($venueID) {
+    // commented out, this should be under staff and not venue
+    /*public function manageStaff($venueID) {
         $venueModel = $this->model('Venue');
 
         if (!isset($_SESSION['userID']) ||
@@ -168,7 +168,7 @@ class VenueController extends Controller {
             'venueID' => $venueID,
             'error' => $error
         ]);
-    }
+    }*/
 
     public function manageVenues() {
         $venueModel = $this->model('Venue');
