@@ -188,4 +188,15 @@ class VenueController extends Controller {
             'venues' => $venues
         ]);
     }
+
+    /*
+        Create function to extract individual venue statistics and display it in manage Venue page (if doable):
+        Payment => fetchTotalRevenueByVenue($venueID, $from, $to)               (venue's total revenue)
+        Payment => fetchMonthlyRevenueByVenue($venueID, $year)                  (venue's monthly revenue w/ year filter (for line chart))
+        Staff   => countStaffByVenue($venueID)                                  (venue's total staff)
+        Booking => countActiveBookingsByVenue($venueID, $from, $to)             (venue's total bookings)
+        Booking => fetchMonthlyBookingsByVenue($venueID, $year)                 (venue's monthly bookings w/ year filter (for bar graph))
+        Booking => countBookingsPerCourt($venueID, $from, $to)                  (each court's number of bookings (for pie chart))
+        Booking => fetchRecentBookingsByVenue($venueID, $limit, $status)        (for recent reservations table)
+    */
 }

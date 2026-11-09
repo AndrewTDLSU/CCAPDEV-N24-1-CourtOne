@@ -36,6 +36,9 @@ class DashboardController extends Controller {
             'venues'    => $venueModel->fetchAllVenues()
         ]);
     }
+    /*
+        Also display full list of users
+    */
 
     public function ownerDashboard() {
         $this->restrictToRoles(['court_owner']);
@@ -60,6 +63,11 @@ class DashboardController extends Controller {
             'venues' => $venues
         ]);
     }
+    /*
+        Should show bookings w/ upcoming status (upcoming bookings)     Booking => getBookingByUserID($userID, $status = null)
+        Should show bookings w/ completed status (booking history)      Booking => getBookingByUserID($userID, $status = null)      
+        should display account information (my profile section)         User => getUserByID($userID)
+    */
 
     public function staffDashboard() {
         $this->restrictToRoles(['staff']);
@@ -81,6 +89,13 @@ class DashboardController extends Controller {
             'stats' => $stats
         ]);
     }
+    /*
+        Should also show the following:
+        staff profile details                       User => getUserByID($userID)
+        recent bookings                             Booking => fetchAllBookingsByVenue($venueID, $date = null, $status = null)
+        upcoming bookings                           Booking => fetchAllBookingsByVenue($venueID, $date = null, $status = null)
+        should be able to change booking status     Booking => updateBookingStatusTo[Completed/Cancelled/Upcoming]($bookingID)
+    */
 
     private function restrictToRoles($allowed) {
         if (!isset($_SESSION['role']) || !in_array($_SESSION['role'], $allowed)) {
