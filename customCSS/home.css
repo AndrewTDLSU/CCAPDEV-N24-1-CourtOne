@@ -1,3 +1,10 @@
+/* Keep venue card photos aligned while cropping images to a consistent frame. */
+.venue-card .card-img-top {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+}
+
 @media (max-width: 400px) {
 
     .hero h1 {
