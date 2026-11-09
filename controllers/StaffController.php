@@ -1,5 +1,8 @@
 <?php
-
+/*
+* This controller is responsible for retrieving and creating staff information.
+* All actions are done through /views/venues/manageStaff.php
+*/
 class StaffController Extends Controller {
 
     // request staff list, all staff under 1 venue owner accross all venues along w/ filter for 1 venue
