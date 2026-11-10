@@ -2,14 +2,45 @@
 <?php
 class VenueController extends Controller {
 
-    public function browseVenues() {
-        $venueModel = $this->model('Venue');
+    
+public function browseVenues() {
 
-        $this->view('venues/browseVenues', [
-            'pageTitle' => 'Browse Venues',
-            'venues' => $venueModel->fetchAllVenues()
-        ]);
+    // Get venues from the database
+    $allVenues = $this->model('Venue')->fetchAllVenues();
+
+    // Get search filters from the URL
+    $search = trim($_GET['q'] ?? '');
+    $sport = $_GET['sport'] ?? 'all';
+
+    $venues = [];
+
+    // Check each venue
+    foreach ($allVenues as $venue) {
+
+        $text = $venue['venueName'] . ' ' .
+                $venue['address'] . ' ' .
+                $venue['sportsType'];
+
+        $matchesSearch = $search === '' ||
+                         stripos($text, $search) !== false;
+
+        $matchesSport = $sport === 'all' ||
+                        $venue['sportsType'] === $sport;
+
+        if ($matchesSearch && $matchesSport) {
+            $venues[] = $venue;
+        }
     }
+
+    // Display the results
+    $this->view('venues/browseVenues', [
+        'pageTitle' => 'Browse Venues',
+        'venues' => $venues,
+        'search' => $search,
+        'sport' => $sport
+    ]);
+}
+
 
     public function viewVenue($venueID) {
         $venueModel = $this->model('Venue');
