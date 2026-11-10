@@ -1,41 +1,14 @@
 <?php include_once __DIR__ . '/../partials/Header.php'; ?>
-
-<h2>Browse Sports Venues</h2>
-
-<!-- GET is used because searching does not change the database. -->
-<form action="index.php" method="GET" class="mb-3">
-    <input type="hidden" name="url" value="venue/browseVenues">
-
-    <input type="text" name="q" placeholder="Search venue or location"
-           value="<?php echo htmlspecialchars($search, ENT_QUOTES, 'UTF-8'); ?>">
-
-    <select name="sport">
-        <?php foreach (['all', 'Basketball', 'Badminton', 'Pickleball'] as $option): ?>
-            <option value="<?php echo $option; ?>" <?php echo $sport === $option ? 'selected' : ''; ?>>
-                <?php echo $option === 'all' ? 'All Sports' : $option; ?>
-            </option>
-        <?php endforeach; ?>
-    </select>
-
-    <button type="submit" class="btn btn-primary">Search</button>
-    <a href="index.php?url=venue/browseVenues">Clear</a>
-</form>
-
-<p><?php echo count($venues); ?> venue(s) found</p>
-
-<?php if (empty($venues)): ?>
-    <p>No venues match your search.</p>
-<?php endif; ?>
-
-<?php foreach ($venues as $venue): ?>
-    <div class="card p-3 mb-3">
-        <h3><?php echo htmlspecialchars($venue['venueName'], ENT_QUOTES, 'UTF-8'); ?></h3>
-        <p>Sport: <?php echo htmlspecialchars($venue['sportsType'], ENT_QUOTES, 'UTF-8'); ?></p>
-        <p>Location: <?php echo htmlspecialchars($venue['address'], ENT_QUOTES, 'UTF-8'); ?></p>
-        <a class="btn btn-primary" href="index.php?url=venue/viewVenue/<?php echo (int)$venue['venueID']; ?>">
-            View Available Slots
+<h4 class="mb-3 fw-bold">Active Complex Locations Directory</h4>
+<div class="list-group shadow-xs">
+    <?php foreach ($venues as $v): ?>
+        <a href="/index.php?url=venue/viewVenue/<?php echo $v['venueID']; ?>" class="list-group-item list-group-item-action p-3">
+            <div class="d-flex w-100 justify-content-between align-items-center">
+                <h6 class="mb-1 fw-bold text-dark"><?php echo htmlspecialchars($v['venueName'], ENT_QUOTES, 'UTF-8'); ?></h6>
+                <span class="badge bg-primary"><?php echo htmlspecialchars($v['sportsType'], ENT_QUOTES, 'UTF-8'); ?></span>
+            </div>
+            <small class="text-muted d-block mt-1">Location Address: <?php echo htmlspecialchars($v['address'], ENT_QUOTES, 'UTF-8'); ?></small>
         </a>
-    </div>
-<?php endforeach; ?>
-
+    <?php endforeach; ?>
+</div>
 <?php include_once __DIR__ . '/../partials/Footer.php'; ?>
