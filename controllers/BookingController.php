@@ -109,12 +109,14 @@ class BookingController extends Controller {
         }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            // Demo payment only
-            if ($payment['status'] === 'pending') {
-                $paymentModel->updatePaymentStatusToPaid($payment['paymentID']);
-            } elseif ($payment['status'] !== 'paid') {
-                die('This payment cannot be completed.');
-            }
+            
+        $method = $_POST['paymentMethod'] ?? '';
+
+        if (!in_array($method, ['GCash', 'Card'], true)) {
+        http_response_code(400);
+        die('Please select a valid payment method.');
+        }
+
 
             header('Location: /index.php?url=booking/bookingConfirmation/' . $bookingID);
             exit;
