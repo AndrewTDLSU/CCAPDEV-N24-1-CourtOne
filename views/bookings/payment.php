@@ -1,22 +1,25 @@
 <?php include_once __DIR__ . '/../partials/Header.php'; ?>
-<div class="row justify-content-center my-4">
-    <div class="col-md-6">
-        <div class="card p-4 shadow-sm border bg-white text-center">
-            <h5 class="fw-bold mb-3">Payment Settlement Station</h5>
-            <div class="alert alert-info py-2 mb-4">
-                <small class="text-uppercase text-muted d-block font-weight-bold">Cost Settlement Value</small>
-                <span class="h3 fw-bold text-dark">₱<?php echo number_format($booking['amount'], 2); ?></span>
-            </div>
-            <ul class="list-group list-group-flush text-start small mb-4">
-                <li class="list-group-item px-0">Complex Destination: <strong><?php echo htmlspecialchars($booking['venueName'], ENT_QUOTES, 'UTF-8'); ?></strong></li>
-                <li class="list-group-item px-0">Allocated Grid Column: <strong><?php echo htmlspecialchars($booking['courtName'], ENT_QUOTES, 'UTF-8'); ?></strong></li>
-                <li class="list-group-item px-0">Target Schedule Date: <strong><?php echo htmlspecialchars($booking['bookingDate'], ENT_QUOTES, 'UTF-8'); ?></strong></li>
-                <li class="list-group-item px-0">Hourly Step Start Time: <strong><?php echo date('h:i A', strtotime($booking['bookingTime'])); ?></strong></li>
-            </ul>
-                    <form action="/index.php?url=booking/payment/<?php echo $booking['bookingID']; ?>" method="POST">
-                    <button type="submit" class="btn btn-sm btn-success btn-lg w-100 py-2">Authorize Captured Settlement Payment</button>
-            </form>
-        </div>
-    </div>
+
+<h2>Booking Checkout (Demo)</h2>
+
+<div class="card p-3 mb-3">
+    <h3>Order Summary</h3>
+    <p>Venue: <?php echo htmlspecialchars($booking['venueName'], ENT_QUOTES, 'UTF-8'); ?></p>
+    <p>Court: <?php echo htmlspecialchars($booking['courtName'], ENT_QUOTES, 'UTF-8'); ?></p>
+    <p>Date: <?php echo htmlspecialchars($booking['bookingDate'], ENT_QUOTES, 'UTF-8'); ?></p>
+    <p>Time: <?php echo htmlspecialchars($booking['bookingTime'], ENT_QUOTES, 'UTF-8'); ?></p>
+    <h3>Total: ₱<?php echo number_format((float)$booking['amount'], 2); ?></h3>
 </div>
+
+<!-- POST is used because checkout updates the payment status. -->
+<form action="index.php?url=booking/payment/<?php echo (int)$booking['bookingID']; ?>" method="POST">
+    <h3>Select a demo payment method</h3>
+
+    <label><input type="radio" name="paymentMethod" value="GCash" required> GCash</label>
+    <label><input type="radio" name="paymentMethod" value="Card" required> Card (Demo)</label>
+
+    <p>No actual charge is made. Do not enter real card information.</p>
+    <button type="submit" class="btn btn-primary">Confirm Demo Payment</button>
+</form>
+
 <?php include_once __DIR__ . '/../partials/Footer.php'; ?>
