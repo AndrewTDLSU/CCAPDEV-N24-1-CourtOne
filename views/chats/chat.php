@@ -1,15 +1,28 @@
-<?php include_once '../views/partials/header.php'; ?>
-<div class="card shadow-sm border bg-white max-width-600 mx-auto my-4">
-    <div class="card-header bg-dark text-white fw-bold py-2 small">Operations Support Desk Console Feed</div>
-    <div id="msgStreamContainer" class="card-body bg-light overflow-auto p-3" style="height: 260px;">
-        <div class="p-2 border rounded bg-white small mb-2 text-muted shadow-xs"><strong>[System Engine Info Event Node]</strong> Real-time messaging link interface successfully mounted. Data operations log cleanly through background threads.</div>
-    </div>
-    <div class="card-footer bg-white py-2">
-        <form id="msgPostFormAction" action="/booking/chat" method="POST" class="d-flex gap-2 m-0">
-            
-            <input type="text" name="message" class="form-control form-control-sm flex-grow-1" placeholder="Type transmission payload..." required>
-            <button type="submit" class="btn btn-sm btn-primary">Send</button>
-        </form>
-    </div>
+<?php include_once __DIR__ . '/../partials/Header.php'; ?>
+
+<h2>Support Messages (Demo)</h2>
+<p>Your messages are saved in the database. Staff replies are not implemented yet.</p>
+
+<div class="card p-3 mb-3" style="max-height: 300px; overflow-y: auto;">
+    <?php if (empty($messages)): ?>
+        <p>No messages yet.</p>
+    <?php endif; ?>
+
+    <?php foreach ($messages as $message): ?>
+        <p>
+            <strong>You:</strong>
+            <?php echo htmlspecialchars($message['body'], ENT_QUOTES, 'UTF-8'); ?>
+            <small>(<?php echo htmlspecialchars($message['createdAt'], ENT_QUOTES, 'UTF-8'); ?>)</small>
+        </p>
+    <?php endforeach; ?>
 </div>
-<?php include_once '../views/partials/footer.php'; ?>
+
+<!-- POST is used because sending a message changes the database. -->
+<form action="index.php?url=booking/chat" method="POST">
+    <input type="text" name="message" maxlength="500" required
+           placeholder="Type your message" class="form-control mb-2">
+    <button class="btn btn-primary" type="submit">Send</button>
+</form>
+
+<p><a href="index.php?url=home/index">Back to Home</a></p>
+<?php include_once __DIR__ . '/../partials/Footer.php'; ?>
