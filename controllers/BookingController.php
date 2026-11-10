@@ -151,9 +151,36 @@ class BookingController extends Controller {
         ]);
     }
 
-    public function chat() {
-        $this->view('chats/chat', [
-            'pageTitle' => 'Support Chat'
-        ]);
+    
+public function chat() {
+
+    // Require login
+    if (!isset($_SESSION['userID'])) {
+        header('Location: index.php?url=auth/login');
+        exit;
     }
+
+    $chatModel = $this->model('Chat');
+    $userID = (int)$_SESSION['userID'];
+
+    // Save a new message
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+        $message = trim($_POST['message'] ?? '');
+
+        if ($message !== '' && strlen($message) <= 500) {
+            $chatModel->sendMessage($userID, $message);
+        }
+
+        header('Location: index.php?url=booking/chat');
+        exit;
+    }
+
+    // Show saved messages
+    $this->view('chats/chat', [
+        'pageTitle' => 'Support Messages',
+        'messages' => $chatModel->getMessages($userID)
+    ]);
+}
+
 }
