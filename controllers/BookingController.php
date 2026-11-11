@@ -167,34 +167,50 @@ class BookingController extends Controller {
 
     
 public function chat() {
-
-    // Require login
-    if (!isset($_SESSION['userID'])) {
-        header('Location: index.php?url=auth/login');
-        exit;
-    }
-
-    $chatModel = $this->model('Chat');
-    $userID = (int)$_SESSION['userID'];
-
-    // Save a new message
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
-        $message = trim($_POST['message'] ?? '');
-
-        if ($message !== '' && strlen($message) <= 500) {
-            $chatModel->sendMessage($userID, $message);
+        // A user must be logged in to send or read messages.
+        if (!isset($_SESSION['userID'])) {
+            header('Location: index.php?url=auth/login');
+            exit;
         }
 
-        header('Location: index.php?url=booking/chat');
-        exit;
+        $senderID = (int) $_SESSION['userID'];
+        $receiverID = (int) ($_POST['receiverID'] ?? $_GET['receiverID'] ?? 0);
+
+        $chatModel = $this->model('Chat');
+        $userModel = $this->model('User');
+
+        // Only allow chatting with an existing user, not yourself.
+        $validReceiver = $receiverID > 0 &&
+                         $receiverID !== $senderID &&
+                         $userModel->getUserByID($receiverID);
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $message = trim($_POST['message'] ?? '');
+
+            if (!$validReceiver || $message === '' || strlen($message) > 500) {
+                http_response_code(400);
+                die('Please choose a valid receiver and enter a message.');
+            }
+
+            $chatModel->sendMessage($senderID, $receiverID, $message);
+            header('Location: index.php?url=booking/chat&receiverID=' . $receiverID);
+            exit;
+        }
+
+        // GET = load both users' messages and show the page.
+        if (!$validReceiver) {
+            $receiverID = 0;
+        }
+
+        $messages = $receiverID > 0
+            ? $chatModel->getMessages($senderID, $receiverID)
+            : [];
+
+        $this->view('chats/chat', [
+            'pageTitle' => 'Chat',
+            'senderID' => $senderID,
+            'receiverID' => $receiverID,
+            'users' => $userModel->getAllUsers(),
+            'messages' => $messages
+        ]);
     }
-
-    // Show saved messages
-    $this->view('chats/chat', [
-        'pageTitle' => 'Support Messages',
-        'messages' => $chatModel->getMessages($userID)
-    ]);
-}
-
-}
