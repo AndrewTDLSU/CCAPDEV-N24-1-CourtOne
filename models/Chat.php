@@ -1,18 +1,27 @@
 <?php
-// Model: handles database queries for messages.
+// Model = database queries for two-user conversations.
 class Chat extends Model {
 
-    public function getMessages($userID) {
-        $sql = "SELECT body, createdAt FROM chat_messages
-                WHERE userID = ? ORDER BY messageID ASC";
+    // Show messages in BOTH directions: A -> B and B -> A.
+    public function getMessages($user1, $user2) {
+        $sql = "SELECT senderID, receiverID, body, createdAt
+                FROM chat_messages
+                WHERE (senderID = ? AND receiverID = ?)
+                   OR (senderID = ? AND receiverID = ?)
+                ORDER BY createdAt ASC, messageID ASC";
+
         $stmt = $this->db->prepare($sql);
-        $stmt->execute([$userID]);
-        return $stmt->fetchAll();
+        $stmt->execute([$user1, $user2, $user2, $user1]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function sendMessage($userID, $body) {
-        $sql = "INSERT INTO chat_messages (userID, body) VALUES (?, ?)";
+    // Save one message to MySQL.
+    public function sendMessage($senderID, $receiverID, $body) {
+        $sql = "INSERT INTO chat_messages (senderID, receiverID, body)
+                VALUES (?, ?, ?)";
+
         $stmt = $this->db->prepare($sql);
-        $stmt->execute([$userID, $body]);
+        return $stmt->execute([$senderID, $receiverID, $body]);
     }
 }
+
