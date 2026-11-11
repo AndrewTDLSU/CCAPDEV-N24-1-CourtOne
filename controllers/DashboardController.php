@@ -74,19 +74,11 @@ class DashboardController extends Controller {
         $venueID = $_SESSION['venueID'];
 
         $bookingModel = $this->model('Booking');
-        $paymentModel = $this->model('Payment');
         $staffModel = $this->model('Staff');
         $userModel = $this->model('User');
 
-        $stats = [
-            'totalBookings' => $bookingModel->countBookingByVenue($venueID),
-            'totalRevenue' => $paymentModel->fetchTotalRevenueByVenue($venueID),
-            'totalStaff' => $staffModel->countStaffByVenue($venueID)
-        ];
-
         $this->view('dashboards/staff', [
             'pageTitle' => 'Staff Dashboard',
-            'stats' => $stats,
             'profile' => $userModel->getUserByID($_SESSION['userID']),
             'recentBookings' => $bookingModel->fetchRecentBookingsByVenue($venueID, 10),
             'upcomingBookings' => $bookingModel->fetchAllBookingsByVenue($venueID, null, 'upcoming')
