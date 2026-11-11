@@ -392,7 +392,7 @@ class Booking extends Model {
         try {
             $this->db->beginTransaction();
  
-            $this->db->prepare("DELETE FROM payments WHERE bookingID = ?");
+            $this->db->prepare("DELETE FROM payments WHERE bookingID = ?")->execute([$bookingID]);
  
             $stmt = $this->db->prepare("DELETE FROM bookings WHERE bookingID = ?");
             $stmt->execute([$bookingID]);

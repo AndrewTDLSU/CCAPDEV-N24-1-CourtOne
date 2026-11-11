@@ -8,6 +8,8 @@
     </p>
 </div>
 
+<p><a href="/index.php?url=booking/myBookings" class="btn btn-primary">My Bookings</a></p>
+
 <div class="row g-3">
     <?php foreach ($venues as $v): ?>
         <div class="col-md-4">

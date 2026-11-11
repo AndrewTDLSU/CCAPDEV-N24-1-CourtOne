@@ -5,7 +5,7 @@
 
 <script>
     <?php
-    $scriptSource = '/var/www/html/public/js/custom.js';
+    $scriptSource = __DIR__ . '/../../public/js/custom.js';
     if (file_exists($scriptSource)) {
         include $scriptSource;
     }

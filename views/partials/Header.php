@@ -7,7 +7,7 @@
     
     <style>
         <?php
-        $styleSource = '/var/www/html/public/css/custom.css';
+        $styleSource = __DIR__ . '/../../public/css/custom.css';
         if (file_exists($styleSource)) {
             include $styleSource;
         }

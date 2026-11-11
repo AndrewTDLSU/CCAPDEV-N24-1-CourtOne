@@ -1,4 +1,3 @@
-
 <?php
 class BookingController extends Controller {
 
@@ -109,6 +108,12 @@ class BookingController extends Controller {
             die('Booking not found or access denied.');
         }
 
+        // Cancelled bookings cannot be paid, even by visiting checkout directly.
+        if ($booking['status'] === 'cancelled') {
+            header('Location: /index.php?url=booking/myBookings');
+            exit;
+        }
+
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $method = $_POST['paymentMethod'] ?? '';
 
@@ -116,17 +121,38 @@ class BookingController extends Controller {
                 die('Please select a valid payment method.');
             }
 
-            // Complete the demo payment
-            if ($payment['status'] === 'pending') {
-                $success = $paymentModel->updatePaymentStatusToPaid(
-                    $payment['paymentID']
-                );
+            // Lock this booking during payment so cancellation cannot race it.
+            $db = Database::getInstance();
+            try {
+                $db->beginTransaction();
+                $stmt = $db->prepare('SELECT userID, status FROM bookings WHERE bookingID = ? FOR UPDATE');
+                $stmt->execute([$bookingID]);
+                $current = $stmt->fetch();
 
-                if (!$success) {
-                    die('Payment could not be completed.');
+                if (!$current || (int) $current['userID'] !== (int) $_SESSION['userID'] ||
+                    $current['status'] !== 'upcoming') {
+                    throw new RuntimeException('This booking can no longer be paid.');
                 }
-            } elseif ($payment['status'] !== 'paid') {
-                die('This payment cannot be completed.');
+
+                $currentPayment = $paymentModel->fetchPaymentByBooking($bookingID);
+                if (!$currentPayment) {
+                    throw new RuntimeException('Payment not found.');
+                }
+
+                if ($currentPayment['status'] === 'pending') {
+                    if (!$paymentModel->updatePaymentStatusToPaid($currentPayment['paymentID'])) {
+                        throw new RuntimeException('Payment could not be completed.');
+                    }
+                } elseif ($currentPayment['status'] !== 'paid') {
+                    throw new RuntimeException('This payment cannot be completed.');
+                }
+                $db->commit();
+            } catch (Throwable $e) {
+                if ($db->inTransaction()) {
+                    $db->rollBack();
+                }
+                http_response_code(409);
+                die(htmlspecialchars($e->getMessage(), ENT_QUOTES, 'UTF-8'));
             }
 
             header('Location: /index.php?url=booking/bookingConfirmation/' . $bookingID);
@@ -154,6 +180,11 @@ class BookingController extends Controller {
             die('Booking not found or access denied.');
         }
 
+        if ($booking['status'] === 'cancelled') {
+            header('Location: /index.php?url=booking/myBookings');
+            exit;
+        }
+
         if ($booking['paymentStatus'] !== 'paid') {
             header('Location: /index.php?url=booking/payment/' . $bookingID);
             exit;
@@ -165,11 +196,111 @@ class BookingController extends Controller {
         ]);
     }
 
-    
-public function chat() {
+    // GET: list only the logged-in customer's bookings.
+    public function myBookings() {
+        if (!isset($_SESSION['userID']) || ($_SESSION['role'] ?? '') !== 'user') {
+            header('Location: /index.php?url=auth/login');
+            exit;
+        }
+        if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
+            http_response_code(405);
+            die('Method not allowed.');
+        }
+
+        if (empty($_SESSION['bookingCancelToken'])) {
+            $_SESSION['bookingCancelToken'] = bin2hex(random_bytes(32));
+        }
+
+        $userID = (int) $_SESSION['userID'];
+        $bookings = $this->model('Booking')->getBookingByUserID($userID);
+        $payments = $this->model('Payment')->fetchAllPaymentsByUser($userID);
+
+        $paymentsByBooking = [];
+        foreach ($payments as $payment) {
+            $paymentsByBooking[(int) $payment['bookingID']] = $payment;
+        }
+
+        $this->view('bookings/myBookings', [
+            'pageTitle' => 'My Bookings',
+            'bookings' => $bookings,
+            'paymentsByBooking' => $paymentsByBooking,
+            'cancelToken' => $_SESSION['bookingCancelToken']
+        ]);
+    }
+
+    // POST: cancel a customer's own future booking, preserving the booking record.
+    public function cancelBooking($bookingID = null) {
+        if (!isset($_SESSION['userID']) || ($_SESSION['role'] ?? '') !== 'user') {
+            header('Location: /index.php?url=auth/login');
+            exit;
+        }
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            http_response_code(405);
+            die('Use the cancel button from My Bookings.');
+        }
+
+        $token = $_POST['cancelToken'] ?? '';
+        if (!is_string($token) || empty($_SESSION['bookingCancelToken']) ||
+            !hash_equals($_SESSION['bookingCancelToken'], $token)) {
+            http_response_code(403);
+            die('Invalid cancellation request.');
+        }
+
+        $bookingID = filter_var($bookingID, FILTER_VALIDATE_INT);
+        if (!$bookingID || $bookingID <= 0) {
+            http_response_code(400);
+            die('Invalid booking ID.');
+        }
+
+        $db = Database::getInstance();
+        $bookingModel = $this->model('Booking');
+        $paymentModel = $this->model('Payment');
+        try {
+            $db->beginTransaction();
+            $stmt = $db->prepare('SELECT * FROM bookings WHERE bookingID = ? FOR UPDATE');
+            $stmt->execute([$bookingID]);
+            $booking = $stmt->fetch();
+
+            if (!$booking || (int) $booking['userID'] !== (int) $_SESSION['userID']) {
+                throw new RuntimeException('Booking not found or access denied.');
+            }
+            $startTime = strtotime($booking['bookingDate'] . ' ' . $booking['bookingTime']);
+            if ($booking['status'] !== 'upcoming' || $startTime === false || $startTime <= time()) {
+                throw new RuntimeException('Only future upcoming bookings can be cancelled.');
+            }
+
+            if (!$bookingModel->updateBookingStatusToCancelled($bookingID)) {
+                throw new RuntimeException('Could not cancel the booking.');
+            }
+
+            $payment = $paymentModel->fetchPaymentByBooking($bookingID);
+            if ($payment && $payment['status'] === 'paid') {
+                if (!$paymentModel->updatePaymentStatusToRefunded($payment['paymentID'])) {
+                    throw new RuntimeException('Could not update the demo refund.');
+                }
+            } elseif ($payment && $payment['status'] === 'pending') {
+                // No money was collected: remove the unpaid payment record.
+                if (!$paymentModel->deletePayment($payment['paymentID'])) {
+                    throw new RuntimeException('Could not remove the pending payment.');
+                }
+            }
+            $db->commit();
+        } catch (Throwable $e) {
+            if ($db->inTransaction()) {
+                $db->rollBack();
+            }
+            http_response_code(409);
+            die(htmlspecialchars($e->getMessage(), ENT_QUOTES, 'UTF-8'));
+        }
+
+        header('Location: /index.php?url=booking/myBookings&notice=cancelled');
+        exit;
+    }
+
+    public function chat() {
         // A user must be logged in to send or read messages.
         if (!isset($_SESSION['userID'])) {
-            header('Location: index.php?url=auth/login');
+            header('Location: /index.php?url=auth/login');
             exit;
         }
 
@@ -179,7 +310,6 @@ public function chat() {
         $chatModel = $this->model('Chat');
         $userModel = $this->model('User');
 
-        // Only allow chatting with an existing user, not yourself.
         $validReceiver = $receiverID > 0 &&
                          $receiverID !== $senderID &&
                          $userModel->getUserByID($receiverID);
@@ -193,11 +323,10 @@ public function chat() {
             }
 
             $chatModel->sendMessage($senderID, $receiverID, $message);
-            header('Location: index.php?url=booking/chat&receiverID=' . $receiverID);
+            header('Location: /index.php?url=booking/chat&receiverID=' . $receiverID);
             exit;
         }
 
-        // GET = load both users' messages and show the page.
         if (!$validReceiver) {
             $receiverID = 0;
         }
