@@ -59,5 +59,5 @@ if (file_exists($controllerFile)) {
 require_once __DIR__ . '/../controllers/VenueController.php';
 
 $fallback = new VenueController();
-$fallback->index();
+$fallback->browseVenues();
 ?>

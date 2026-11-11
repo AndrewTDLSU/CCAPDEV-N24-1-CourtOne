@@ -23,7 +23,7 @@ DROP TABLE IF EXISTS `bookings`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `bookings` (
-  `bookingID` int NOT NULL,
+  `bookingID` int NOT NULL AUTO_INCREMENT,
   `bookingDate` date NOT NULL,
   `bookingTime` time NOT NULL,
   `courtID` int NOT NULL,
@@ -56,7 +56,7 @@ DROP TABLE IF EXISTS `courts`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `courts` (
-  `courtID` int NOT NULL,
+  `courtID` int NOT NULL AUTO_INCREMENT,
   `courtName` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `venueID` int NOT NULL,
   PRIMARY KEY (`courtID`),
@@ -167,7 +167,7 @@ DROP TABLE IF EXISTS `users`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `users` (
-  `userID` int NOT NULL,
+  `userID` int NOT NULL AUTO_INCREMENT,
   `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `email` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `password_hash` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -194,7 +194,7 @@ DROP TABLE IF EXISTS `venues`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `venues` (
-  `venueID` int NOT NULL,
+  `venueID` int NOT NULL AUTO_INCREMENT,
   `venueName` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `address` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `description` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -217,6 +217,41 @@ LOCK TABLES `venues` WRITE;
 /*!40000 ALTER TABLE `venues` DISABLE KEYS */;
 /*!40000 ALTER TABLE `venues` ENABLE KEYS */;
 UNLOCK TABLES;
+-- Fictional demo data. All demo accounts use the password: CourtOneDemo123!
+-- Insert parents before children so these rows also work with foreign keys enabled.
+INSERT INTO `users` (`userID`, `name`, `email`, `password_hash`, `userType`) VALUES
+(1, 'Demo Admin', 'admin@example.com', '$2y$12$.55uf6ONCx8yqUWmIUqanuEcjNHGZGN8REqHTM7HAws7QmuHBsaX.', 'admin'),
+(2, 'Alex Court Owner', 'owner@example.com', '$2y$12$.55uf6ONCx8yqUWmIUqanuEcjNHGZGN8REqHTM7HAws7QmuHBsaX.', 'court_owner'),
+(3, 'Sam Venue Staff', 'staff@example.com', '$2y$12$.55uf6ONCx8yqUWmIUqanuEcjNHGZGN8REqHTM7HAws7QmuHBsaX.', 'staff'),
+(4, 'Jamie Player', 'player@example.com', '$2y$12$.55uf6ONCx8yqUWmIUqanuEcjNHGZGN8REqHTM7HAws7QmuHBsaX.', 'user'),
+(5, 'Taylor Player', 'player2@example.com', '$2y$12$.55uf6ONCx8yqUWmIUqanuEcjNHGZGN8REqHTM7HAws7QmuHBsaX.', 'user');
+
+INSERT INTO `venues` (`venueID`, `venueName`, `address`, `description`, `sportsType`, `openHour`, `closeHour`, `ownerID`, `hourlyRate`) VALUES
+(1, 'Demo Manila Hoops Center', '100 Sample Street, Manila', 'Fictional indoor basketball venue with two full-size courts.', 'Basketball', '08:00:00', '22:00:00', 2, 800.00),
+(2, 'Demo Quezon Shuttle Club', '200 Example Avenue, Quezon City', 'Fictional badminton venue for friendly games and practice.', 'Badminton', '07:00:00', '22:00:00', 2, 350.00),
+(3, 'Demo Makati Pickleball Park', '300 Demo Road, Makati', 'Fictional pickleball venue welcoming beginners and regular players.', 'Pickleball', '06:00:00', '21:00:00', 2, 450.00);
+
+INSERT INTO `courts` (`courtID`, `courtName`, `venueID`) VALUES
+(1, 'Basketball Court A', 1), (2, 'Basketball Court B', 1),
+(3, 'Badminton Court A', 2), (4, 'Badminton Court B', 2),
+(5, 'Pickleball Court A', 3), (6, 'Pickleball Court B', 3);
+
+INSERT INTO `staff` (`staffID`, `venueID`) VALUES (3, 1);
+
+-- Relative dates keep upcoming and completed examples useful whenever imported.
+-- Cancelled bookings release their slot by setting activeSlot to NULL.
+INSERT INTO `bookings` (`bookingID`, `bookingDate`, `bookingTime`, `courtID`, `userID`, `status`, `activeSlot`) VALUES
+(1, DATE_ADD(CURRENT_DATE, INTERVAL 1 DAY), '10:00:00', 1, 4, 'upcoming', 1),
+(2, DATE_ADD(CURRENT_DATE, INTERVAL 2 DAY), '14:00:00', 3, 5, 'upcoming', 1),
+(3, DATE_SUB(CURRENT_DATE, INTERVAL 2 DAY), '09:00:00', 5, 4, 'completed', 1),
+(4, DATE_ADD(CURRENT_DATE, INTERVAL 3 DAY), '16:00:00', 2, 5, 'cancelled', NULL);
+
+INSERT INTO `payments` (`paymentID`, `amount`, `status`, `userID`, `paymentDate`, `bookingID`) VALUES
+(1, 800.00, 'paid', 4, CURRENT_TIMESTAMP, 1),
+(2, 350.00, 'pending', 5, NULL, 2),
+(3, 450.00, 'paid', 4, DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 3 DAY), 3),
+(4, 800.00, 'refunded', 5, CURRENT_TIMESTAMP, 4);
+
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
