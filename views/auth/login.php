@@ -36,4 +36,4 @@
     </div>
 </div>
 
-<?php require_once dirname(__DIR__) . '/partials/footer.php'; ?>
+<?php require_once dirname(__DIR__) . '/partials/Footer.php'; ?>
