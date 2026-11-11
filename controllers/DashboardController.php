@@ -31,14 +31,14 @@ class DashboardController extends Controller {
     public function adminDashboard() {
         $this->restrictToRoles(['admin']);
         $venueModel = $this->model('Venue');
+        $userModel = $this->model('User');
+
         $this->view('dashboards/admin', [
             'pageTitle' => 'Admin Controller Core Panel',
-            'venues'    => $venueModel->fetchAllVenues()
+            'venues'    => $venueModel->fetchAllVenues(),
+            'users'     => $userModel->getAllUsers() // full list of users
         ]);
     }
-    /*
-        Also display full list of users
-    */
 
     public function ownerDashboard() {
         $this->restrictToRoles(['court_owner']);
@@ -55,19 +55,18 @@ class DashboardController extends Controller {
     public function userDashboard() {
         $this->restrictToRoles(['user']);
 
-        $venueModel = $this->model('Venue');
-        $venues = $venueModel->fetchAllVenues();
+        $userID = $_SESSION['userID'];
+
+        $bookingModel = $this->model('Booking');
+        $userModel = $this->model('User');
 
         $this->view('dashboards/user', [
             'pageTitle' => 'User Dashboard',
-            'venues' => $venues
+            'upcomingBookings' => $bookingModel->getBookingByUserID($userID, 'upcoming'),
+            'bookingHistory' => $bookingModel->getBookingByUserID($userID, 'completed'),
+            'profile' => $userModel->getUserByID($userID) // my profile section
         ]);
     }
-    /*
-        Should show bookings w/ upcoming status (upcoming bookings)     Booking => getBookingByUserID($userID, $status = null)
-        Should show bookings w/ completed status (booking history)      Booking => getBookingByUserID($userID, $status = null)      
-        should display account information (my profile section)         User => getUserByID($userID)
-    */
 
     public function staffDashboard() {
         $this->restrictToRoles(['staff']);
@@ -77,6 +76,7 @@ class DashboardController extends Controller {
         $bookingModel = $this->model('Booking');
         $paymentModel = $this->model('Payment');
         $staffModel = $this->model('Staff');
+        $userModel = $this->model('User');
 
         $stats = [
             'totalBookings' => $bookingModel->countBookingByVenue($venueID),
@@ -86,16 +86,81 @@ class DashboardController extends Controller {
 
         $this->view('dashboards/staff', [
             'pageTitle' => 'Staff Dashboard',
-            'stats' => $stats
+            'stats' => $stats,
+            'profile' => $userModel->getUserByID($_SESSION['userID']),
+            'recentBookings' => $bookingModel->fetchRecentBookingsByVenue($venueID, 10),
+            'upcomingBookings' => $bookingModel->fetchAllBookingsByVenue($venueID, null, 'upcoming')
         ]);
     }
-    /*
-        Should also show the following:
-        staff profile details                       User => getUserByID($userID)
-        recent bookings                             Booking => fetchAllBookingsByVenue($venueID, $date = null, $status = null)
-        upcoming bookings                           Booking => fetchAllBookingsByVenue($venueID, $date = null, $status = null)
-        should be able to change booking status     Booking => updateBookingStatusTo[Completed/Cancelled/Upcoming]($bookingID)
-    */
+
+    // staff changes the status of a booking at the venue they work at
+    // each booking row posts to index.php?url=dashboard/changeBookingStatus
+    // with: bookingID and status (completed | cancelled | upcoming)
+    public function changeBookingStatus() {
+        $this->restrictToRoles(['staff']);
+
+        $back = '/index.php?url=dashboards/staff';
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: ' . $back);
+            exit;
+        }
+
+        $bookingID = (int) ($_POST['bookingID'] ?? 0);
+        $status = $_POST['status'] ?? '';
+
+        $bookingModel = $this->model('Booking');
+        $courtModel = $this->model('Court');
+
+        $booking = $bookingModel->getBookingByID($bookingID);
+
+        // staff can only change bookings of their own venue
+        if (!$booking || !$courtModel->courtBelongsToVenue($booking['courtID'], $_SESSION['venueID'])) {
+            $_SESSION['staffMessage'] = ['type' => 'danger', 'text' => 'Booking not found.'];
+            header('Location: ' . $back);
+            exit;
+        }
+
+        // a cancelled booking is final: its slot was released and its payment settled
+        if ($booking['status'] === 'cancelled') {
+            $_SESSION['staffMessage'] = ['type' => 'danger', 'text' => 'Cancelled bookings cannot be changed.'];
+            header('Location: ' . $back);
+            exit;
+        }
+
+        if ($status === 'completed') {
+            $changed = $bookingModel->updateBookingStatusToCompleted($bookingID);
+        } elseif ($status === 'upcoming') {
+            $changed = $bookingModel->updateBookingStatusToUpcoming($bookingID);
+        } elseif ($status === 'cancelled') {
+            $changed = $bookingModel->updateBookingStatusToCancelled($bookingID);
+
+            // keep the money in sync: paid -> refunded, pending -> removed
+            if ($changed) {
+                $paymentModel = $this->model('Payment');
+                $payment = $paymentModel->fetchPaymentByBooking($bookingID);
+
+                if ($payment && $payment['status'] === 'paid') {
+                    $paymentModel->updatePaymentStatusToRefunded($payment['paymentID']);
+                } elseif ($payment && $payment['status'] === 'pending') {
+                    $paymentModel->deletePayment($payment['paymentID']);
+                }
+            }
+        } else {
+            $_SESSION['staffMessage'] = ['type' => 'danger', 'text' => 'Invalid booking status.'];
+            header('Location: ' . $back);
+            exit;
+        }
+
+        if ($changed) {
+            $_SESSION['staffMessage'] = ['type' => 'success', 'text' => 'Booking status updated.'];
+        } else {
+            $_SESSION['staffMessage'] = ['type' => 'danger', 'text' => 'The status was not changed. It may already be set to that value.'];
+        }
+
+        header('Location: ' . $back);
+        exit;
+    }
 
     private function restrictToRoles($allowed) {
         if (!isset($_SESSION['role']) || !in_array($_SESSION['role'], $allowed)) {

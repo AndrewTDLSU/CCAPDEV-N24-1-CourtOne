@@ -1,4 +1,3 @@
-
 <?php
 class VenueController extends Controller {
 
@@ -161,46 +160,6 @@ public function browseVenues() {
         exit;
     }
 
-    // commented out, this should be under staff and not venue
-    /*public function manageStaff($venueID) {
-        $venueModel = $this->model('Venue');
-
-        if (!isset($_SESSION['userID']) ||
-            ($_SESSION['role'] ?? '') !== 'court_owner' ||
-            !$venueModel->isVenueOwner($venueID, $_SESSION['userID'])) {
-            http_response_code(403);
-            die('You cannot manage staff for this venue.');
-        }
-
-        // Staff model also uses the User class
-        $this->model('User');
-        $staffModel = $this->model('Staff');
-        $error = '';
-
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $result = $staffModel->createStaffAccount(
-                $_POST['name'],
-                $_POST['email'],
-                $_POST['password'],
-                $venueID
-            );
-
-            if ($result === false) {
-                $error = 'Email is already registered.';
-            } else {
-                header('Location: /index.php?url=venue/manageStaff/' . $venueID);
-                exit;
-            }
-        }
-
-        $this->view('venues/manageStaff', [
-            'pageTitle' => 'Manage Staff',
-            'staffList' => $staffModel->getStaffByVenue($venueID),
-            'venueID' => $venueID,
-            'error' => $error
-        ]);
-    }*/
-
     public function manageVenues() {
         $venueModel = $this->model('Venue');
         $role = $_SESSION['role'] ?? '';
@@ -220,14 +179,64 @@ public function browseVenues() {
         ]);
     }
 
-    /*
-        Create function to extract individual venue statistics and display it in manage Venue page (if doable):
-        Payment => fetchTotalRevenueByVenue($venueID, $from, $to)               (venue's total revenue)
-        Payment => fetchMonthlyRevenueByVenue($venueID, $year)                  (venue's monthly revenue w/ year filter (for line chart))
-        Staff   => countStaffByVenue($venueID)                                  (venue's total staff)
-        Booking => countActiveBookingsByVenue($venueID, $from, $to)             (venue's total bookings)
-        Booking => fetchMonthlyBookingsByVenue($venueID, $year)                 (venue's monthly bookings w/ year filter (for bar graph))
-        Booking => countBookingsPerCourt($venueID, $from, $to)                  (each court's number of bookings (for pie chart))
-        Booking => fetchRecentBookingsByVenue($venueID, $limit, $status)        (for recent reservations table)
-    */
+    // statistics of 1 venue, displayed in the manage Venues page (only the venue's owner)
+    // index.php?url=venue/venueStatistics/{venueID}&year=2026&month=3
+    // year = filter of the monthly line chart, bar graph and pie chart (default: this year)
+    // month = optional extra filter of the pie chart only (default: the whole year)
+    public function venueStatistics($venueID) {
+        $venueModel = $this->model('Venue');
+
+        if (!isset($_SESSION['userID']) ||
+            ($_SESSION['role'] ?? '') !== 'court_owner' ||
+            !$venueModel->isVenueOwner($venueID, $_SESSION['userID'])) {
+            http_response_code(403);
+            die('You cannot view the statistics of this venue.');
+        }
+
+        $paymentModel = $this->model('Payment');
+        $bookingModel = $this->model('Booking');
+        $staffModel = $this->model('Staff');
+
+        $venue = $venueModel->fetchVenueByID($venueID);
+
+        // filters
+        $year = (int) ($_GET['year'] ?? date('Y'));
+        if ($year < 2000 || $year > 2100) {
+            $year = (int) date('Y');
+        }
+
+        $month = (int) ($_GET['month'] ?? 0);
+        if ($month < 1 || $month > 12) {
+            $month = 0; // 0 = the whole year
+        }
+
+        // date range of the court usage pie chart: the chosen month, or the whole year
+        if ($month > 0) {
+            $from = sprintf('%04d-%02d-01', $year, $month);
+            $to = date('Y-m-t', strtotime($from));
+        } else {
+            $from = $year . '-01-01';
+            $to = $year . '-12-31';
+        }
+
+        $stats = [
+            'totalRevenue' => $paymentModel->fetchTotalRevenueByVenue($venueID),
+            'totalBookings' => $bookingModel->countActiveBookingsByVenue($venueID),
+            'totalStaff' => $staffModel->countStaffByVenue($venueID)
+        ];
+
+        $this->view('venues/manageVenues', [
+            'pageTitle' => 'Venue Statistics',
+            'venues' => $venueModel->fetchVenuesByOwner($_SESSION['userID']),
+            'venue' => $venue,
+            'stats' => $stats,
+            'year' => $year,
+            'month' => $month,
+            'years' => $bookingModel->fetchBookingYearsByVenue($venueID),
+            'monthlyRevenue' => $paymentModel->fetchMonthlyRevenueByVenue($venueID, $year),     // line chart
+            'monthlyBookings' => $bookingModel->fetchMonthlyBookingsByVenue($venueID, $year),   // bar graph
+            'courtUsage' => $bookingModel->countBookingsPerCourt($venueID, $from, $to),         // pie chart
+            'recentBookings' => $bookingModel->fetchRecentBookingsByVenue($venueID, 10)         // recent reservations table
+        ]);
+    }
 }
