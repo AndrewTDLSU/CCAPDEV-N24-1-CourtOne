@@ -1,4 +1,4 @@
-<?php include_once '../views/partials/header.php'; ?>
+<?php include_once __DIR__ . '/../partials/Header.php'; ?>
 <div class="row justify-content-center my-5">
     <div class="col-md-5 text-center">
         <div class="card p-4 shadow-sm border bg-white rounded-3">
@@ -14,4 +14,4 @@
         </div>
     </div>
 </div>
-<?php include_once '../views/partials/footer.php'; ?>
+<?php include_once __DIR__ . '/../partials/Footer.php'; ?>

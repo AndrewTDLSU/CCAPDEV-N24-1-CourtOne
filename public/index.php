@@ -56,8 +56,8 @@ if (file_exists($controllerFile)) {
     }
 }
 
-require_once __DIR__ . '/../controllers/HomeController.php';
+require_once __DIR__ . '/../controllers/VenueController.php';
 
-$fallback = new HomeController();
+$fallback = new VenueController();
 $fallback->index();
 ?>

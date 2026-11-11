@@ -91,6 +91,7 @@ class BookingController extends Controller {
         }
     }
 
+    // fixed this, added proper indentation and session check for payment method page. it used to redirect back to checkout, not being able to finish transaction.
     public function payment($bookingID) {
         if (!isset($_SESSION['userID'])) {
             header('Location: /index.php?url=auth/login');
@@ -109,14 +110,24 @@ class BookingController extends Controller {
         }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            
-        $method = $_POST['paymentMethod'] ?? '';
+            $method = $_POST['paymentMethod'] ?? '';
 
-        if (!in_array($method, ['GCash', 'Card'], true)) {
-        http_response_code(400);
-        die('Please select a valid payment method.');
-        }
+            if (!in_array($method, ['GCash', 'Card'], true)) {
+                die('Please select a valid payment method.');
+            }
 
+            // Complete the demo payment
+            if ($payment['status'] === 'pending') {
+                $success = $paymentModel->updatePaymentStatusToPaid(
+                    $payment['paymentID']
+                );
+
+                if (!$success) {
+                    die('Payment could not be completed.');
+                }
+            } elseif ($payment['status'] !== 'paid') {
+                die('This payment cannot be completed.');
+            }
 
             header('Location: /index.php?url=booking/bookingConfirmation/' . $bookingID);
             exit;
@@ -127,6 +138,7 @@ class BookingController extends Controller {
             'booking' => $booking
         ]);
     }
+
 
     public function bookingConfirmation($bookingID) {
         if (!isset($_SESSION['userID'])) {
