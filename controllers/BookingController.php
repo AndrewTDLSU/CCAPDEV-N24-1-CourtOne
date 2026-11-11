@@ -214,3 +214,5 @@ public function chat() {
             'messages' => $messages
         ]);
     }
+
+}
