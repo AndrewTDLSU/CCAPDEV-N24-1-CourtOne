@@ -1,4 +1,4 @@
-<?php require_once dirname(__DIR__) . '/partials/header.php'; ?>
+<?php require_once dirname(__DIR__) . '/partials/Header.php'; ?>
 
 <div class="card">
     <h2 class="text-center" style="color: #000000; font-size: 1.5rem; font-weight: 900; text-transform: uppercase; margin-bottom: 24px;">Registration Sheet</h2>
@@ -41,5 +41,5 @@
     </div>
 </div>
 
-<?php require_once dirname(__DIR__) . '/partials/footer.php'; ?>
+<?php require_once dirname(__DIR__) . '/partials/Footer.php'; ?>
 
