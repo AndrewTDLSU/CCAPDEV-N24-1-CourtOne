@@ -5,7 +5,7 @@ class DashboardController extends Controller {
 
     public function dispatcher() {
         if (!isset($_SESSION['role'])) {
-            header('Location: /index.php?url=auth/login');
+            header('Location: ' . courtUrl('/index.php?url=auth/login'));
             exit;
         }
 
@@ -23,7 +23,7 @@ class DashboardController extends Controller {
             exit('Invalid account role.');
         }
 
-        header('Location: /index.php?url=dashboard/' . $dashboards[$role]);
+        header('Location: ' . courtUrl('/index.php?url=dashboard/') . $dashboards[$role]);
         exit;
     }
 
@@ -92,7 +92,7 @@ class DashboardController extends Controller {
     public function changeBookingStatus() {
         $this->restrictToRoles(['staff']);
 
-        $back = '/index.php?url=dashboard/staffDashboard';
+        $back = courtUrl('/index.php?url=dashboard/staffDashboard');
 
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             header('Location: ' . $back);

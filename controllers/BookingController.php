@@ -3,12 +3,12 @@ class BookingController extends Controller {
 
     public function reserve() {
         if (!isset($_SESSION['userID']) || ($_SESSION['role'] ?? '') !== 'user') {
-            header('Location: /index.php?url=auth/login');
+            header('Location: ' . courtUrl('/index.php?url=auth/login'));
             exit;
         }
 
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            header('Location: /index.php?url=venue/browseVenues');
+            header('Location: ' . courtUrl('/index.php?url=venue/browseVenues'));
             exit;
         }
 
@@ -77,7 +77,7 @@ class BookingController extends Controller {
 
             $db->commit();
 
-            header('Location: /index.php?url=booking/payment/' . $bookingID);
+            header('Location: ' . courtUrl('/index.php?url=booking/payment/') . $bookingID);
             exit;
 
         } catch (Throwable $e) {
@@ -93,7 +93,7 @@ class BookingController extends Controller {
     // fixed this, added proper indentation and session check for payment method page. it used to redirect back to checkout, not being able to finish transaction.
     public function payment($bookingID) {
         if (!isset($_SESSION['userID'])) {
-            header('Location: /index.php?url=auth/login');
+            header('Location: ' . courtUrl('/index.php?url=auth/login'));
             exit;
         }
 
@@ -110,7 +110,7 @@ class BookingController extends Controller {
 
         // Cancelled bookings cannot be paid, even by visiting checkout directly.
         if ($booking['status'] === 'cancelled') {
-            header('Location: /index.php?url=booking/myBookings');
+            header('Location: ' . courtUrl('/index.php?url=booking/myBookings'));
             exit;
         }
 
@@ -155,7 +155,7 @@ class BookingController extends Controller {
                 die(htmlspecialchars($e->getMessage(), ENT_QUOTES, 'UTF-8'));
             }
 
-            header('Location: /index.php?url=booking/bookingConfirmation/' . $bookingID);
+            header('Location: ' . courtUrl('/index.php?url=booking/bookingConfirmation/') . $bookingID);
             exit;
         }
 
@@ -168,7 +168,7 @@ class BookingController extends Controller {
 
     public function bookingConfirmation($bookingID) {
         if (!isset($_SESSION['userID'])) {
-            header('Location: /index.php?url=auth/login');
+            header('Location: ' . courtUrl('/index.php?url=auth/login'));
             exit;
         }
 
@@ -181,12 +181,12 @@ class BookingController extends Controller {
         }
 
         if ($booking['status'] === 'cancelled') {
-            header('Location: /index.php?url=booking/myBookings');
+            header('Location: ' . courtUrl('/index.php?url=booking/myBookings'));
             exit;
         }
 
         if ($booking['paymentStatus'] !== 'paid') {
-            header('Location: /index.php?url=booking/payment/' . $bookingID);
+            header('Location: ' . courtUrl('/index.php?url=booking/payment/') . $bookingID);
             exit;
         }
 
@@ -199,7 +199,7 @@ class BookingController extends Controller {
     // GET: list only the logged-in customer's bookings.
     public function myBookings() {
         if (!isset($_SESSION['userID']) || ($_SESSION['role'] ?? '') !== 'user') {
-            header('Location: /index.php?url=auth/login');
+            header('Location: ' . courtUrl('/index.php?url=auth/login'));
             exit;
         }
         if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
@@ -231,7 +231,7 @@ class BookingController extends Controller {
     // POST: cancel a customer's own future booking, preserving the booking record.
     public function cancelBooking($bookingID = null) {
         if (!isset($_SESSION['userID']) || ($_SESSION['role'] ?? '') !== 'user') {
-            header('Location: /index.php?url=auth/login');
+            header('Location: ' . courtUrl('/index.php?url=auth/login'));
             exit;
         }
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -293,14 +293,14 @@ class BookingController extends Controller {
             die(htmlspecialchars($e->getMessage(), ENT_QUOTES, 'UTF-8'));
         }
 
-        header('Location: /index.php?url=booking/myBookings&notice=cancelled');
+        header('Location: ' . courtUrl('/index.php?url=booking/myBookings&notice=cancelled'));
         exit;
     }
 
     public function chat() {
         // A user must be logged in to send or read messages.
         if (!isset($_SESSION['userID'])) {
-            header('Location: /index.php?url=auth/login');
+            header('Location: ' . courtUrl('/index.php?url=auth/login'));
             exit;
         }
 
@@ -323,7 +323,7 @@ class BookingController extends Controller {
             }
 
             $chatModel->sendMessage($senderID, $receiverID, $message);
-            header('Location: /index.php?url=booking/chat&receiverID=' . $receiverID);
+            header('Location: ' . courtUrl('/index.php?url=booking/chat&receiverID=') . $receiverID);
             exit;
         }
 

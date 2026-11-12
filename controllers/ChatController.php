@@ -5,7 +5,7 @@ class ChatController extends Controller {
     // URL: index.php?url=chat/index&receiverID={userID}
     public function index() {
         if (!isset($_SESSION['userID'])) {
-            header('Location: /index.php?url=auth/login');
+            header('Location: ' . courtUrl('/index.php?url=auth/login'));
             exit;
         }
 
@@ -28,7 +28,7 @@ class ChatController extends Controller {
             }
 
             $chatModel->sendMessage($senderID, $receiverID, $message);
-            header('Location: /index.php?url=chat/index&receiverID=' . $receiverID);
+            header('Location: ' . courtUrl('/index.php?url=chat/index&receiverID=') . $receiverID);
             exit;
         }
 

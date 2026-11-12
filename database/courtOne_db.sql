@@ -67,7 +67,7 @@ CREATE TABLE `chat_messages` (
   KEY `fk_receiver_idx` (`receiverID`),
   CONSTRAINT `fk_receiver` FOREIGN KEY (`receiverID`) REFERENCES `users` (`userID`),
   CONSTRAINT `fk_sender` FOREIGN KEY (`senderID`) REFERENCES `users` (`userID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --

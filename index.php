@@ -11,5 +11,5 @@ error_reporting(E_ALL);
 $_GET['url'] = $_GET['url'] ?? 'home/index';
 
 // Pass execution down to your separate front controller inside public/
-require_once 'public/index.php';
+require_once __DIR__ . '/public/index.php';
 ?>

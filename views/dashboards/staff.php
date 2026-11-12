@@ -9,13 +9,13 @@
     <title>Staff Dashboard - CourtOne</title>
 
     <!-- Bootstrap CSS (Local) -->
-    <link rel="stylesheet" href="/bootstrap-5.3.8-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="<?= courtEscape(courtUrl('/bootstrap-5.3.8-dist/css/bootstrap.min.css')) ?>">
 
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="/public/css/style.css">
-    <link rel="stylesheet" href="/public/css/darkMode.css">
-    <script src="/public/js/theme.js"></script>
-<link rel="stylesheet" href="/public/css/integration.css">
+    <link rel="stylesheet" href="<?= courtEscape(courtUrl('/public/css/style.css')) ?>">
+    <link rel="stylesheet" href="<?= courtEscape(courtUrl('/public/css/darkMode.css')) ?>">
+    <script src="<?= courtEscape(courtUrl('/public/js/theme.js')) ?>"></script>
+<link rel="stylesheet" href="<?= courtEscape(courtUrl('/public/css/integration.css')) ?>">
 </head>
 
 <body>
@@ -23,7 +23,7 @@
     <!-- Navigation -->
     <header class="container">
         <nav class="navbar navbar-expand-lg py-3" aria-label="Main navigation">
-            <a class="navbar-brand fw-bold" href="/index.php?url=home/index">CourtOne</a>
+            <a class="navbar-brand fw-bold" href="<?= courtEscape(courtUrl('/index.php?url=home/index')) ?>">CourtOne</a>
 
             <div class="d-flex gap-2 ms-auto order-lg-3">
 
@@ -33,14 +33,14 @@
                         Dashboard
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end">
-<?php if ($role): ?><li><a class="dropdown-item" href="/index.php?url=dashboard/dispatcher">My Dashboard</a></li><?php endif; ?>
-<?php if ($role === 'user'): ?><li><a class="dropdown-item" href="/index.php?url=booking/myBookings">My Bookings</a></li><?php endif; ?>
-<?php if ($role === 'court_owner'): ?><li><a class="dropdown-item" href="/index.php?url=staff/showAllStaff">Manage Staff</a></li><?php endif; ?>
-<?php if (!$role): ?><li><a class="dropdown-item" href="/index.php?url=auth/login">Sign In</a></li><?php endif; ?>
+<?php if ($role): ?><li><a class="dropdown-item" href="<?= courtEscape(courtUrl('/index.php?url=dashboard/dispatcher')) ?>">My Dashboard</a></li><?php endif; ?>
+<?php if ($role === 'user'): ?><li><a class="dropdown-item" href="<?= courtEscape(courtUrl('/index.php?url=booking/myBookings')) ?>">My Bookings</a></li><?php endif; ?>
+<?php if ($role === 'court_owner'): ?><li><a class="dropdown-item" href="<?= courtEscape(courtUrl('/index.php?url=staff/showAllStaff')) ?>">Manage Staff</a></li><?php endif; ?>
+<?php if (!$role): ?><li><a class="dropdown-item" href="<?= courtEscape(courtUrl('/index.php?url=auth/login')) ?>">Sign In</a></li><?php endif; ?>
 </ul>
                 </div>
 
-                <a href="/index.php?url=auth/<?= $role ? 'logout' : 'login' ?>" class="btn btn-primary"><?= $role ? 'Sign Out' : 'Sign In' ?></a>
+                <a href="<?= courtEscape(courtUrl('/index.php?url=auth/')) ?><?= $role ? 'logout' : 'login' ?>" class="btn btn-primary"><?= $role ? 'Sign Out' : 'Sign In' ?></a>
 
                 <button class="navbar-toggler" type="button"
                         data-bs-toggle="collapse" data-bs-target="#mainMenu"
@@ -53,16 +53,16 @@
             <div class="collapse navbar-collapse order-lg-2" id="mainMenu">
                 <ul class="navbar-nav mx-lg-auto gap-lg-3">
                     <li class="nav-item">
-                        <a class="nav-link" href="/index.php?url=home/index">Home</a>
+                        <a class="nav-link" href="<?= courtEscape(courtUrl('/index.php?url=home/index')) ?>">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/index.php?url=venue/browseVenues">Venues</a>
+                        <a class="nav-link" href="<?= courtEscape(courtUrl('/index.php?url=venue/browseVenues')) ?>">Venues</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/index.php?url=home/index#how-it-works">How It Works</a>
+                        <a class="nav-link" href="<?= courtEscape(courtUrl('/index.php?url=home/index#how-it-works')) ?>">How It Works</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/index.php?url=chat/index">Chat</a>
+                        <a class="nav-link" href="<?= courtEscape(courtUrl('/index.php?url=chat/index')) ?>">Chat</a>
                     </li>
                 </ul>
             </div>
@@ -94,7 +94,7 @@
                             <a href="#profile" class="nav-link">
                                 Profile
                             </a>
-                            <a href="/index.php?url=auth/logout" class="nav-link text-danger">
+                            <a href="<?= courtEscape(courtUrl('/index.php?url=auth/logout')) ?>" class="nav-link text-danger">
                                 Sign Out
                             </a>
                         </nav>
@@ -172,7 +172,7 @@
                                         </tr>
                                     </thead>
 
-                                    <tbody><?php $tableRows=$upcomingBookings; ?><?php foreach ($tableRows as $b): ?><tr><td><?= courtEscape($b['bookingDate'].' '.$b['bookingTime']) ?></td><td><?= courtEscape($b['courtName']) ?></td><td><?= courtEscape($b['userName']) ?></td><td><span class="badge bg-secondary"><?= courtEscape($b['status']) ?></span><?php if ($b['status']!=='cancelled'): ?><form action="/index.php?url=dashboard/changeBookingStatus" method="post" class="mt-2"><input type="hidden" name="bookingID" value="<?= (int)$b['bookingID'] ?>"><select name="status" aria-label="Booking status" class="form-select form-select-sm"><?php foreach(['upcoming','completed','cancelled'] as $state): ?><option <?= $state===$b['status']?'selected':'' ?>><?= $state ?></option><?php endforeach; ?></select><button class="btn btn-sm btn-primary mt-1">Save</button><input type="hidden" name="csrfToken" value="<?= courtEscape($_SESSION['csrfToken']) ?>"></form><?php endif; ?></td></tr><?php endforeach; ?><?php if (!$tableRows): ?><tr><td colspan="5">No reservations to display.</td></tr><?php endif; ?></tbody>
+                                    <tbody><?php $tableRows=$upcomingBookings; ?><?php foreach ($tableRows as $b): ?><tr><td><?= courtEscape($b['bookingDate'].' '.$b['bookingTime']) ?></td><td><?= courtEscape($b['courtName']) ?></td><td><?= courtEscape($b['userName']) ?></td><td><span class="badge bg-secondary"><?= courtEscape($b['status']) ?></span><?php if ($b['status']!=='cancelled'): ?><form action="<?= courtEscape(courtUrl('/index.php?url=dashboard/changeBookingStatus')) ?>" method="post" class="mt-2"><input type="hidden" name="bookingID" value="<?= (int)$b['bookingID'] ?>"><select name="status" aria-label="Booking status" class="form-select form-select-sm"><?php foreach(['upcoming','completed','cancelled'] as $state): ?><option <?= $state===$b['status']?'selected':'' ?>><?= $state ?></option><?php endforeach; ?></select><button class="btn btn-sm btn-primary mt-1">Save</button><input type="hidden" name="csrfToken" value="<?= courtEscape($_SESSION['csrfToken']) ?>"></form><?php endif; ?></td></tr><?php endforeach; ?><?php if (!$tableRows): ?><tr><td colspan="5">No reservations to display.</td></tr><?php endif; ?></tbody>
                                 </table>
                             </div>
 
@@ -199,7 +199,7 @@
                                         </tr>
                                     </thead>
 
-                                    <tbody><?php $tableRows=$recentBookings; ?><?php foreach ($tableRows as $b): ?><tr><td><?= courtEscape($b['bookingDate']) ?></td><td><?= courtEscape($b['bookingDate'].' '.$b['bookingTime']) ?></td><td><?= courtEscape($b['courtName']) ?></td><td><?= courtEscape($b['userName']) ?></td><td><span class="badge bg-secondary"><?= courtEscape($b['status']) ?></span><?php if ($b['status']!=='cancelled'): ?><form action="/index.php?url=dashboard/changeBookingStatus" method="post" class="mt-2"><input type="hidden" name="bookingID" value="<?= (int)$b['bookingID'] ?>"><select name="status" aria-label="Booking status" class="form-select form-select-sm"><?php foreach(['upcoming','completed','cancelled'] as $state): ?><option <?= $state===$b['status']?'selected':'' ?>><?= $state ?></option><?php endforeach; ?></select><button class="btn btn-sm btn-primary mt-1">Save</button><input type="hidden" name="csrfToken" value="<?= courtEscape($_SESSION['csrfToken']) ?>"></form><?php endif; ?></td></tr><?php endforeach; ?><?php if (!$tableRows): ?><tr><td colspan="5">No reservations to display.</td></tr><?php endif; ?></tbody>
+                                    <tbody><?php $tableRows=$recentBookings; ?><?php foreach ($tableRows as $b): ?><tr><td><?= courtEscape($b['bookingDate']) ?></td><td><?= courtEscape($b['bookingDate'].' '.$b['bookingTime']) ?></td><td><?= courtEscape($b['courtName']) ?></td><td><?= courtEscape($b['userName']) ?></td><td><span class="badge bg-secondary"><?= courtEscape($b['status']) ?></span><?php if ($b['status']!=='cancelled'): ?><form action="<?= courtEscape(courtUrl('/index.php?url=dashboard/changeBookingStatus')) ?>" method="post" class="mt-2"><input type="hidden" name="bookingID" value="<?= (int)$b['bookingID'] ?>"><select name="status" aria-label="Booking status" class="form-select form-select-sm"><?php foreach(['upcoming','completed','cancelled'] as $state): ?><option <?= $state===$b['status']?'selected':'' ?>><?= $state ?></option><?php endforeach; ?></select><button class="btn btn-sm btn-primary mt-1">Save</button><input type="hidden" name="csrfToken" value="<?= courtEscape($_SESSION['csrfToken']) ?>"></form><?php endif; ?></td></tr><?php endforeach; ?><?php if (!$tableRows): ?><tr><td colspan="5">No reservations to display.</td></tr><?php endif; ?></tbody>
                                 </table>
                             </div>
 
@@ -235,7 +235,7 @@
     </footer>
 
     <!-- Bootstrap JavaScript (Local) -->
-    <script src="/bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
+    <script src="<?= courtEscape(courtUrl('/bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js')) ?>"></script>
 
 </body>
 </html>

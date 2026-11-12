@@ -121,7 +121,7 @@ public function browseVenues() {
                 }
             }
 
-            header('Location: /index.php?url=dashboard/dispatcher');
+            header('Location: ' . courtUrl('/index.php?url=dashboard/dispatcher'));
             exit;
         }
 
@@ -143,7 +143,7 @@ public function browseVenues() {
         }
 
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            header('Location: /index.php?url=dashboard/ownerDashboard');
+            header('Location: ' . courtUrl('/index.php?url=dashboard/ownerDashboard'));
             exit;
         }
 
@@ -160,7 +160,7 @@ public function browseVenues() {
             die('A court with that name already exists.');
         }
 
-        header('Location: /index.php?url=dashboard/ownerDashboard');
+        header('Location: ' . courtUrl('/index.php?url=dashboard/ownerDashboard'));
         exit;
     }
 

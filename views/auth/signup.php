@@ -5,19 +5,19 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>CourtOne | Sign Up</title>
-    <link rel="stylesheet" href="/public/css/style.css">
-    <link rel="stylesheet" href="/bootstrap-5.3.8-dist/css/bootstrap.min.css">
-        <link rel="stylesheet" href="/public/css/signupStyles.css">
-        <link rel="stylesheet" href="/public/css/darkMode.css">
-        <script src="/public/js/theme.js"></script>
-    <link rel="stylesheet" href="/public/css/integration.css">
+    <link rel="stylesheet" href="<?= courtEscape(courtUrl('/public/css/style.css')) ?>">
+    <link rel="stylesheet" href="<?= courtEscape(courtUrl('/bootstrap-5.3.8-dist/css/bootstrap.min.css')) ?>">
+        <link rel="stylesheet" href="<?= courtEscape(courtUrl('/public/css/signupStyles.css')) ?>">
+        <link rel="stylesheet" href="<?= courtEscape(courtUrl('/public/css/darkMode.css')) ?>">
+        <script src="<?= courtEscape(courtUrl('/public/js/theme.js')) ?>"></script>
+    <link rel="stylesheet" href="<?= courtEscape(courtUrl('/public/css/integration.css')) ?>">
 </head>
     <body>
         <div class="page-shell">
 
             <header class="container">
         <nav class="navbar navbar-expand-lg py-3" aria-label="Main navigation">
-            <a class="navbar-brand fw-bold" href="/index.php?url=home/index">CourtOne</a>
+            <a class="navbar-brand fw-bold" href="<?= courtEscape(courtUrl('/index.php?url=home/index')) ?>">CourtOne</a>
 
             <div class="d-flex gap-2 ms-auto order-lg-3">
 
@@ -27,14 +27,14 @@
                         Dashboard
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end">
-<?php if ($role): ?><li><a class="dropdown-item" href="/index.php?url=dashboard/dispatcher">My Dashboard</a></li><?php endif; ?>
-<?php if ($role === 'user'): ?><li><a class="dropdown-item" href="/index.php?url=booking/myBookings">My Bookings</a></li><?php endif; ?>
-<?php if ($role === 'court_owner'): ?><li><a class="dropdown-item" href="/index.php?url=staff/showAllStaff">Manage Staff</a></li><?php endif; ?>
-<?php if (!$role): ?><li><a class="dropdown-item" href="/index.php?url=auth/login">Sign In</a></li><?php endif; ?>
+<?php if ($role): ?><li><a class="dropdown-item" href="<?= courtEscape(courtUrl('/index.php?url=dashboard/dispatcher')) ?>">My Dashboard</a></li><?php endif; ?>
+<?php if ($role === 'user'): ?><li><a class="dropdown-item" href="<?= courtEscape(courtUrl('/index.php?url=booking/myBookings')) ?>">My Bookings</a></li><?php endif; ?>
+<?php if ($role === 'court_owner'): ?><li><a class="dropdown-item" href="<?= courtEscape(courtUrl('/index.php?url=staff/showAllStaff')) ?>">Manage Staff</a></li><?php endif; ?>
+<?php if (!$role): ?><li><a class="dropdown-item" href="<?= courtEscape(courtUrl('/index.php?url=auth/login')) ?>">Sign In</a></li><?php endif; ?>
 </ul>
                 </div>
 
-                <a href="/index.php?url=auth/<?= $role ? 'logout' : 'login' ?>" class="btn btn-primary"><?= $role ? 'Sign Out' : 'Sign In' ?></a>
+                <a href="<?= courtEscape(courtUrl('/index.php?url=auth/')) ?><?= $role ? 'logout' : 'login' ?>" class="btn btn-primary"><?= $role ? 'Sign Out' : 'Sign In' ?></a>
 
                 <button class="navbar-toggler" type="button"
                         data-bs-toggle="collapse" data-bs-target="#mainMenu"
@@ -47,16 +47,16 @@
             <div class="collapse navbar-collapse order-lg-2" id="mainMenu">
                 <ul class="navbar-nav mx-lg-auto gap-lg-3">
                     <li class="nav-item">
-                        <a class="nav-link" href="/index.php?url=home/index">Home</a>
+                        <a class="nav-link" href="<?= courtEscape(courtUrl('/index.php?url=home/index')) ?>">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/index.php?url=venue/browseVenues">Venues</a>
+                        <a class="nav-link" href="<?= courtEscape(courtUrl('/index.php?url=venue/browseVenues')) ?>">Venues</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/index.php?url=home/index#how-it-works">How It Works</a>
+                        <a class="nav-link" href="<?= courtEscape(courtUrl('/index.php?url=home/index#how-it-works')) ?>">How It Works</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/index.php?url=chat/index">Chat</a>
+                        <a class="nav-link" href="<?= courtEscape(courtUrl('/index.php?url=chat/index')) ?>">Chat</a>
                     </li>
                 </ul>
             </div>
@@ -69,7 +69,7 @@
 
                 <!-- Show the sign-up form first; its submit handler validates the entered details. -->
                 <section class="auth-panel" id="signup-panel" aria-label="Sign up form">
-                    <form class="auth-form" id="signup-form" action="/index.php?url=auth/signup" method="post">
+                    <form class="auth-form" id="signup-form" action="<?= courtEscape(courtUrl('/index.php?url=auth/signup')) ?>" method="post">
                         <!-- Collect new user's name and email for their profile. -->
                         <input class="auth-input" type="text" id="name" name="name" aria-label="Full name" placeholder="full name" autocomplete="name" required>
                         <input class="auth-input" type="email" id="email" name="email" aria-label="Email" placeholder="email" autocomplete="email" required>
@@ -94,14 +94,14 @@
                         </button>
                     <input type="hidden" name="csrfToken" value="<?= courtEscape($_SESSION['csrfToken']) ?>"></form>
                     <!-- Switch to the login panel without leaving this page. -->
-                    <p class="signup-link">Already have an account? <a class="auth-switch" href="/index.php?url=auth/login">Sign in</a></p>
+                    <p class="signup-link">Already have an account? <a class="auth-switch" href="<?= courtEscape(courtUrl('/index.php?url=auth/login')) ?>">Sign in</a></p>
                     <!-- Show validation and account-service feedback after submission. -->
                     <p class="auth-message" role="alert"><?= courtEscape($error ?? '') ?></p>
                 </section>
 
                 <!-- Keep the login form hidden initially and reveal it through the sign-in prompt. -->
                 <section class="auth-panel" id="login-panel" aria-label="Sign in form" hidden>
-                    <form class="auth-form" id="login-form" action="/index.php?url=auth/login" method="post"><input type="hidden" name="loginType" value="customer_portal">
+                    <form class="auth-form" id="login-form" action="<?= courtEscape(courtUrl('/index.php?url=auth/login')) ?>" method="post"><input type="hidden" name="loginType" value="customer_portal">
                         <!-- Collect credentials for the prototype login view. -->
                         <input class="auth-input" type="email" id="login-email" name="email" aria-label="Email" placeholder="email" autocomplete="email" required>
                         <input class="auth-input" type="password" id="login-password" name="password" aria-label="Password" placeholder="password" autocomplete="current-password" required>
@@ -122,6 +122,6 @@
         </div>
         <!-- Attach mobile navigation, panel switching, validation, and demo registration behavior. -->
 
-        <script src="/bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
-<script src="/public/js/integration.js"></script></body>
+        <script src="<?= courtEscape(courtUrl('/bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js')) ?>"></script>
+<script src="<?= courtEscape(courtUrl('/public/js/integration.js')) ?>"></script></body>
 </html>

@@ -60,7 +60,7 @@ class StaffController Extends Controller {
             die('Only venue owners can create staff accounts.');
         }
 
-        $back = '/index.php?url=staff/showAllStaff';
+        $back = courtUrl('/index.php?url=staff/showAllStaff');
 
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             header('Location: ' . $back);

@@ -9,13 +9,13 @@
         <title>Login</title>
 
         <!-- bootstrap link -->
-        <link rel="stylesheet" href="/bootstrap-5.3.8-dist/css/bootstrap.min.css"> <!-- bootstrap css for grid -->
+        <link rel="stylesheet" href="<?= courtEscape(courtUrl('/bootstrap-5.3.8-dist/css/bootstrap.min.css')) ?>"> <!-- bootstrap css for grid -->
         <!--<script src="[filepath]"></script>  bootstrap js script, Not used yet, remove when unncessary -->
 
-        <link rel="stylesheet" href="/public/css/style.css"> <!-- Custom CSS -->
-    <link rel="stylesheet" href="/public/css/integration.css">
-<link rel="stylesheet" href="/public/css/darkMode.css">
-<script src="/public/js/theme.js"></script>
+        <link rel="stylesheet" href="<?= courtEscape(courtUrl('/public/css/style.css')) ?>"> <!-- Custom CSS -->
+    <link rel="stylesheet" href="<?= courtEscape(courtUrl('/public/css/integration.css')) ?>">
+<link rel="stylesheet" href="<?= courtEscape(courtUrl('/public/css/darkMode.css')) ?>">
+<script src="<?= courtEscape(courtUrl('/public/js/theme.js')) ?>"></script>
 </head>
 
     <body>
@@ -41,7 +41,7 @@
                                 <?= courtEscape($error ?? '') ?>
                             </div>
 
-                            <form action="/index.php?url=auth/login" method="POST" class="border rounded p-3">
+                            <form action="<?= courtEscape(courtUrl('/index.php?url=auth/login')) ?>" method="POST" class="border rounded p-3">
 
                                 <div class="mb-3">
                                     <label class="form-label" for="loginType">Account portal</label><select class="form-select mb-3" id="loginType" name="loginType"><option value="customer_portal">Customer / Owner / Admin</option><option value="staff_app">Staff</option></select><label for="username" class="form-label">Email:</label>
@@ -61,7 +61,7 @@
                 </div>
             </div>
 
-            <p class="text-center mt-2">New here? <span> <a href="/index.php?url=auth/signup">Sign up now</a> </span> </p>
+            <p class="text-center mt-2">New here? <span> <a href="<?= courtEscape(courtUrl('/index.php?url=auth/signup')) ?>">Sign up now</a> </span> </p>
 
         </div>
     </body>

@@ -14,7 +14,7 @@ class AdminController Extends Controller {
             die('Only admins can delete venues.');
         }
 
-        $back = '/index.php?url=dashboard/adminDashboard';
+        $back = courtUrl('/index.php?url=dashboard/adminDashboard');
 
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             header('Location: ' . $back);
@@ -75,7 +75,7 @@ class AdminController Extends Controller {
             die('Only admins can delete users.');
         }
 
-        $back = '/index.php?url=dashboard/adminDashboard';
+        $back = courtUrl('/index.php?url=dashboard/adminDashboard');
 
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             header('Location: ' . $back);

@@ -8,14 +8,14 @@
     <title>User Dashboard - CourtOne</title>
 
     <!-- Bootstrap CSS (Local) -->
-    <link rel="stylesheet" href="/bootstrap-5.3.8-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="<?= courtEscape(courtUrl('/bootstrap-5.3.8-dist/css/bootstrap.min.css')) ?>">
 
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="/public/css/style.css">
-    <link rel="stylesheet" href="/public/css/userDashboard.css">
-    <link rel="stylesheet" href="/public/css/darkMode.css">
-    <script src="/public/js/theme.js"></script>
-<link rel="stylesheet" href="/public/css/integration.css">
+    <link rel="stylesheet" href="<?= courtEscape(courtUrl('/public/css/style.css')) ?>">
+    <link rel="stylesheet" href="<?= courtEscape(courtUrl('/public/css/userDashboard.css')) ?>">
+    <link rel="stylesheet" href="<?= courtEscape(courtUrl('/public/css/darkMode.css')) ?>">
+    <script src="<?= courtEscape(courtUrl('/public/js/theme.js')) ?>"></script>
+<link rel="stylesheet" href="<?= courtEscape(courtUrl('/public/css/integration.css')) ?>">
 </head>
 
 <body>
@@ -23,7 +23,7 @@
     <!-- Navigation -->
     <header class="container">
         <nav class="navbar navbar-expand-lg py-3" aria-label="Main navigation">
-            <a class="navbar-brand fw-bold" href="/index.php?url=home/index">CourtOne</a>
+            <a class="navbar-brand fw-bold" href="<?= courtEscape(courtUrl('/index.php?url=home/index')) ?>">CourtOne</a>
 
             <div class="d-flex gap-2 ms-auto order-lg-3">
 
@@ -33,14 +33,14 @@
                         Dashboard
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end">
-<?php if ($role): ?><li><a class="dropdown-item" href="/index.php?url=dashboard/dispatcher">My Dashboard</a></li><?php endif; ?>
-<?php if ($role === 'user'): ?><li><a class="dropdown-item" href="/index.php?url=booking/myBookings">My Bookings</a></li><?php endif; ?>
-<?php if ($role === 'court_owner'): ?><li><a class="dropdown-item" href="/index.php?url=staff/showAllStaff">Manage Staff</a></li><?php endif; ?>
-<?php if (!$role): ?><li><a class="dropdown-item" href="/index.php?url=auth/login">Sign In</a></li><?php endif; ?>
+<?php if ($role): ?><li><a class="dropdown-item" href="<?= courtEscape(courtUrl('/index.php?url=dashboard/dispatcher')) ?>">My Dashboard</a></li><?php endif; ?>
+<?php if ($role === 'user'): ?><li><a class="dropdown-item" href="<?= courtEscape(courtUrl('/index.php?url=booking/myBookings')) ?>">My Bookings</a></li><?php endif; ?>
+<?php if ($role === 'court_owner'): ?><li><a class="dropdown-item" href="<?= courtEscape(courtUrl('/index.php?url=staff/showAllStaff')) ?>">Manage Staff</a></li><?php endif; ?>
+<?php if (!$role): ?><li><a class="dropdown-item" href="<?= courtEscape(courtUrl('/index.php?url=auth/login')) ?>">Sign In</a></li><?php endif; ?>
 </ul>
                 </div>
 
-                <a href="/index.php?url=auth/<?= $role ? 'logout' : 'login' ?>" class="btn btn-primary"><?= $role ? 'Sign Out' : 'Sign In' ?></a>
+                <a href="<?= courtEscape(courtUrl('/index.php?url=auth/')) ?><?= $role ? 'logout' : 'login' ?>" class="btn btn-primary"><?= $role ? 'Sign Out' : 'Sign In' ?></a>
 
                 <button class="navbar-toggler" type="button"
                         data-bs-toggle="collapse" data-bs-target="#mainMenu"
@@ -53,16 +53,16 @@
             <div class="collapse navbar-collapse order-lg-2" id="mainMenu">
                 <ul class="navbar-nav mx-lg-auto gap-lg-3">
                     <li class="nav-item">
-                        <a class="nav-link" href="/index.php?url=home/index">Home</a>
+                        <a class="nav-link" href="<?= courtEscape(courtUrl('/index.php?url=home/index')) ?>">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/index.php?url=venue/browseVenues">Venues</a>
+                        <a class="nav-link" href="<?= courtEscape(courtUrl('/index.php?url=venue/browseVenues')) ?>">Venues</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/index.php?url=home/index#how-it-works">How It Works</a>
+                        <a class="nav-link" href="<?= courtEscape(courtUrl('/index.php?url=home/index#how-it-works')) ?>">How It Works</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/index.php?url=chat/index">Chat</a>
+                        <a class="nav-link" href="<?= courtEscape(courtUrl('/index.php?url=chat/index')) ?>">Chat</a>
                     </li>
                 </ul>
             </div>
@@ -140,7 +140,7 @@
 
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h2 class="h4 fw-bold mb-0">Upcoming Bookings</h2>
-                        <a href="/index.php?url=venue/browseVenues" class="small">
+                        <a href="<?= courtEscape(courtUrl('/index.php?url=venue/browseVenues')) ?>" class="small">
                             Browse Venues →
                         </a>
                     </div>
@@ -148,14 +148,14 @@
 <?php $rows=$upcomingBookings; ?><?php foreach ($rows as $b): ?>
 <div class="card shadow-sm mb-3"><div class="card-body"><div class="d-flex flex-column flex-sm-row gap-3">
 <img src="<?= courtEscape(courtImage($b)) ?>" class="booking-image" alt="<?= courtEscape($b['venueName']) ?>">
-<div class="flex-grow-1"><h5 class="fw-bold"><?= courtEscape($b['venueName']) ?></h5><p class="text-secondary small mb-2"><?= courtEscape($b['courtName']) ?></p><p class="mb-2"><?= courtEscape($b['bookingDate'].' | '.$b['bookingTime']) ?></p><span class="badge <?= $b['status']==='upcoming'?'bg-success':'bg-secondary' ?>"><?= courtEscape(ucfirst($b['status'])) ?></span> <a class="small" href="/index.php?url=booking/myBookings">Manage booking</a></div></div></div></div>
+<div class="flex-grow-1"><h5 class="fw-bold"><?= courtEscape($b['venueName']) ?></h5><p class="text-secondary small mb-2"><?= courtEscape($b['courtName']) ?></p><p class="mb-2"><?= courtEscape($b['bookingDate'].' | '.$b['bookingTime']) ?></p><span class="badge <?= $b['status']==='upcoming'?'bg-success':'bg-secondary' ?>"><?= courtEscape(ucfirst($b['status'])) ?></span> <a class="small" href="<?= courtEscape(courtUrl('/index.php?url=booking/myBookings')) ?>">Manage booking</a></div></div></div></div>
 <?php endforeach; ?><?php if (!$rows): ?><p class="text-secondary">No bookings to display.</p><?php endif; ?>                    <!-- Booking History -->
                     <h2 class="h4 fw-bold mt-4 mb-3">Booking History</h2>
 
 <?php $rows=$bookingHistory; ?><?php foreach ($rows as $b): ?>
 <div class="card shadow-sm mb-3"><div class="card-body"><div class="d-flex flex-column flex-sm-row gap-3">
 <img src="<?= courtEscape(courtImage($b)) ?>" class="booking-image" alt="<?= courtEscape($b['venueName']) ?>">
-<div class="flex-grow-1"><h5 class="fw-bold"><?= courtEscape($b['venueName']) ?></h5><p class="text-secondary small mb-2"><?= courtEscape($b['courtName']) ?></p><p class="mb-2"><?= courtEscape($b['bookingDate'].' | '.$b['bookingTime']) ?></p><span class="badge <?= $b['status']==='upcoming'?'bg-success':'bg-secondary' ?>"><?= courtEscape(ucfirst($b['status'])) ?></span> <a class="small" href="/index.php?url=booking/myBookings">Manage booking</a></div></div></div></div>
+<div class="flex-grow-1"><h5 class="fw-bold"><?= courtEscape($b['venueName']) ?></h5><p class="text-secondary small mb-2"><?= courtEscape($b['courtName']) ?></p><p class="mb-2"><?= courtEscape($b['bookingDate'].' | '.$b['bookingTime']) ?></p><span class="badge <?= $b['status']==='upcoming'?'bg-success':'bg-secondary' ?>"><?= courtEscape(ucfirst($b['status'])) ?></span> <a class="small" href="<?= courtEscape(courtUrl('/index.php?url=booking/myBookings')) ?>">Manage booking</a></div></div></div></div>
 <?php endforeach; ?><?php if (!$rows): ?><p class="text-secondary">No bookings to display.</p><?php endif; ?>                </section>
 
                 <!-- My Profile -->
@@ -187,7 +187,7 @@
     </footer>
 
     <!-- Bootstrap JS (Local) -->
-    <script src="/bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
+    <script src="<?= courtEscape(courtUrl('/bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js')) ?>"></script>
 
 </body>
 </html>

@@ -29,7 +29,7 @@ class AuthController extends Controller {
                     $_SESSION['venueID'] = $venue['venueID'];
                     $_SESSION['role'] = 'staff';
 
-                    header('Location: /index.php?url=dashboard/staffDashboard');
+                    header('Location: ' . courtUrl('/index.php?url=dashboard/staffDashboard'));
                     exit;
                 }
             }
@@ -46,7 +46,7 @@ class AuthController extends Controller {
 
                 unset($_SESSION['staffID'], $_SESSION['venueID']);
 
-                header('Location: /index.php?url=dashboard/dispatcher');
+                header('Location: ' . courtUrl('/index.php?url=dashboard/dispatcher'));
                 exit;
             }
         }
@@ -73,7 +73,7 @@ class AuthController extends Controller {
                 $userModel = $this->model('User');
 
                 if ($userModel->createUser($name, $email, $pass, $role)) {
-                    header('Location: /index.php?url=auth/login');
+                    header('Location: ' . courtUrl('/index.php?url=auth/login'));
                     exit;
                 }
 
@@ -88,7 +88,7 @@ class AuthController extends Controller {
 
     public function logout() {
         session_destroy();
-        header('Location: /index.php?url=home/index');
+        header('Location: ' . courtUrl('/index.php?url=home/index'));
         exit;
     }
 }
