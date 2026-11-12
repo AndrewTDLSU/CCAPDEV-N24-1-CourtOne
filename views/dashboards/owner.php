@@ -1,162 +1,35 @@
-<!-- Copy paste to comment -->
+<?php include_once __DIR__ . '/../partials/Header.php'; ?>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h3>My Venues</h3>
+    <a href="/index.php?url=venue/venueForm" class="btn btn-sm btn-success">+ Add Venue</a>
+</div>
 
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Owner Dashboard</title>
+<div class="row g-3">
+    <?php foreach ($venues as $v): ?>
+        <div class="col-md-6">
+            <div class="card p-3 shadow-sm border bg-white">
 
-        <!-- bootstrap link -->
-        <link rel="stylesheet" href="bootstrap-5.3.8-dist/css/bootstrap.min.css"> <!-- bootstrap css for grid -->
-        <!--<script src="[filepath]"></script>  bootstrap js script, Not used yet, remove when unncessary -->
+                <h5 class="fw-bold">
+                    <?php echo htmlspecialchars($v['venueName'], ENT_QUOTES, 'UTF-8'); ?>
+                </h5>
 
-        <!-- Custom CSS -->
-        <link rel="stylesheet" href="customCSS/style.css"> 
-        <link rel="stylesheet" href="customCSS/ownerMgmt.css"> 
-   
-        <link rel="stylesheet" href="customCSS/darkMode.css">
-        <script src="customScripts/theme.js"></script>
-    </head>
+                <p class="text-muted small mb-3">
+                    Address: <?php echo htmlspecialchars($v['address'], ENT_QUOTES, 'UTF-8'); ?>
+                </p>
 
-    <body>
-        <!-- Navigation -->
-        <header class="container">
-            <nav class="navbar navbar-expand-lg py-3" aria-label="Main navigation">
-                <a class="navbar-brand fw-bold" href="index.html">CourtOne</a>
+                <form action="/index.php?url=venue/addCourt/<?php echo $v['venueID']; ?>" method="POST" class="d-flex gap-2 mb-3">
+                    <input type="text" name="courtName" placeholder="New court name" class="form-control" required>
+                    <button type="submit" class="btn btn-sm btn-success">Add Court</button>
+                </form>
 
-                <div class="d-flex gap-2 ms-auto order-lg-3">
-                    
-                    <!-- Temporary: to access dashboards w/out login and account roles -->
-                    <div class="dropdown position-relative">
-                        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                            Dashboard
-                        </button>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="userDashboard.html">User Dashboard</a></li>
-                            <li><a class="dropdown-item" href="staffDashboard.html">Staff Dashboard</a></li>
-                            <li><a class="dropdown-item" href="ownerDashboard.html">Owner Dashboard</a></li>
-                            <li><a class="dropdown-item" href="adminDashboard.html">Admin Dashboard</a></li>
-                        </ul>
-                    </div>
-
-                    <a href="login.html" class="btn btn-primary">Sign In</a>
-
-                    <button class="navbar-toggler" type="button"
-                            data-bs-toggle="collapse" data-bs-target="#mainMenu"
-                            aria-controls="mainMenu" aria-expanded="false"
-                            aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
+                <div class="d-flex gap-2">
+                    <a href="/index.php?url=venue/viewVenue/<?php echo $v['venueID']; ?>" class="btn btn-sm btn-dark">View Availability</a>
+                    <a class="btn btn-outline-primary btn-sm" href="/index.php?url=venue/venueStatistics/<?= (int)$v['venueID'] ?>">Statistics</a><a href="/index.php?url=staff/showAllStaff/<?php echo $v['venueID']; ?>" class="btn btn-sm btn-outline-dark">Manage Staff</a>
                 </div>
 
-                <div class="collapse navbar-collapse order-lg-2" id="mainMenu">
-                    <ul class="navbar-nav mx-lg-auto gap-lg-3">
-                        <li class="nav-item">
-                            <a class="nav-link" href="index.html">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="browseVenues.html">Venues</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="index.html#how-it-works">How It Works</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="chat.html">Chat</a>
-                        </li>
-                    </ul>
-                </div>
-            </nav>
-        </header>
-        
-        <!-- Bootstrap grid container -->
-        <main class="container my-4">
-
-            <!-- Header container image -->
-            <div id="main-graphic" class="row align-items-center bg-light rounded pb-5 pt-2 m-1">        
-                <div class="col-7 col-md-6"> 
-                    <h2>Manage <span class="text-primary">Your Venue</span> Now</h2>
-                    <p class="text-secondary">
-                        View venue statistics, Manage your staff, Add, edit, and/or delete your venue/s.
-                    </p>
-                </div>
-                <div class="col-5 col-md-6 text-center">
-                    <img src="media/icons/sports.png" alt="icon not found..." class="img-fluid" />
-                </div>
-            </div>            
-            
-            <!-- "Available venues" text -->
-            <div class="d-flex justify-content-between align-items-center mb-3 my-2">
-                <h2 class="h4 fw-bold mb-0">Available Venues</h2>
-                <a href="manageStaff.html" class="text-decoration-none">
-                    Manage Staff →
-                </a>
             </div>
+        </div>
+    <?php endforeach; ?>
+</div>
 
-            <!-- List of owned venues displayed using bootstrap card -->
-            <div class="row g-4">
-                <!-- Add venue card (clickable) -->
-                <div id="add-venue-card" class="col-6 col-lg-3 ">
-                    <a href="venueForm.html?from=ownerDashboard.html" class="text-decoration-none text-reset card-link">
-                        <div class="box-shadow card text-center h-100 hov-card" >
-                            <img src="media/icons/add-venue.png" class="card-img-top" alt="icon not found"  >
-                            <p><strong >Add a venue</strong></p>
-                        </div>
-                    </a>  
-                </div> 
-                
-                <!-- only one card should be coded, the rest should be displayed by JS/php -->
-                <div id="venue-card" class="col-6 col-lg-3 ">
-                    <div class="card h-100 box-shadow" >
-                        <img src="media/venues/pasay-sports-complex.jpg" id="venue-image" class="card-img-top" alt="photo not found" height="200" > 
-                        <div class="card-body">
-                            <h4 id="venue-name" class="card-title">Pasay Sports Complex</h4>
-                            <p id="venue-address" class="card-text">GXWV+39H, Derham, Pasay City, Metro Manila</p>
-
-                            <a href="manageVenue.html"><button type="button" class="btn btn-primary">View Statistics</button></a>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="venue-card" class="col-6 col-lg-3 ">
-                    <div class="card h-100 box-shadow" >
-                        <img src="media/venues/playground-by-cloverleaf.jpg" id="venue-image" class="card-img-top" alt="photo not found" height="200" > 
-                        <div class="card-body">
-                            <h4 id="venue-name" class="card-title">The Playground by Cloverleaf</h4>
-                            <p id="venue-address" class="card-text">2499-2545 P. Zamora St, Manila, Metro Manila</p>
-
-                            <a href="manageVenue.html"><button type="button" class="btn btn-primary">View Statistics</button></a>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="venue-card" class="col-6 col-lg-3 ">
-                    <div class="card h-100 box-shadow" >
-                        <img src="media/venues/koliseum-ng-bayan.jpg" id="venue-image" class="card-img-top" alt="photo not found" height="200" > 
-                        <div class="card-body">
-                            <h4 id="venue-name" class="card-title">Sports Complex (Koliseum ng Bayan)</h4>
-                            <p id="venue-address" class="card-text">H236+VHR, Washington, Makati City, Metro Manila</p>
-
-                            <a href="manageVenue.html"><button type="button" class="btn btn-primary">View Statistics</button></a>
-                        </div>
-                    </div>
-                </div>
-                
-            </div>
-
-        </main>  
-
-        <!-- Footer -->
-        <footer class="container border-top py-3 mt-5">
-            <p class="text-secondary small mb-0">
-                &copy; 2026 CourtOne. All rights reserved.
-            </p>
-        </footer>
-        
-        <script src="bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
-</body>
-
-    
-</html>
-
-
+<?php include_once __DIR__ . '/../partials/Footer.php'; ?>

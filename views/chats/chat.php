@@ -5,7 +5,7 @@
 
 <!-- GET = choose who to chat with (no database change). -->
 <form action="index.php" method="GET">
-    <input type="hidden" name="url" value="booking/chat">
+    <input type="hidden" name="url" value="chat/index">
 
     <label for="receiverID">Chat with:</label>
     <select name="receiverID" id="receiverID" required>
@@ -38,7 +38,7 @@
     <?php endforeach; ?>
 
     <!-- POST = save a new message in the database. -->
-    <form action="index.php?url=booking/chat" method="POST">
+    <form action="index.php?url=chat/index" method="POST">
         <input type="hidden" name="receiverID" value="<?= (int)$receiverID ?>">
         <input type="text" name="message" maxlength="500" required placeholder="Type a message">
         <button type="submit">Send</button>

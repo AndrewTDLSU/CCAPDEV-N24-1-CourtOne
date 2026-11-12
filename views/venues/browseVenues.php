@@ -1,142 +1,41 @@
+<?php include_once __DIR__ . '/../partials/Header.php'; ?>
 
-<!DOCTYPE html>
-<html>
-<head>
-    <title>CourtOne Venues</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="customCSS/style.css">
-    <link rel="stylesheet" href="bootstrap-5.3.8-dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="customCSS/browseVenues.css">
-    <link rel="stylesheet" href="customCSS/darkMode.css">
-    <script src="customScripts/theme.js"></script>
-</head>
+<h2>Browse Sports Venues</h2>
 
-<body>
+<!-- GET is used because searching does not change the database. -->
+<form action="index.php" method="GET" class="row g-2 mb-4">
+    <input type="hidden" name="url" value="venue/browseVenues">
 
-    <header class="container">
-        <nav class="navbar navbar-expand-lg py-3" aria-label="Main navigation">
-            <a class="navbar-brand fw-bold" href="index.html">CourtOne</a>
+    <input type="text" name="q" aria-label="Search venue or location" class="form-control" placeholder="Search venue or location"
+           value="<?php echo htmlspecialchars($search, ENT_QUOTES, 'UTF-8'); ?>">
 
-            <div class="d-flex gap-2 ms-auto order-lg-3">
-                
-                <!-- Temporary: to access dashboards w/out login and account roles -->
-                <div class="dropdown position-relative">
-                    <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                        Dashboard
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href="userDashboard.html">User Dashboard</a></li>
-                        <li><a class="dropdown-item" href="staffDashboard.html">Staff Dashboard</a></li>
-                        <li><a class="dropdown-item" href="ownerDashboard.html">Owner Dashboard</a></li>
-                        <li><a class="dropdown-item" href="adminDashboard.html">Admin Dashboard</a></li>
-                    </ul>
-                </div>
+    <select name="sport" aria-label="Sport" class="form-select">
+        <?php foreach (['all', 'Basketball', 'Badminton', 'Pickleball', 'Gymnastics', 'Futsal'] as $option): ?>
+            <option value="<?php echo $option; ?>" <?php echo $sport === $option ? 'selected' : ''; ?>>
+                <?php echo $option === 'all' ? 'All Sports' : $option; ?>
+            </option>
+        <?php endforeach; ?>
+    </select>
 
-                <a href="login.html" class="btn btn-primary">Sign In</a>
+    <button type="submit" class="btn btn-primary">Search</button>
+    <a href="index.php?url=venue/browseVenues">Clear</a>
+</form>
 
-                <button class="navbar-toggler" type="button"
-                        data-bs-toggle="collapse" data-bs-target="#mainMenu"
-                        aria-controls="mainMenu" aria-expanded="false"
-                        aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-            </div>
+<p><?php echo count($venues); ?> venue(s) found</p>
 
-            <div class="collapse navbar-collapse order-lg-2" id="mainMenu">
-                <ul class="navbar-nav mx-lg-auto gap-lg-3">
-                    <li class="nav-item">
-                        <a class="nav-link" href="index.html">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="browseVenues.html">Venues</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="index.html#how-it-works">How It Works</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="chat.html">Chat</a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-    </header>
+<?php if (empty($venues)): ?>
+    <p>No venues match your search.</p>
+<?php endif; ?>
 
-    <main>
-        <h1>Browse Sports Venues</h1>
-        <p>Find sports courts near you!</p>
+<div class="row g-4"><?php foreach ($venues as $venue): ?><div class="col-md-6 col-lg-4">
+    <div class="card p-3 h-100">
+        <h3><?php echo htmlspecialchars($venue['venueName'], ENT_QUOTES, 'UTF-8'); ?></h3>
+        <p>Sport: <?php echo htmlspecialchars($venue['sportsType'], ENT_QUOTES, 'UTF-8'); ?></p>
+        <p>Location: <?php echo htmlspecialchars($venue['address'], ENT_QUOTES, 'UTF-8'); ?></p>
+        <a class="btn btn-primary" href="index.php?url=venue/viewVenue/<?php echo (int)$venue['venueID']; ?>">
+            View Available Slots
+        </a>
+    </div>
+</div><?php endforeach; ?></div>
 
-        <!-- Search and Filter -->
-        <div class="filters">
-
-            <input type="text" id="searchInput"
-                   placeholder="Search venues or locations"
-                   oninput="filterVenues()">
-
-            <select id="sportFilter" onchange="filterVenues()">
-                <option value="all">All Sports</option>
-                <option value="basketball">Basketball</option>
-                <option value="gymnastics">Gymnastics</option>
-                <option value="badminton">Badminton</option>
-                <option value="futsal">Futsal</option>
-            </select>
-
-        </div>
-
-        <h2>Available Venues</h2>
-        <p id="count">4 venues found</p>
-
-        <div class="grid">
-
-            
-            <div class="venue" data-sport="basketball">
-                <img src="media/ph-arena.jpg" alt="PH Arena">
-                <h3>PH Arena</h3>
-                <p>Basketball</p>
-                <p>Location: Bulacan</p>
-                <a href="viewVenue.html?venue=ph-arena">
-                    View Available Slots
-                </a>
-            </div>
-
-            <div class="venue" data-sport="gymnastics">
-                <img src="media/gymnasium.jpg" alt="Gymnasium">
-                <h3>Gymnasium</h3>
-                <p>Gymnastics</p>
-                <p>Location: Quezon City</p>
-                <a href="viewVenue.html?venue=gymnasium">
-                    View Available Slots
-                </a>
-            </div>
-
-            
-            <div class="venue" data-sport="badminton">
-                <img src="media/araneta-coliseum.jpg" alt="Araneta Coliseum">
-                <h3>Araneta Coliseum</h3>
-                <p>Badminton</p>
-                <p>Location: Quezon City</p>
-                <a href="viewVenue.html?venue=araneta-coliseum">
-                    View Available Slots
-                </a>
-            </div>
-
-           
-            <div class="venue" data-sport="futsal">
-                <img src="media/sports-complex.jpg" alt="Sports Complex">
-                <h3>Sports complex</h3>
-                <p>Futsal</p>
-                <p>Location: Pasig</p>
-                <a href="viewVenue.html?venue=sports-complex">
-                    View Available Slots
-                </a>
-            </div>
-
-        </div>
-
-    </main>
-
-    <script src="customScripts/browseVenues.js"></script>
-
-    <script src="bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
-
+<?php include_once __DIR__ . '/../partials/Footer.php'; ?>

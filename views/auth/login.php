@@ -1,67 +1,39 @@
-<!-- Copy paste to comment -->
+<?php require_once dirname(__DIR__) . '/partials/Header.php'; ?>
 
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Login</title>
+<div class="card auth-card">
+    <h2 class="text-center" style="color: #000000; font-size: 1.5rem; font-weight: 900; text-transform: uppercase; margin-bottom: 24px;">Sign In</h2>
 
-        <!-- bootstrap link -->
-        <link rel="stylesheet" href="bootstrap-5.3.8-dist/css/bootstrap.min.css"> <!-- bootstrap css for grid -->
-        <!--<script src="[filepath]"></script>  bootstrap js script, Not used yet, remove when unncessary -->
-
-        <link rel="stylesheet" href="customCSS/style.css"> <!-- Custom CSS -->
-    </head>
-
-    <body>
-        <div class="container my-4"> 
-
-            <!-- Logo and tagline (WIP) -->
-            <div class="row">
-                <div class="col-md-12 p-5 text-center">
-                    <h1>CourtOne</h1>
-                    <small>Court Booking Website</small>
-                </div>
-            </div>
-
-            <!-- Username and Password form -->
-            <div class="row g-4 justify-content-center">
-                <div class="col-12 col-sm-10 col-md-6 col-lg-4">
-                    <div class="card">
-                        <div class="card-body">
-                            <h2 class="text-center h4 mb-3">Login</h2>
-
-                            <!-- Show with JS when login fails (remove d-none) -->
-                            <div id="login-error" class="alert alert-danger d-none" role="alert">
-                                Incorrect email or password.
-                            </div>
-
-                            <form action="" method="POST" class="border rounded p-3">
-
-                                <div class="mb-3">
-                                    <label for="username" class="form-label">Username:</label>
-                                    <input type="text" id="username" name="username" value="" class="form-control autofocus" > <!-- removed required attributes to access index.html -->
-                                </div>
-
-                                <div class="mb-3">
-                                    <label for="password" class="form-label">Password:</label>
-                                    <input type="password" id="password" name="password" class="form-control" > <!-- removed required attributes to access index.html -->
-                                </div>
-
-                                <a href="index.html"><button type="button" class="btn btn-primary">Log In</button></a> <!-- achor link to index.html instead of type="submit" to skip backend for now -->
-                                
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <p class="text-center mt-2">New here? <span> <a href="signup.html">Sign up now</a> </span> </p>
-
+    <?php if (isset($error)): ?>
+        <div class="badge bg-danger">
+            <strong>Authentication Alert:</strong> <?php echo htmlspecialchars($error, ENT_QUOTES, 'UTF-8'); ?>
         </div>
-    </body>
-</html>
+    <?php endif; ?>
 
+    <form action="index.php?url=auth/login" method="POST">
+        <div class="mb-3">
+            <label class="form-label">Account portal</label>
+            <select name="loginType" class="form-select">
+                <option value="customer_portal">Customer, Owner or Admin</option>
+                <option value="staff_app">Staff</option>
+            </select>
+        </div>
 
+        <div class="mb-3">
+            <label class="form-label">Email Address</label>
+            <input type="email" name="email" class="form-control" placeholder="name@university.edu" required>
+        </div>
 
+        <div class="mb-3">
+            <label class="form-label">Password</label>
+            <input type="password" name="password" class="form-control" placeholder="Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="margin-top: 12px;">Log In</button>
+    </form>
+
+    <div class="text-center" style="margin-top: 24px; font-size: 0.85rem; font-weight: 700; text-transform: uppercase;">
+        <a href="index.php?url=auth/signup" style="color: #000000; text-decoration: underline;">Register an Account</a>
+    </div>
+</div>
+
+<?php require_once dirname(__DIR__) . '/partials/Footer.php'; ?>
