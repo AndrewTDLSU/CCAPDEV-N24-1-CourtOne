@@ -22,12 +22,12 @@ class AuthController extends Controller {
                 $venue = $staffModel->getVenueByStaff($user['userID']);
 
                 if ($venue) {
-                    session_regenerate_id(true);
+                    // [SESSION] session_regenerate_id(true);
 
-                    $_SESSION['userID'] = $user['userID'];
-                    $_SESSION['staffID'] = $user['userID'];
-                    $_SESSION['venueID'] = $venue['venueID'];
-                    $_SESSION['role'] = 'staff';
+                    // [SESSION] $_SESSION['userID'] = $user['userID'];
+                    // [SESSION] $_SESSION['staffID'] = $user['userID'];
+                    // [SESSION] $_SESSION['venueID'] = $venue['venueID'];
+                    // [SESSION] $_SESSION['role'] = 'staff';
 
                     header('Location: /index.php?url=dashboard/staffDashboard');
                     exit;
@@ -39,12 +39,12 @@ class AuthController extends Controller {
 
             if ($user && in_array($user['userType'], ['user', 'court_owner', 'admin'], true)) {
 
-                session_regenerate_id(true);
+                // [SESSION] session_regenerate_id(true);
 
-                $_SESSION['userID'] = $user['userID'];
-                $_SESSION['role'] = $user['userType'];
+                // [SESSION] $_SESSION['userID'] = $user['userID'];
+                // [SESSION] $_SESSION['role'] = $user['userType'];
 
-                unset($_SESSION['staffID'], $_SESSION['venueID']);
+                // [SESSION] unset($_SESSION['staffID'], $_SESSION['venueID']);
 
                 header('Location: /index.php?url=dashboard/dispatcher');
                 exit;
@@ -83,9 +83,8 @@ class AuthController extends Controller {
 
 
     public function logout() {
-        session_destroy();
+        // [SESSION] session_destroy();
         header('Location: /index.php?url=home/index');
         exit;
     }
 }
-

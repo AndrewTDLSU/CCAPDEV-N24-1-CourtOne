@@ -66,10 +66,11 @@ public function browseVenues() {
     }
 
     public function venueForm() {
-        if (!isset($_SESSION['userID']) || ($_SESSION['role'] ?? '') !== 'court_owner') {
-            http_response_code(403);
-            die('Only venue owners can register venues.');
-        }
+        // [SESSION] if (!isset($_SESSION['userID']) || ($_SESSION['role'] ?? '') !== 'court_owner') {
+            // [SESSION] http_response_code(403);
+            // [SESSION] die('Only venue owners can register venues.');
+        // [SESSION] }
+        $tempOwnerID = 2; // [TEMP]
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $venueModel = $this->model('Venue');
@@ -81,7 +82,7 @@ public function browseVenues() {
                 $_POST['sportsType'],
                 $_POST['openHour'],
                 $_POST['closeHour'],
-                $_SESSION['userID'],
+                $tempOwnerID, // [SESSION] was: $_SESSION['userID'],
                 $_POST['hourlyRate']
             );
 
@@ -128,13 +129,14 @@ public function browseVenues() {
 
     
     public function addCourt($venueID) {
-        if (!isset($_SESSION['userID']) || ($_SESSION['role'] ?? '') !== 'court_owner') {
-            die('Only venue owners can add courts.');
-        }
+        // [SESSION] if (!isset($_SESSION['userID']) || ($_SESSION['role'] ?? '') !== 'court_owner') {
+            // [SESSION] die('Only venue owners can add courts.');
+        // [SESSION] }
+        $tempOwnerID = 2; // [TEMP]
 
         $venueModel = $this->model('Venue');
 
-        if (!$venueModel->isVenueOwner($venueID, $_SESSION['userID'])) {
+        if (!$venueModel->isVenueOwner($venueID, $tempOwnerID)) { // [SESSION] was: if (!$venueModel->isVenueOwner($venueID, $_SESSION['userID'])) {
             die('This is not your venue.');
         }
 
@@ -162,12 +164,14 @@ public function browseVenues() {
 
     public function manageVenues() {
         $venueModel = $this->model('Venue');
-        $role = $_SESSION['role'] ?? '';
+        $tempRole = 'court_owner'; // [TEMP]
+        $tempOwnerID = 2; // [TEMP]
+        $role = $tempRole; // [SESSION] was: $role = $_SESSION['role'] ?? '';
 
         if ($role === 'admin') {
             $venues = $venueModel->fetchAllVenues();
-        } elseif ($role === 'court_owner' && isset($_SESSION['userID'])) {
-            $venues = $venueModel->fetchVenuesByOwner($_SESSION['userID']);
+        } elseif ($role === 'court_owner' && isset($tempOwnerID)) { // [SESSION] was: } elseif ($role === 'court_owner' && isset($_SESSION['userID'])) {
+            $venues = $venueModel->fetchVenuesByOwner($tempOwnerID); // [SESSION] was: $venues = $venueModel->fetchVenuesByOwner($_SESSION['userID']);
         } else {
             http_response_code(403);
             die('Access denied.');
@@ -186,9 +190,11 @@ public function browseVenues() {
     public function venueStatistics($venueID) {
         $venueModel = $this->model('Venue');
 
-        if (!isset($_SESSION['userID']) ||
-            ($_SESSION['role'] ?? '') !== 'court_owner' ||
-            !$venueModel->isVenueOwner($venueID, $_SESSION['userID'])) {
+        $tempOwnerID = 2; // [TEMP]
+        // [SESSION] if (!isset($_SESSION['userID']) ||
+            // [SESSION] ($_SESSION['role'] ?? '') !== 'court_owner' ||
+            // [SESSION] !$venueModel->isVenueOwner($venueID, $_SESSION['userID'])) {
+        if (!$venueModel->isVenueOwner($venueID, $tempOwnerID)) { // [TEMP]
             http_response_code(403);
             die('You cannot view the statistics of this venue.');
         }
@@ -227,7 +233,7 @@ public function browseVenues() {
 
         $this->view('venues/manageVenues', [
             'pageTitle' => 'Venue Statistics',
-            'venues' => $venueModel->fetchVenuesByOwner($_SESSION['userID']),
+            'venues' => $venueModel->fetchVenuesByOwner($tempOwnerID), // [SESSION] was: 'venues' => $venueModel->fetchVenuesByOwner($_SESSION['userID']),
             'venue' => $venue,
             'stats' => $stats,
             'year' => $year,

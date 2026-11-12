@@ -9,10 +9,10 @@ class AdminController Extends Controller {
     // each venue's delete button posts to: index.php?url=admin/deleteVenue/{venueID}
     public function deleteVenue($venueID = null) {
         // admin role protection
-        if (($_SESSION['role'] ?? '') !== 'admin') {
-            http_response_code(403);
-            die('Only admins can delete venues.');
-        }
+        // [SESSION] if (($_SESSION['role'] ?? '') !== 'admin') {
+            // [SESSION] http_response_code(403);
+            // [SESSION] die('Only admins can delete venues.');
+        // [SESSION] }
  
         $back = '/index.php?url=dashboards/admin';
  
@@ -30,7 +30,7 @@ class AdminController Extends Controller {
  
         // venue not found error
         if (!$venue) {
-            $_SESSION['adminMessage'] = ['type' => 'danger', 'text' => 'Venue not found.'];
+            // [SESSION] $_SESSION['adminMessage'] = ['type' => 'danger', 'text' => 'Venue not found.'];
             header('Location: ' . $back);
             exit;
         }
@@ -40,10 +40,10 @@ class AdminController Extends Controller {
  
         // false = the venue still has bookings, so its history is kept
         if (!$venueModel->deleteVenue($venueID)) {
-            $_SESSION['adminMessage'] = [
-                'type' => 'danger',
-                'text' => '"' . $venue['venueName'] . '" cannot be deleted because it still has bookings.'
-            ];
+            // [SESSION] $_SESSION['adminMessage'] = [
+                // [SESSION] 'type' => 'danger',
+                // [SESSION] 'text' => '"' . $venue['venueName'] . '" cannot be deleted because it still has bookings.'
+            // [SESSION] ];
             header('Location: ' . $back);
             exit;
         }
@@ -57,7 +57,7 @@ class AdminController Extends Controller {
             }
         }
  
-        $_SESSION['adminMessage'] = ['type' => 'success', 'text' => '"' . $venue['venueName'] . '" was deleted.'];
+        // [SESSION] $_SESSION['adminMessage'] = ['type' => 'success', 'text' => '"' . $venue['venueName'] . '" was deleted.'];
         header('Location: ' . $back);
         exit;
     }
@@ -66,10 +66,10 @@ class AdminController Extends Controller {
     // each user's delete button posts to: index.php?url=admin/deleteUser/{userID}
     public function deleteUser($userID = null) {
         // admin role protection
-        if (($_SESSION['role'] ?? '') !== 'admin') {
-            http_response_code(403);
-            die('Only admins can delete users.');
-        }
+        // [SESSION] if (($_SESSION['role'] ?? '') !== 'admin') {
+            // [SESSION] http_response_code(403);
+            // [SESSION] die('Only admins can delete users.');
+        // [SESSION] }
  
         $back = '/index.php?url=dashboards/admin';
  
@@ -81,8 +81,9 @@ class AdminController Extends Controller {
         $userID = (int) ($userID ?? $_POST['userID'] ?? 0);
  
         // an admin deleting their own account would lock everyone out
-        if ($userID === (int) ($_SESSION['userID'] ?? 0)) {
-            $_SESSION['adminMessage'] = ['type' => 'danger', 'text' => 'You cannot delete your own account.'];
+        $tempAdminID = 1; // [TEMP]
+        if ($userID === $tempAdminID) { // [SESSION] was: if ($userID === (int) ($_SESSION['userID'] ?? 0)) {
+            // [SESSION] $_SESSION['adminMessage'] = ['type' => 'danger', 'text' => 'You cannot delete your own account.'];
             header('Location: ' . $back);
             exit;
         }
@@ -94,7 +95,7 @@ class AdminController Extends Controller {
  
         // user not found error
         if (!$user) {
-            $_SESSION['adminMessage'] = ['type' => 'danger', 'text' => 'User not found.'];
+            // [SESSION] $_SESSION['adminMessage'] = ['type' => 'danger', 'text' => 'User not found.'];
             header('Location: ' . $back);
             exit;
         }
@@ -115,15 +116,15 @@ class AdminController Extends Controller {
                 $staffModel->assignStaff($userID, $staffVenue['venueID']);
             }
  
-            $_SESSION['adminMessage'] = [
-                'type' => 'danger',
-                'text' => '"' . $user['name'] . '" cannot be deleted because the account still owns venues or has bookings or payments.'
-            ];
+            // [SESSION] $_SESSION['adminMessage'] = [
+                // [SESSION] 'type' => 'danger',
+                // [SESSION] 'text' => '"' . $user['name'] . '" cannot be deleted because the account still owns venues or has bookings or payments.'
+            // [SESSION] ];
             header('Location: ' . $back);
             exit;
         }
  
-        $_SESSION['adminMessage'] = ['type' => 'success', 'text' => '"' . $user['name'] . '" was deleted.'];
+        // [SESSION] $_SESSION['adminMessage'] = ['type' => 'success', 'text' => '"' . $user['name'] . '" was deleted.'];
         header('Location: ' . $back);
         exit;
     }

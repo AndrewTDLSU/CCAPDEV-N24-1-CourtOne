@@ -10,8 +10,11 @@
         <!--<script src="[filepath]"></script>  bootstrap js script, Not used yet, remove when unncessary -->
 
         <!-- Custom CSS -->
-        <link rel="stylesheet" href="customCSS/style.css"> 
-        <link rel="stylesheet" href="customCSS/ownerMgmt.css"> 
+        <link rel="stylesheet" href="public/css/style.css"> 
+        <link rel="stylesheet" href="public/css/ownerMgmt.css"> 
+
+        <link rel="stylesheet" href="public/css/darkMode.css">
+        <script src="public/js/theme.js"></script>
 
     </head>
 

@@ -12,11 +12,11 @@
         <!--<script src="[filepath]"></script>  bootstrap js script, Not used yet, remove when unncessary -->
 
         <!-- Custom CSS -->
-        <link rel="stylesheet" href="customCSS/style.css"> 
-        <link rel="stylesheet" href="customCSS/ownerMgmt.css"> 
+        <link rel="stylesheet" href="public/css/style.css"> 
+        <link rel="stylesheet" href="public/css/ownerMgmt.css"> 
    
-        <link rel="stylesheet" href="customCSS/darkMode.css">
-        <script src="customScripts/theme.js"></script>
+        <link rel="stylesheet" href="public/css/darkMode.css">
+        <script src="public/js/theme.js"></script>
     </head>
 
     <body>
@@ -32,15 +32,18 @@
                         <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
                             Dashboard
                         </button>
+                        
+                        <!-- Change to a button from dropdown, should go to the right dashboard based on correct $_SESSION['role'] -->
                         <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="userDashboard.html">User Dashboard</a></li>
-                            <li><a class="dropdown-item" href="staffDashboard.html">Staff Dashboard</a></li>
-                            <li><a class="dropdown-item" href="ownerDashboard.html">Owner Dashboard</a></li>
-                            <li><a class="dropdown-item" href="adminDashboard.html">Admin Dashboard</a></li>
+                            <li><a class="dropdown-item" href="index.php?url=dashboard/userDashboard">User Dashboard</a></li>
+                            <li><a class="dropdown-item" href="index.php?url=dashboard/staffDashboard">Staff Dashboard</a></li>
+                            <li><a class="dropdown-item" href="index.php?url=dashboard/ownerDashboard">Owner Dashboard</a></li>
+                            <li><a class="dropdown-item" href="index.php?url=dashboard/adminDashboard">Admin Dashboard</a></li>
                         </ul>
+
                     </div>
 
-                    <a href="login.html" class="btn btn-primary">Sign In</a>
+                    <a href="index.php?url=auth/login" class="btn btn-primary">Sign In</a>
 
                     <button class="navbar-toggler" type="button"
                             data-bs-toggle="collapse" data-bs-target="#mainMenu"
@@ -53,16 +56,16 @@
                 <div class="collapse navbar-collapse order-lg-2" id="mainMenu">
                     <ul class="navbar-nav mx-lg-auto gap-lg-3">
                         <li class="nav-item">
-                            <a class="nav-link" href="index.html">Home</a>
+                            <a class="nav-link active" href="index.php?url=home/index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="browseVenues.html">Venues</a>
+                            <a class="nav-link" href="index.php?url=venue/browseVenues">Venues</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="index.html#how-it-works">How It Works</a>
+                            <a class="nav-link" href="#how-it-works">How It Works</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="chat.html">Chat</a>
+                            <a class="nav-link" href="index.php?url=booking/chat">Chat</a>
                         </li>
                     </ul>
                 </div>
@@ -97,7 +100,7 @@
             <div class="row g-4">
                 <!-- Add venue card (clickable) -->
                 <div id="add-venue-card" class="col-6 col-lg-3 ">
-                    <a href="venueForm.html?from=ownerDashboard.html" class="text-decoration-none text-reset card-link">
+                    <a href="index.php?url=venues/venueForm?from=index.php?url=dashboard/ownerDashboard" class="text-decoration-none text-reset card-link">
                         <div class="box-shadow card text-center h-100 hov-card" >
                             <img src="media/icons/add-venue.png" class="card-img-top" alt="icon not found"  >
                             <p><strong >Add a venue</strong></p>
@@ -105,7 +108,7 @@
                     </a>  
                 </div> 
                 
-                <!-- only one card should be coded, the rest should be displayed by JS/php -->
+                <!-- only one card should be coded, the rest should be displayed by php foreach -->
                 <div id="venue-card" class="col-6 col-lg-3 ">
                     <div class="card h-100 box-shadow" >
                         <img src="media/venues/pasay-sports-complex.jpg" id="venue-image" class="card-img-top" alt="photo not found" height="200" > 
@@ -113,11 +116,12 @@
                             <h4 id="venue-name" class="card-title">Pasay Sports Complex</h4>
                             <p id="venue-address" class="card-text">GXWV+39H, Derham, Pasay City, Metro Manila</p>
 
-                            <a href="manageVenue.html"><button type="button" class="btn btn-primary">View Statistics</button></a>
+                            <a href="index.php?url=venues/manageVenue"><button type="button" class="btn btn-primary">View Statistics</button></a>
                         </div>
                     </div>
                 </div>
 
+                <!--  
                 <div id="venue-card" class="col-6 col-lg-3 ">
                     <div class="card h-100 box-shadow" >
                         <img src="media/venues/playground-by-cloverleaf.jpg" id="venue-image" class="card-img-top" alt="photo not found" height="200" > 
@@ -140,7 +144,7 @@
                             <a href="manageVenue.html"><button type="button" class="btn btn-primary">View Statistics</button></a>
                         </div>
                     </div>
-                </div>
+                </div> -->
                 
             </div>
 

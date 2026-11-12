@@ -11,7 +11,7 @@
         <link rel="stylesheet" href="bootstrap-5.3.8-dist/css/bootstrap.min.css"> <!-- bootstrap css for grid -->
         <!--<script src="[filepath]"></script>  bootstrap js script, Not used yet, remove when unncessary -->
 
-        <link rel="stylesheet" href="customCSS/style.css"> <!-- Custom CSS -->
+        <link rel="stylesheet" href="public/css/style.css"> <!-- Custom CSS -->
     </head>
 
     <body>
@@ -49,7 +49,7 @@
                                     <input type="password" id="password" name="password" class="form-control" > <!-- removed required attributes to access index.html -->
                                 </div>
 
-                                <a href="index.html"><button type="button" class="btn btn-primary">Log In</button></a> <!-- achor link to index.html instead of type="submit" to skip backend for now -->
+                                <a href="index.php?url=home/index"><button type="button" class="btn btn-primary">Log In</button></a> <!-- achor link to index.html instead of type="submit" to skip backend for now -->
                                 
                             </form>
                         </div>
@@ -57,7 +57,7 @@
                 </div>
             </div>
 
-            <p class="text-center mt-2">New here? <span> <a href="signup.html">Sign up now</a> </span> </p>
+            <p class="text-center mt-2">New here? <span> <a href="index.php?url=auth/signup">Sign up now</a> </span> </p>
 
         </div>
     </body>

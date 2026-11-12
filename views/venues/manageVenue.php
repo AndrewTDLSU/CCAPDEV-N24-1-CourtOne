@@ -14,11 +14,11 @@
         <!--<script src="[filepath]"></script>  bootstrap js script, Not used yet, remove when unncessary -->
 
         <!-- Custom CSS -->
-        <link rel="stylesheet" href="customCSS/style.css"> 
-        <link rel="stylesheet" href="customCSS/ownerMgmt.css"> 
+        <link rel="stylesheet" href="public/css/style.css"> 
+        <link rel="stylesheet" href="public/css/ownerMgmt.css"> 
 
-        <link rel="stylesheet" href="customCSS/darkMode.css">
-        <script src="customScripts/theme.js"></script>
+        <link rel="stylesheet" href="public/css/darkMode.css">
+        <script src="public/js/theme.js"></script>
     </head>
 
     <body>
@@ -245,7 +245,7 @@
 
         <!-- scripts -->
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> 
-        <script src="customScripts/charts.js"></script>
+        <script src="public/js/charts.js"></script>
         
         <script src="bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
 </body>

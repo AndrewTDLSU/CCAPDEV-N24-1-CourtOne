@@ -456,7 +456,7 @@
             reservationActions.hidden = false;
             savePageState();
             renderSchedule();
-            window.location.href = "payment.html";
+            window.location.href = "index.php?url=bookings/payment/";
         });
 
         selectedDate = localDateString(dateAtOffset(0));

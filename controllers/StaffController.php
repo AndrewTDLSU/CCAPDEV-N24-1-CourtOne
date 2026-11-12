@@ -10,12 +10,13 @@ class StaffController Extends Controller {
     // display to /views/venues/manageStaff.php
     public function showAllStaff($venueID = null) {
         // check if session stored the user id and the correct role
-        if (!isset($_SESSION['userID']) || ($_SESSION['role'] ?? '') !== 'court_owner') {
-            http_response_code(403);
-            die('Only venue owners can manage staff.');
-        }
+        // [SESSION] if (!isset($_SESSION['userID']) || ($_SESSION['role'] ?? '') !== 'court_owner') {
+            // [SESSION] http_response_code(403);
+            // [SESSION] die('Only venue owners can manage staff.');
+        // [SESSION] }
+        $tempOwnerID = 2; // [TEMP]
  
-        $ownerID = $_SESSION['userID'];
+        $ownerID = $tempOwnerID; // [SESSION] was: $ownerID = $_SESSION['userID'];
  
         // no filter = all of the owner's venues
         $venueID = (int) ($venueID ?? $_GET['venueID'] ?? 0);
@@ -55,10 +56,11 @@ class StaffController Extends Controller {
     // form posts: name, email, password, venueID
     public function createStaff() {
         // check if session stored the user id and the correct role
-        if (!isset($_SESSION['userID']) || ($_SESSION['role'] ?? '') !== 'court_owner') {
-            http_response_code(403);
-            die('Only venue owners can create staff accounts.');
-        }
+        // [SESSION] if (!isset($_SESSION['userID']) || ($_SESSION['role'] ?? '') !== 'court_owner') {
+            // [SESSION] http_response_code(403);
+            // [SESSION] die('Only venue owners can create staff accounts.');
+        // [SESSION] }
+        $tempOwnerID = 2; // [TEMP]
  
         $back = '/index.php?url=staff/showAllStaff';
  
@@ -91,7 +93,7 @@ class StaffController Extends Controller {
         // owners can only add staff to their own venues
         $venueModel = $this->model('Venue');
  
-        if (!$venueModel->isVenueOwner($venueID, $_SESSION['userID'])) {
+        if (!$venueModel->isVenueOwner($venueID, $tempOwnerID)) { // [SESSION] was: if (!$venueModel->isVenueOwner($venueID, $_SESSION['userID'])) {
             http_response_code(403);
             die('This is not your venue.');
         }
