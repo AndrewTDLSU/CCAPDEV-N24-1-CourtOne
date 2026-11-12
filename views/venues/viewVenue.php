@@ -1,72 +1,127 @@
-<?php include_once __DIR__ . '/../partials/Header.php'; ?>
-<div class="card p-3 shadow-sm border bg-white mb-4">
-    <div class="row align-items-center">
-        <div class="col-md-8">
-            <h4 class="fw-bold mb-1"><?php echo htmlspecialchars($venue['venueName'], ENT_QUOTES, 'UTF-8'); ?></h4>
-            <p class="small text-muted mb-2"> Address: <?php echo htmlspecialchars($venue['address'], ENT_QUOTES, 'UTF-8'); ?></p>
-            <p class="small mb-0 text-dark"><?php echo htmlspecialchars($venue['description'], ENT_QUOTES, 'UTF-8'); ?></p>
-        </div>
-        <div class="col-md-4 text-md-end mt-3 mt-md-0 border-start-md px-3">
+<?php require_once __DIR__ . '/../partials/ViewHelpers.php'; ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Venue details | CourtOne</title>
+    <link rel="stylesheet" href="/public/css/style.css">
+    <link rel="stylesheet" href="/bootstrap-5.3.8-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/public/css/venueStyles.css">
+    <link rel="stylesheet" href="/public/css/darkMode.css">
+    <script src="/public/js/theme.js"></script>
+<link rel="stylesheet" href="/public/css/integration.css">
+</head>
+<body>
+    <div class="page-shell">
+        <header class="container">
+        <nav class="navbar navbar-expand-lg py-3" aria-label="Main navigation">
+            <a class="navbar-brand fw-bold" href="/index.php?url=home/index">CourtOne</a>
 
-        <form action="/index.php" method="GET" class="d-inline-block text-start w-100">
-            <input type="hidden" name="url" value="venue/viewVenue/<?php echo $venue['venueID']; ?>">
+            <div class="d-flex gap-2 ms-auto order-lg-3">
+                
+                <!-- Temporary: to access dashboards w/out login and account roles -->
+                <div class="dropdown position-relative">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                        Dashboard
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+<?php if ($role): ?><li><a class="dropdown-item" href="/index.php?url=dashboard/dispatcher">My Dashboard</a></li><?php endif; ?>
+<?php if ($role === 'user'): ?><li><a class="dropdown-item" href="/index.php?url=booking/myBookings">My Bookings</a></li><?php endif; ?>
+<?php if ($role === 'court_owner'): ?><li><a class="dropdown-item" href="/index.php?url=staff/showAllStaff">Manage Staff</a></li><?php endif; ?>
+<?php if (!$role): ?><li><a class="dropdown-item" href="/index.php?url=auth/login">Sign In</a></li><?php endif; ?>
+</ul>
+                </div>
 
-                <label class="form-label small fw-bold text-muted mb-1">Booking date</label>
-                <input type="date" name="date" value="<?php echo $targetDate; ?>" class="form-control form-control-sm text-center" onchange="this.form.submit()">
-            </form>
-        </div>
+                <a href="/index.php?url=auth/<?= $role ? 'logout' : 'login' ?>" class="btn btn-primary"><?= $role ? 'Sign Out' : 'Sign In' ?></a>
+
+                <button class="navbar-toggler" type="button"
+                        data-bs-toggle="collapse" data-bs-target="#mainMenu"
+                        aria-controls="mainMenu" aria-expanded="false"
+                        aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+            </div>
+
+            <div class="collapse navbar-collapse order-lg-2" id="mainMenu">
+                <ul class="navbar-nav mx-lg-auto gap-lg-3">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/index.php?url=home/index">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/index.php?url=venue/browseVenues">Venues</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/index.php?url=home/index#how-it-works">How It Works</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/index.php?url=chat/index">Chat</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+        <main>
+            <!-- Display a recovery message when the requested venue is missing or inactive. -->
+            <div id="not-found" class="notice" role="status" hidden>
+                This venue is unavailable or has been unlisted.
+                <a href="/index.php?url=venue/browseVenues">Browse other venues</a>.
+            </div>
+
+            <!-- JavaScript fills this section from the venue selected by the URL. -->
+            <div id="venue-content">
+                <!-- Displays selected venue image, attributes, and description. -->
+                <section class="venue-overview" aria-label="Venue information">
+                    <div class="hero-image-wrap">
+                        <img id="venue-image" src="<?= courtEscape(courtImage($images[0] ?? [])) ?>" alt="<?= courtEscape($venue['venueName']) ?>">
+                        <small id="venue-image-credit" class="photo-credit" hidden></small>
+                    </div>
+                    <div class="venue-info-panel">
+                        <h1 id="venue-name"><?= courtEscape($venue['venueName']) ?></h1>
+                        <h2 id="venue-sport"><?= courtEscape($venue['sportsType']) ?></h2>
+                        <ul class="venue-meta">
+                            <li><span class="icon" aria-hidden="true">●</span><span id="venue-location"><?= courtEscape($venue['address']) ?></span></li>
+                            <li><span class="icon sport-icon" aria-hidden="true">✳</span><span id="venue-sport-meta"><?= courtEscape($venue['sportsType']) ?></span></li>
+                            <li><span class="icon people-icon" aria-hidden="true">●●●</span><span id="venue-courts"><?= count($courts).' courts' ?></span></li>
+                        </ul>
+                        <p id="venue-description" class="venue-description"><?= courtEscape($venue['description']) ?></p>
+                    </div>
+                </section>
+
+                <!-- Displays dates, per-court availability, and the reservation action. -->
+                <section class="timeslot-section" aria-labelledby="timeslot-title">
+                    <h2 id="timeslot-title">Available Timeslots</h2>
+                    <p class="section-intro">Select a date and time to view available courts.</p>
+
+                    <!-- Use a date strip and scrollable availability table on larger screens. -->
+                    <div class="desktop-schedule">
+                        <div class="date-toolbar">
+                            <a class="date-arrow" aria-label="Previous dates" href="/index.php?url=venue/viewVenue/<?= (int)$venue['venueID'] ?>&amp;date=<?= date('Y-m-d',strtotime($targetDate.' -5 days')) ?>">‹</a>
+                            <div id="date-strip" class="date-strip" aria-label="Choose a date"><?php for($offset=0;$offset<5;$offset++): $date=date('Y-m-d',strtotime($targetDate.' +'.$offset.' days')); ?><a class="date-choice" aria-pressed="<?= $offset===0?'true':'false' ?>" href="/index.php?url=venue/viewVenue/<?= (int)$venue['venueID'] ?>&amp;date=<?= $date ?>"><span class="date-weekday"><?= date('D',strtotime($date)) ?></span><span class="date-label"><?= date('M j',strtotime($date)) ?></span></a><?php endfor; ?></div>
+                            <a class="date-arrow" aria-label="Next dates" href="/index.php?url=venue/viewVenue/<?= (int)$venue['venueID'] ?>&amp;date=<?= date('Y-m-d',strtotime($targetDate.' +5 days')) ?>">›</a>
+                        </div>
+                        <div class="table-scroll">
+                            <table id="availability-table" class="availability-table">
+                                <thead><tr><th>Time</th><?php foreach($courts as $c): ?><th><?= courtEscape($c['courtName']) ?></th><?php endforeach; ?></tr></thead>
+                                <?php $slots=[]; $start=strtotime($venue['openHour']); $end=strtotime($venue['closeHour']); if($end<=$start)$end+=86400; for($t=$start;$t<$end;$t+=3600)$slots[]=date('H:i:s',$t); ?><tbody><?php foreach($slots as $time): ?><tr><th><?= date('g:i A',strtotime($time)) ?></th><?php foreach($courts as $c): ?><td><?php $taken=isset($grid[$time][$c['courtID']]); $past=strtotime($targetDate.' '.$time)<=time(); ?><button type="button" class="slot-cell <?= $taken?'booked':($past?'past':'available') ?>" data-court="<?= (int)$c['courtID'] ?>" data-time="<?= $time ?>" data-label="<?= courtEscape($c['courtName'].' · '.$time) ?>" <?= $taken||$past?'disabled':'' ?>><?= $taken?'Booked':($past?'Past':'Available') ?></button></td><?php endforeach; ?></tr><?php endforeach; ?></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Expandable date cards and available slots on phones. -->
+                    <div id="mobile-date-list" class="mobile-date-list" aria-label="Available dates"><form method="get" action="/index.php"><input type="hidden" name="url" value="venue/viewVenue/<?= (int)$venue['venueID'] ?>"><label for="mobile-date">Booking date</label><input id="mobile-date" type="date" name="date" value="<?= courtEscape($targetDate) ?>" onchange="this.form.submit()"></form><div class="mobile-date-card expanded"><div class="mobile-date-row"><div class="calendar-icon" aria-hidden="true">▦</div><div class="mobile-date-copy"><h3><?= courtEscape($targetDate) ?></h3><p>Select a court and time</p></div></div><div class="mobile-slot-list"><?php foreach($slots as $time): foreach($courts as $c): ?><?php $taken=isset($grid[$time][$c['courtID']]); $past=strtotime($targetDate.' '.$time)<=time(); ?><button type="button" class="mobile-slot <?= $taken?'booked':($past?'past':'available') ?>" data-court="<?= (int)$c['courtID'] ?>" data-time="<?= $time ?>" data-label="<?= courtEscape($c['courtName'].' · '.$time) ?>" <?= $taken||$past?'disabled':'' ?>><?= courtEscape($c['courtName'].' · '.date('g:i A',strtotime($time))) ?></button><?php endforeach; endforeach; ?></div></div></div>
+
+                    <!-- Reveal booking details and reservation controls after a slot is selected. -->
+                    <form class="reservation-actions" action="/index.php?url=booking/reserve" method="post"><input type="hidden" name="date" value="<?= courtEscape($targetDate) ?>"><input type="hidden" name="courtID" id="selected-court"><input type="hidden" name="time" id="selected-time">
+                        <p id="booking-summary" class="booking-summary" aria-live="polite" hidden></p>
+                        <button id="reserve-button" class="reserve-button" type="submit" disabled>Reserve selected slot</button>
+                    </form>
+                </section>
+            </div>
+        </main>
     </div>
-</div>
-
-<?php if (!empty($images)): ?>
-<div class="row g-2 mb-4">
-    <?php foreach ($images as $img): ?>
-        <div class="col-3"><img src="<?php echo htmlspecialchars($img['imageFilePath'], ENT_QUOTES, 'UTF-8'); ?>" class="img-fluid border rounded shadow-xs w-100" style="height:90px; object-fit:cover;" alt="Facility Contextual Reference Graphic"></div>
-    <?php endforeach; ?>
-</div>
-<?php endif; ?>
-
-<!-- Core Real-Time 1-Hour Step Matrix Framework Grid (Rows: openHour to closeHour, Columns: Courts) -->
-<div class="card p-3 shadow-sm border bg-white table-responsive">
-    <table class="table table-bordered text-center align-middle small mb-0">
-        <thead class="table-dark">
-            <tr>
-                <th style="width: 160px;">Time</th>
-                <?php foreach ($courts as $c): ?>
-                    <th><?php echo htmlspecialchars($c['courtName'], ENT_QUOTES, 'UTF-8'); ?></th>
-                <?php endforeach; ?>
-            </tr>
-        </thead>
-        <tbody>
-            <?php
-            $start = strtotime($venue['openHour']);
-            $end   = strtotime($venue['closeHour']);
-            // Handles midnight closings programmatically using twenty-four hundred step thresholds
-            if ($venue['closeHour'] === '24:00:00' || $end < $start) { $end = strtotime('23:59:59') + 1; }
-
-            for ($time = $start; $time < $end; $time += 3600):
-                $timeSlotStr = date('H:i:s', $time);
-                $labelStr    = date('h:i A', $time);
-            ?>
-                <tr>
-                    <td class="table-secondary fw-bold text-dark"><?php echo $labelStr; ?></td>
-                    <?php foreach ($courts as $c): ?>
-                        <td>
-                            <?php if (isset($grid[$timeSlotStr][$c['courtID']])): ?>
-                                <button class="btn btn-xs btn-danger w-100 py-1 small" disabled>Booked</button>
-                            <?php else: ?>
-                                <form action="/index.php?url=booking/reserve" method="POST" class="m-0">
-                                    <input type="hidden" name="date" value="<?php echo $targetDate; ?>">
-                                    <input type="hidden" name="time" value="<?php echo $timeSlotStr; ?>">
-                                    <input type="hidden" name="courtID" value="<?php echo $c['courtID']; ?>">
-                                    <button type="submit" class="btn btn-xs btn-outline-success w-100 py-1 small">Available</button>
-                                </form>
-                            <?php endif; ?>
-                        </td>
-                    <?php endforeach; ?>
-                </tr>
-            <?php endfor; ?>
-        </tbody>
-    </table>
-</div>
-<?php include_once __DIR__ . '/../partials/Footer.php'; ?>
+    
+    <script src="/bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
+<script src="/public/js/integration.js"></script></body>
+</html>

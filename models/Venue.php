@@ -39,21 +39,21 @@ class Venue extends Model {
 
     // retreive all venues 
     public function fetchAllVenues() {
-        $stmt = $this->db->prepare("SELECT * FROM venues");
+        $stmt = $this->db->prepare("SELECT venues.*, (SELECT imageFilePath FROM images WHERE images.venueID = venues.venueID ORDER BY imageID LIMIT 1) AS imageFilePath FROM venues");
         $stmt->execute();
         return $stmt->fetchAll();
     }
  
     // get venue by ID
     public function fetchVenueByID($venueID) {
-        $stmt = $this->db->prepare("SELECT * FROM venues WHERE venueID = ?");
+        $stmt = $this->db->prepare("SELECT venues.*, (SELECT imageFilePath FROM images WHERE images.venueID = venues.venueID ORDER BY imageID LIMIT 1) AS imageFilePath FROM venues WHERE venueID = ?");
         $stmt->execute([$venueID]);
         return $stmt->fetch();
     }
  
     // all venues belonging to one owner (e.g. an owner's dashboard)
     public function fetchVenuesByOwner($ownerID) {
-        $stmt = $this->db->prepare("SELECT * FROM venues WHERE ownerID = ? ORDER BY venueName");
+        $stmt = $this->db->prepare("SELECT venues.*, (SELECT imageFilePath FROM images WHERE images.venueID = venues.venueID ORDER BY imageID LIMIT 1) AS imageFilePath FROM venues WHERE ownerID = ? ORDER BY venueName");
         $stmt->execute([$ownerID]);
         return $stmt->fetchAll();
     }
@@ -62,7 +62,7 @@ class Venue extends Model {
     public function fetchVenuesBySportsType($sportsType) {
         $this->assertValidSportsType($sportsType);
  
-        $stmt = $this->db->prepare("SELECT * FROM venues WHERE sportsType = ? ORDER BY venueName");
+        $stmt = $this->db->prepare("SELECT venues.*, (SELECT imageFilePath FROM images WHERE images.venueID = venues.venueID ORDER BY imageID LIMIT 1) AS imageFilePath FROM venues WHERE sportsType = ? ORDER BY venueName");
         $stmt->execute([$sportsType]);
         return $stmt->fetchAll();
     }

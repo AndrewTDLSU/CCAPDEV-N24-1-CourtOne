@@ -58,7 +58,7 @@ class Booking extends Model {
 
     // all bookings with court, venue and user names (good for an admin/staff list)
     public function getAllBookings() {
-        $sql = "SELECT b.*, c.courtName, v.venueName, u.name AS userName
+        $sql = "SELECT b.*, c.courtName, v.venueName, (SELECT imageFilePath FROM images WHERE images.venueID = v.venueID ORDER BY imageID LIMIT 1) AS imageFilePath, (SELECT imageFilePath FROM images WHERE images.venueID = v.venueID ORDER BY imageID LIMIT 1) AS imageFilePath, u.name AS userName
                 FROM bookings b
                 JOIN courts c ON b.courtID = c.courtID
                 JOIN venues v ON c.venueID = v.venueID
@@ -78,7 +78,7 @@ class Booking extends Model {
     // to retrieve the user's booking
     // optional $status filter: 'upcoming' | 'completed' | 'cancelled'
     public function getBookingByUserID($userID, $status = null) {
-        $sql = "SELECT b.*, c.courtName, v.venueName
+        $sql = "SELECT b.*, c.courtName, v.venueName, (SELECT imageFilePath FROM images WHERE images.venueID = v.venueID ORDER BY imageID LIMIT 1) AS imageFilePath, (SELECT imageFilePath FROM images WHERE images.venueID = v.venueID ORDER BY imageID LIMIT 1) AS imageFilePath
                 FROM bookings b
                 JOIN courts c ON b.courtID = c.courtID
                 JOIN venues v ON c.venueID = v.venueID
@@ -226,7 +226,7 @@ class Booking extends Model {
 
     // full booking details including, court, venue, paid amount, and payment status
     public function fetchBookingExtendedDetails($bookingID) {
-        $sql = "SELECT b.*, c.courtName, v.venueName, p.amount, p.status as paymentStatus 
+        $sql = "SELECT b.*, c.courtName, v.venueName, (SELECT imageFilePath FROM images WHERE images.venueID = v.venueID ORDER BY imageID LIMIT 1) AS imageFilePath, (SELECT imageFilePath FROM images WHERE images.venueID = v.venueID ORDER BY imageID LIMIT 1) AS imageFilePath, p.amount, p.status as paymentStatus 
                 FROM bookings b
                 JOIN courts c ON b.courtID = c.courtID
                 JOIN venues v ON c.venueID = v.venueID
