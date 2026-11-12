@@ -91,7 +91,7 @@ class DashboardController extends Controller {
     public function changeBookingStatus() {
         $this->restrictToRoles(['staff']);
 
-        $back = '/index.php?url=dashboard/staffDashboard';
+        $back = '/index.php?url=dashboards/staff';
 
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             header('Location: ' . $back);

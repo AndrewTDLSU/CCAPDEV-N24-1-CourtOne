@@ -1,23 +1,21 @@
-<?php require_once __DIR__ . '/../partials/ViewHelpers.php'; ?>
 
 <!DOCTYPE html>
 <html>
 <head>
     <title>CourtOne Venues</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/public/css/style.css">
-    <link rel="stylesheet" href="/bootstrap-5.3.8-dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/public/css/browseVenues.css">
-    <link rel="stylesheet" href="/public/css/darkMode.css">
-    <script src="/public/js/theme.js"></script>
-<link rel="stylesheet" href="/public/css/integration.css">
+    <link rel="stylesheet" href="customCSS/style.css">
+    <link rel="stylesheet" href="bootstrap-5.3.8-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="customCSS/browseVenues.css">
+    <link rel="stylesheet" href="customCSS/darkMode.css">
+    <script src="customScripts/theme.js"></script>
 </head>
 
 <body>
 
     <header class="container">
         <nav class="navbar navbar-expand-lg py-3" aria-label="Main navigation">
-            <a class="navbar-brand fw-bold" href="/index.php?url=home/index">CourtOne</a>
+            <a class="navbar-brand fw-bold" href="index.html">CourtOne</a>
 
             <div class="d-flex gap-2 ms-auto order-lg-3">
                 
@@ -27,14 +25,14 @@
                         Dashboard
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end">
-<?php if ($role): ?><li><a class="dropdown-item" href="/index.php?url=dashboard/dispatcher">My Dashboard</a></li><?php endif; ?>
-<?php if ($role === 'user'): ?><li><a class="dropdown-item" href="/index.php?url=booking/myBookings">My Bookings</a></li><?php endif; ?>
-<?php if ($role === 'court_owner'): ?><li><a class="dropdown-item" href="/index.php?url=staff/showAllStaff">Manage Staff</a></li><?php endif; ?>
-<?php if (!$role): ?><li><a class="dropdown-item" href="/index.php?url=auth/login">Sign In</a></li><?php endif; ?>
-</ul>
+                        <li><a class="dropdown-item" href="userDashboard.html">User Dashboard</a></li>
+                        <li><a class="dropdown-item" href="staffDashboard.html">Staff Dashboard</a></li>
+                        <li><a class="dropdown-item" href="ownerDashboard.html">Owner Dashboard</a></li>
+                        <li><a class="dropdown-item" href="adminDashboard.html">Admin Dashboard</a></li>
+                    </ul>
                 </div>
 
-                <a href="/index.php?url=auth/<?= $role ? 'logout' : 'login' ?>" class="btn btn-primary"><?= $role ? 'Sign Out' : 'Sign In' ?></a>
+                <a href="login.html" class="btn btn-primary">Sign In</a>
 
                 <button class="navbar-toggler" type="button"
                         data-bs-toggle="collapse" data-bs-target="#mainMenu"
@@ -47,16 +45,16 @@
             <div class="collapse navbar-collapse order-lg-2" id="mainMenu">
                 <ul class="navbar-nav mx-lg-auto gap-lg-3">
                     <li class="nav-item">
-                        <a class="nav-link" href="/index.php?url=home/index">Home</a>
+                        <a class="nav-link" href="index.html">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" href="/index.php?url=venue/browseVenues">Venues</a>
+                        <a class="nav-link active" href="browseVenues.html">Venues</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/index.php?url=home/index#how-it-works">How It Works</a>
+                        <a class="nav-link" href="index.html#how-it-works">How It Works</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/index.php?url=chat/index">Chat</a>
+                        <a class="nav-link" href="chat.html">Chat</a>
                     </li>
                 </ul>
             </div>
@@ -68,22 +66,77 @@
         <p>Find sports courts near you!</p>
 
         <!-- Search and Filter -->
-        <form class="filters" action="/index.php" method="get"><input type="hidden" name="url" value="venue/browseVenues">
+        <div class="filters">
 
             <input type="text" id="searchInput"
                    placeholder="Search venues or locations"
-                   name="q" value="<?= courtEscape($search) ?>" aria-label="Search venues or locations">
+                   oninput="filterVenues()">
 
-<select id="sportFilter" name="sport" aria-label="Sport"><?php foreach (['all','Basketball','Badminton','Gymnastics','Futsal','Pickleball'] as $option): ?><option value="<?= $option ?>" <?= $sport===$option?'selected':'' ?>><?= $option==='all'?'All Sports':$option ?></option><?php endforeach; ?></select><button class="btn btn-primary" type="submit">Search</button></form>
+            <select id="sportFilter" onchange="filterVenues()">
+                <option value="all">All Sports</option>
+                <option value="basketball">Basketball</option>
+                <option value="gymnastics">Gymnastics</option>
+                <option value="badminton">Badminton</option>
+                <option value="futsal">Futsal</option>
+            </select>
+
+        </div>
+
         <h2>Available Venues</h2>
-        <p id="count"><?= count($venues) ?> venues found</p>
+        <p id="count">4 venues found</p>
 
-<div class="grid"><?php foreach ($venues as $v): ?><div class="venue"><img src="<?= courtEscape(courtImage($v)) ?>" alt="<?= courtEscape($v['venueName']) ?>"><h3><?= courtEscape($v['venueName']) ?></h3><p><?= courtEscape($v['sportsType']) ?></p><p>Location: <?= courtEscape($v['address']) ?></p><a href="/index.php?url=venue/viewVenue/<?= (int)$v['venueID'] ?>">View Available Slots</a></div><?php endforeach; ?></div><?php if (!$venues): ?><p>No venues match your search.</p><?php endif; ?>
+        <div class="grid">
+
+            
+            <div class="venue" data-sport="basketball">
+                <img src="media/ph-arena.jpg" alt="PH Arena">
+                <h3>PH Arena</h3>
+                <p>Basketball</p>
+                <p>Location: Bulacan</p>
+                <a href="viewVenue.html?venue=ph-arena">
+                    View Available Slots
+                </a>
+            </div>
+
+            <div class="venue" data-sport="gymnastics">
+                <img src="media/gymnasium.jpg" alt="Gymnasium">
+                <h3>Gymnasium</h3>
+                <p>Gymnastics</p>
+                <p>Location: Quezon City</p>
+                <a href="viewVenue.html?venue=gymnasium">
+                    View Available Slots
+                </a>
+            </div>
+
+            
+            <div class="venue" data-sport="badminton">
+                <img src="media/araneta-coliseum.jpg" alt="Araneta Coliseum">
+                <h3>Araneta Coliseum</h3>
+                <p>Badminton</p>
+                <p>Location: Quezon City</p>
+                <a href="viewVenue.html?venue=araneta-coliseum">
+                    View Available Slots
+                </a>
+            </div>
+
+           
+            <div class="venue" data-sport="futsal">
+                <img src="media/sports-complex.jpg" alt="Sports Complex">
+                <h3>Sports complex</h3>
+                <p>Futsal</p>
+                <p>Location: Pasig</p>
+                <a href="viewVenue.html?venue=sports-complex">
+                    View Available Slots
+                </a>
+            </div>
+
+        </div>
+
     </main>
 
-    
+    <script src="customScripts/browseVenues.js"></script>
 
-    <script src="/bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
+    <script src="bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
 

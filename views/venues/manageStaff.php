@@ -1,4 +1,3 @@
-<?php require_once __DIR__ . '/../partials/ViewHelpers.php'; ?>
 
 <!-- Copy paste to comment -->
 
@@ -10,23 +9,22 @@
         <title>Manage Staff</title>
 
         <!-- bootstrap link -->
-        <link rel="stylesheet" href="/bootstrap-5.3.8-dist/css/bootstrap.min.css"> <!-- bootstrap css for grid -->
+        <link rel="stylesheet" href="bootstrap-5.3.8-dist/css/bootstrap.min.css"> <!-- bootstrap css for grid -->
         <!--<script src="[filepath]"></script>  bootstrap js script, Not used yet, remove when unncessary -->
 
         <!-- Custom CSS -->
-        <link rel="stylesheet" href="/public/css/style.css"> 
-        <link rel="stylesheet" href="/public/css/ownerMgmt.css"> 
+        <link rel="stylesheet" href="customCSS/style.css"> 
+        <link rel="stylesheet" href="customCSS/ownerMgmt.css"> 
         
-        <link rel="stylesheet" href="/public/css/darkMode.css">
-        <script src="/public/js/theme.js"></script>
-    <link rel="stylesheet" href="/public/css/integration.css">
-</head>
+        <link rel="stylesheet" href="customCSS/darkMode.css">
+        <script src="customScripts/theme.js"></script>
+    </head>
 
     <body>
         <!-- Navigation -->
         <header class="container">
             <nav class="navbar navbar-expand-lg py-3" aria-label="Main navigation">
-                <a class="navbar-brand fw-bold" href="/index.php?url=home/index">CourtOne</a>
+                <a class="navbar-brand fw-bold" href="index.html">CourtOne</a>
 
                 <div class="d-flex gap-2 ms-auto order-lg-3">
                     
@@ -36,14 +34,14 @@
                             Dashboard
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end">
-<?php if ($role): ?><li><a class="dropdown-item" href="/index.php?url=dashboard/dispatcher">My Dashboard</a></li><?php endif; ?>
-<?php if ($role === 'user'): ?><li><a class="dropdown-item" href="/index.php?url=booking/myBookings">My Bookings</a></li><?php endif; ?>
-<?php if ($role === 'court_owner'): ?><li><a class="dropdown-item" href="/index.php?url=staff/showAllStaff">Manage Staff</a></li><?php endif; ?>
-<?php if (!$role): ?><li><a class="dropdown-item" href="/index.php?url=auth/login">Sign In</a></li><?php endif; ?>
-</ul>
+                            <li><a class="dropdown-item" href="userDashboard.html">User Dashboard</a></li>
+                            <li><a class="dropdown-item" href="staffDashboard.html">Staff Dashboard</a></li>
+                            <li><a class="dropdown-item" href="ownerDashboard.html">Owner Dashboard</a></li>
+                            <li><a class="dropdown-item" href="adminDashboard.html">Admin Dashboard</a></li>
+                        </ul>
                     </div>
 
-                    <a href="/index.php?url=auth/<?= $role ? 'logout' : 'login' ?>" class="btn btn-primary"><?= $role ? 'Sign Out' : 'Sign In' ?></a>
+                    <a href="login.html" class="btn btn-primary">Sign In</a>
 
                     <button class="navbar-toggler" type="button"
                             data-bs-toggle="collapse" data-bs-target="#mainMenu"
@@ -56,16 +54,16 @@
                 <div class="collapse navbar-collapse order-lg-2" id="mainMenu">
                     <ul class="navbar-nav mx-lg-auto gap-lg-3">
                         <li class="nav-item">
-                            <a class="nav-link" href="/index.php?url=home/index">Home</a>
+                            <a class="nav-link" href="index.html">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/index.php?url=venue/browseVenues">Venues</a>
+                            <a class="nav-link" href="browseVenues.html">Venues</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/index.php?url=home/index#how-it-works">How It Works</a>
+                            <a class="nav-link" href="index.html#how-it-works">How It Works</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/index.php?url=chat/index">Chat</a>
+                            <a class="nav-link" href="chat.html">Chat</a>
                         </li>
                     </ul>
                 </div>
@@ -76,15 +74,15 @@
         <main class="container my-4">
 
             <div class="bg-light rounded px-3 py-2 mb-3">
-                <a href="/index.php?url=dashboard/ownerDashboard" class="text-decoration-none">← Back to Dashboard</a>
+                <a href="ownerDashboard.html" class="text-decoration-none">← Back to Dashboard</a>
             </div>
 
             <!-- title and venue filter -->
             <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
-                <h1 class="h4 mb-0">Manage staff</h1><?php if($error): ?><p class="alert alert-danger"><?= courtEscape($error) ?></p><?php endif; ?><?php if($success): ?><p class="alert alert-success">Staff account created.</p><?php endif; ?>
-                <form action="/index.php" method="get"><input type="hidden" name="url" value="staff/showAllStaff"><select name="venueID" onchange="this.form.submit()" id="venue-filter" class="form-select w-auto">
-                    <option value="0">All venues</option><?php foreach($venues as $v): ?><option value="<?= (int)$v['venueID'] ?>" <?= (int)$venueID===(int)$v['venueID']?'selected':'' ?>><?= courtEscape($v['venueName']) ?></option><?php endforeach; ?>
-                </select></form>
+                <h1 class="h4 mb-0">Manage staff</h1>
+                <select id="venue-filter" class="form-select w-auto">
+                    <option value="">All venues</option>
+                </select>
             </div>
 
             <div class="row g-4">
@@ -102,7 +100,17 @@
                                         <th></th>
                                     </tr>
                                 </thead>
-                                <tbody id="staff-list"><?php foreach($staffList as $staff): ?><tr><td><?= courtEscape($staff['name']) ?></td><td><?= courtEscape($staff['email']) ?></td><td><?= courtEscape($staff['venueName']) ?></td><td class="text-end"><button type="button" class="btn btn-sm btn-outline-danger" disabled title="Staff deletion is not available">Delete</button></td></tr><?php endforeach; ?><?php if(!$staffList): ?><tr><td colspan="4">No staff accounts for this selection.</td></tr><?php endif; ?></tbody>
+                                <tbody id="staff-list">
+                                    <tr>
+                                        <td>Staff name</td>
+                                        <td>email@...</td>
+                                        <td>Venue name</td>
+                                        <td class="text-end">
+                                            <button type="button" class="btn btn-sm btn-outline-danger">Delete</button>
+                                        </td>
+                                    </tr>
+                                    <!-- more rows to be generated by JS -->
+                                </tbody>
                             </table>
                         </div>
 
@@ -112,30 +120,30 @@
 
                 <!-- add staff form -->
                 <div class="col-12 col-md-5">
-                    <form id="staff-form" action="/index.php?url=staff/createStaff" method="post" class="border rounded p-3">
+                    <form id="staff-form" class="border rounded p-3">
                         <h2 class="h6 mb-3">Add staff account</h2>
 
                         <div>
                             <div class="row g-3">
                                 <div class="col-12">
                                     <label for="staff-name" class="form-label">Name</label>
-                                    <input type="text" name="name" id="staff-name" class="form-control" required>
+                                    <input type="text" id="staff-name" class="form-control" required>
                                 </div>
 
                                 <div class="col-12">
                                     <label for="staff-email" class="form-label">Email</label>
-                                    <input type="email" name="email" id="staff-email" class="form-control" required>
+                                    <input type="email" id="staff-email" class="form-control" required>
                                 </div>
 
                                 <div class="col-12">
                                     <label for="staff-password" class="form-label">Password</label>
-                                    <input type="password" name="password" id="staff-password" minlength="8" class="form-control" required>
+                                    <input type="password" id="staff-password" class="form-control" required>
                                 </div>
 
                                 <div class="col-12">
                                     <label for="staff-venue" class="form-label">Assign to venue</label>
-                                    <select name="venueID" id="staff-venue" class="form-select" required>
-                                        <option value="">Select</option><?php foreach($venues as $v): ?><option value="<?= (int)$v['venueID'] ?>" <?= (int)$venueID===(int)$v['venueID']?'selected':'' ?>><?= courtEscape($v['venueName']) ?></option><?php endforeach; ?>
+                                    <select id="staff-venue" class="form-select" required>
+                                        <option value="">Select</option>
                                     </select> <br>
                                     <div class="col-12">
                                         <button type="submit" class="btn btn-primary w-100">Create account</button>
@@ -157,7 +165,7 @@
             </p>
         </footer>
         
-        <script src="/bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
+        <script src="bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
     

@@ -1,4 +1,3 @@
-<?php require_once __DIR__ . '/../partials/ViewHelpers.php'; ?>
 <!-- Copy paste to comment -->
 
 <!-- Values and charts should change depending on what venue was selected -->
@@ -11,23 +10,22 @@
         <title>Manage Venue</title>
 
         <!-- bootstrap link -->
-        <link rel="stylesheet" href="/bootstrap-5.3.8-dist/css/bootstrap.min.css"> <!-- bootstrap css for grid -->
+        <link rel="stylesheet" href="bootstrap-5.3.8-dist/css/bootstrap.min.css"> <!-- bootstrap css for grid -->
         <!--<script src="[filepath]"></script>  bootstrap js script, Not used yet, remove when unncessary -->
 
         <!-- Custom CSS -->
-        <link rel="stylesheet" href="/public/css/style.css"> 
-        <link rel="stylesheet" href="/public/css/ownerMgmt.css"> 
+        <link rel="stylesheet" href="customCSS/style.css"> 
+        <link rel="stylesheet" href="customCSS/ownerMgmt.css"> 
 
-        <link rel="stylesheet" href="/public/css/darkMode.css">
-        <script src="/public/js/theme.js"></script>
-    <link rel="stylesheet" href="/public/css/integration.css">
-</head>
+        <link rel="stylesheet" href="customCSS/darkMode.css">
+        <script src="customScripts/theme.js"></script>
+    </head>
 
     <body>
         <!-- Navigation -->
         <header class="container">
             <nav class="navbar navbar-expand-lg py-3" aria-label="Main navigation">
-                <a class="navbar-brand fw-bold" href="/index.php?url=home/index">CourtOne</a>
+                <a class="navbar-brand fw-bold" href="index.html">CourtOne</a>
 
                 <div class="d-flex gap-2 ms-auto order-lg-3">
                     
@@ -37,14 +35,14 @@
                             Dashboard
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end">
-<?php if ($role): ?><li><a class="dropdown-item" href="/index.php?url=dashboard/dispatcher">My Dashboard</a></li><?php endif; ?>
-<?php if ($role === 'user'): ?><li><a class="dropdown-item" href="/index.php?url=booking/myBookings">My Bookings</a></li><?php endif; ?>
-<?php if ($role === 'court_owner'): ?><li><a class="dropdown-item" href="/index.php?url=staff/showAllStaff">Manage Staff</a></li><?php endif; ?>
-<?php if (!$role): ?><li><a class="dropdown-item" href="/index.php?url=auth/login">Sign In</a></li><?php endif; ?>
-</ul>
+                            <li><a class="dropdown-item" href="userDashboard.html">User Dashboard</a></li>
+                            <li><a class="dropdown-item" href="staffDashboard.html">Staff Dashboard</a></li>
+                            <li><a class="dropdown-item" href="ownerDashboard.html">Owner Dashboard</a></li>
+                            <li><a class="dropdown-item" href="adminDashboard.html">Admin Dashboard</a></li>
+                        </ul>
                     </div>
 
-                    <a href="/index.php?url=auth/<?= $role ? 'logout' : 'login' ?>" class="btn btn-primary"><?= $role ? 'Sign Out' : 'Sign In' ?></a>
+                    <a href="login.html" class="btn btn-primary">Sign In</a>
 
                     <button class="navbar-toggler" type="button"
                             data-bs-toggle="collapse" data-bs-target="#mainMenu"
@@ -57,16 +55,16 @@
                 <div class="collapse navbar-collapse order-lg-2" id="mainMenu">
                     <ul class="navbar-nav mx-lg-auto gap-lg-3">
                         <li class="nav-item">
-                            <a class="nav-link" href="/index.php?url=home/index">Home</a>
+                            <a class="nav-link" href="index.html">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/index.php?url=venue/browseVenues">Venues</a>
+                            <a class="nav-link" href="browseVenues.html">Venues</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/index.php?url=home/index#how-it-works">How It Works</a>
+                            <a class="nav-link" href="index.html#how-it-works">How It Works</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/index.php?url=chat/index">Chat</a>
+                            <a class="nav-link" href="chat.html">Chat</a>
                         </li>
                     </ul>
                 </div>
@@ -78,10 +76,10 @@
 
             <!-- Back to dashboard and Venue Name col size 12 -->
             <div id="nav-header" class="bg-light rounded p-3 my-3 text-center">
-                <span><a href="/index.php?url=dashboard/ownerDashboard" class="text-decoration-none">←Back to Venues</a></span> 
-                <span>|</span> <span><a href="/index.php?url=staff/showAllStaff" class="text-decoration-none"> Manage Staff </a> </span>
-                <span>|</span> <span><span class="text-secondary" title="Venue editing is not available">Edit Details (unavailable)</span> </span>
-                <span> | </span> <span id="venue-name-nav" class="text-decoration-none"><?= courtEscape($venue['venueName']) ?> </span> 
+                <span><a href="ownerDashboard.html" class="text-decoration-none">←Back to Venues</a></span> 
+                <span>|</span> <span><a href="manageStaff.html" class="text-decoration-none"> Manage Staff </a> </span>
+                <span>|</span> <span><a href="venueForm.html?from=manageVenue.html" class="text-decoration-none"> Edit Details </a> </span>
+                <span> | </span> <span id="venue-name-nav" class="text-decoration-none">Pasay Sports Complex </span> 
             </div>
 
 
@@ -90,19 +88,19 @@
             <div class="row p-3 my-3 g-2">
                 <div class="col-md-4 col-12">
                     <div class="card bg-light rounded">
-                        <p class="p-3"><strong>Total Revenue:</strong> PHP <span id="total-revenue"><?= number_format($stats['totalRevenue'],2) ?></span> </p>
+                        <p class="p-3"><strong>Total Revenue:</strong> PHP <span id="total-revenue">21000</span> </p>
                     </div>    
                 </div>        
 
                 <div class="col-md-4 col-12">
                     <div class="card bg-light rounded">
-                        <p class="p-3"><strong>Total Reservations:</strong> <span id="total-reservations"><?= (int)$stats['totalBookings'] ?></span> </p>
+                        <p class="p-3"><strong>Total Reservations:</strong> <span id="total-reservations">1090</span> </p>
                     </div> 
                 </div>   
 
                 <div class="col-md-4 col-12">
                     <div class="card bg-light rounded">
-                        <p class="p-3"><strong>Total Staff:</strong> <span id="total-staff"><?= (int)$stats['totalStaff'] ?></span> </p>
+                        <p class="p-3"><strong>Total Staff:</strong> <span id="total-staff">5</span> </p>
                     </div> 
                 </div> 
             </div> 
@@ -123,7 +121,10 @@
 
                             <div class="row">
                                 <label for="revyear"> Year </label>
-                                <select id="revyear" class="form-select" required><?php foreach($years as $option): ?><option value="<?= (int)$option ?>" <?= (int)$option===$year?'selected':'' ?>><?= (int)$option ?></option><?php endforeach; ?></select>
+                                <select id="revyear" class="form-select" required>
+                                    <option value="2025">2025</option>
+                                    <option value="2026">2026</option>
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -143,7 +144,10 @@
 
                             <div class="row">
                                 <label for="bookyear"> Year </label>
-                                <select id="bookyear" class="form-select" required><?php foreach($years as $option): ?><option value="<?= (int)$option ?>" <?= (int)$option===$year?'selected':'' ?>><?= (int)$option ?></option><?php endforeach; ?></select>
+                                <select id="bookyear" class="form-select" required>
+                                    <option value="2025">2025</option>
+                                    <option value="2026">2026</option>
+                                </select>
                             </div>   
                         </div>
                     </div>
@@ -164,12 +168,28 @@
                             <div class="row">
                                 <div class="col-6">
                                     <label for="courtmonth"> Month </label>
-                                    <select id="courtmonth" class="form-select" required><option value="0">All months</option><?php for($m=1;$m<=12;$m++): ?><option value="<?= $m ?>" <?= $m===$month?'selected':'' ?>><?= date('M',mktime(0,0,0,$m,1)) ?></option><?php endfor; ?></select>
+                                    <select id="courtmonth" class="form-select" required>
+                                        <option value="2025">Jan</option>
+                                        <option value="2026">Feb</option>
+                                        <option value="2026">Mar</option>
+                                        <option value="2026">Apr</option>
+                                        <option value="2026">May</option>
+                                        <option value="2026">Jun</option>
+                                        <option value="2026">Jul</option>
+                                        <option value="2026">Aug</option>
+                                        <option value="2026">Sept</option>
+                                        <option value="2026">Oct</option>
+                                        <option value="2026">Nov</option>
+                                        <option value="2026">Dec</option>
+                                    </select>
                                 </div>
 
                                 <div class="col-6">
                                     <label for="courtyear"> Year </label>
-                                    <select id="courtyear" class="form-select" required><?php foreach($years as $option): ?><option value="<?= (int)$option ?>" <?= (int)$option===$year?'selected':'' ?>><?= (int)$option ?></option><?php endforeach; ?></select>
+                                    <select id="courtyear" class="form-select" required>
+                                        <option value="2025">2025</option>
+                                        <option value="2026">2026</option>
+                                    </select>
                                 </div>
                             </div>   
                         </div>
@@ -199,13 +219,22 @@
                                 <th>Status</th>
                             </tr>
                         </thead>
-                        <tbody id="reservation-list"><?php foreach($recentBookings as $b): ?><tr><td><?= courtEscape($b['userName']) ?></td><td><?= courtEscape($b['userEmail']) ?></td><td><?= courtEscape($b['courtName']) ?></td><td><?= courtEscape($b['bookingDate'].' '.$b['bookingTime']) ?></td><td>PHP <?= number_format($b['paymentStatus']==='paid'?($b['amount']??0):0,2) ?></td><td><?= courtEscape($b['status']) ?></td></tr><?php endforeach; ?><?php if(!$recentBookings): ?><tr><td colspan="6">No reservations yet.</td></tr><?php endif; ?></tbody>
+                        <tbody id="reservation-list">
+                            <tr>
+                                <td>Andrew Tagalag</td>
+                                <td>andrew_tagalag@dlsu.edu.ph</td>
+                                <td>Court 1</td>
+                                <td>10/16/2026 0900</td>
+                                <td>PHP 500</td>
+                                <td>(Upcoming/Completed/Cancelled)</td>
+                            </tr>
+                        </tbody>
                         <!-- more rows to be generated by JS -->
                     </table>
                 </div>
             </div>
 
-        <section class="card mt-4"><div class="card-body"><h2 class="h5">Add a Court</h2><form method="post" action="/index.php?url=venue/addCourt/<?= (int)$venue['venueID'] ?>" class="d-flex gap-2"><input class="form-control" name="courtName" aria-label="Court name" placeholder="Court name" required><button class="btn btn-primary">Add Court</button></form></div></section></main>  
+        </main>  
 
         <!-- Footer -->
         <footer class="container border-top py-3 mt-5">
@@ -215,10 +244,10 @@
         </footer>
 
         <!-- scripts -->
-        <script type="application/json" id="venue-statistics"><?= json_encode(['venueID'=>$venue['venueID'],'year'=>$year,'month'=>$month,'revenue'=>$monthlyRevenue,'bookings'=>$monthlyBookings,'usage'=>$courtUsage],JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT) ?></script><script src="/public/js/statistics.js"></script> 
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> 
+        <script src="customScripts/charts.js"></script>
         
-        
-        <script src="/bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
+        <script src="bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
 
