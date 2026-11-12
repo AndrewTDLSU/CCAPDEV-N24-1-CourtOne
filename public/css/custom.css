@@ -1,0 +1,86 @@
+/* ==========================================================================
+   COURT ARENA PLATFORM MINIMALIST PURE WHITE STYLESHEET
+   ========================================================================== */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    background-color: #ffffff; /* Pure white baseline layout background */
+    color: #000000; /* Crisp pure black typography text color map */
+    line-height: 1.6;
+    padding-bottom: 60px;
+}
+
+main.container {
+    width: 100%;
+    max-width: 600px; /* Center-aligned single flow column envelope */
+    margin: 0 auto;
+    padding: 0 16px;
+    display: block;
+}
+
+div.card {
+    background: #ffffff;
+    border: 1px solid #000000; /* Minimalist solid black boundary line parameter */
+    border-radius: 4px;
+    margin-bottom: 24px;
+    padding: 24px;
+}
+
+div.mb-3 {
+    margin-bottom: 16px;
+}
+
+label.form-label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #000000; /* Pure black form text headers */
+    margin-bottom: 6px;
+}
+
+input.form-control, select.form-select, textarea.form-control {
+    width: 100%;
+    padding: 10px;
+    font-size: 0.95rem;
+    color: #000000;
+    background-color: #ffffff;
+    border: 1px solid #000000; /* Solid black border fields mapping rules */
+    border-radius: 4px;
+}
+
+.btn {
+    display: inline-block;
+    font-weight: 700;
+    text-align: center;
+    cursor: pointer;
+    padding: 12px 24px;
+    font-size: 0.9rem;
+    border-radius: 4px;
+    text-decoration: none;
+    width: 100%;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: background 0.1s ease;
+}
+
+/* Black & White Active Button UI Elements */
+.btn-primary, .btn-success { 
+    background-color: #000000; 
+    color: #ffffff; 
+    border: 1px solid #000000;
+}
+.btn-primary:hover, .btn-success:hover { 
+    background-color: #333333; 
+}
+
+.text-center { text-align: center !important; }
+.text-muted { color: #666666 !important; }
+.w-100 { width: 100% !important; }
+.badge.bg-danger { display: block; padding: 12px; background-color: #000000; color: #ffffff; border: 1px solid #000000; margin-bottom: 16px; font-weight: 700; text-align: left; }
+EOF

@@ -1,0 +1,45 @@
+<?php require_once dirname(__DIR__) . '/partials/Header.php'; ?>
+
+<div class="card">
+    <h2 class="text-center" style="color: #000000; font-size: 1.5rem; font-weight: 900; text-transform: uppercase; margin-bottom: 24px;">Registration Sheet</h2>
+
+    <?php if (isset($error)): ?>
+        <div class="badge bg-danger">
+            <strong>Registration Alert:</strong> <?php echo htmlspecialchars($error, ENT_QUOTES, 'UTF-8'); ?>
+        </div>
+    <?php endif; ?>
+
+    <form action="index.php?url=auth/signup" method="POST">
+        <div class="mb-3">
+            <label class="form-label">Select Account Profile Type</label>
+            <select name="userType" class="form-select">
+                <option value="user">Customer</option>
+                <option value="court_owner">Venue Owner</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Full Account Name</label>
+            <input type="text" name="name" class="form-control" placeholder="John Doe" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Email Address</label>
+            <input type="email" name="email" class="form-control" placeholder="name@university.edu" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Security Password</label>
+            <input type="password" name="password" class="form-control" placeholder="••••••••" required>
+        </div>
+
+        <button type="submit" class="btn btn-success" style="margin-top: 12px;">Commit Account Record</button>
+    </form>
+
+    <div class="text-center" style="margin-top: 24px; font-size: 0.85rem; font-weight: 700; text-transform: uppercase;">
+        <a href="index.php?url=auth/login" style="color: #000000; text-decoration: underline;">Access Login Gate</a>
+    </div>
+</div>
+
+<?php require_once dirname(__DIR__) . '/partials/Footer.php'; ?>
+
