@@ -7,26 +7,26 @@
         <title>Venue Form</title>
 
         <!-- bootstrap link -->
-        <link rel="stylesheet" href="<?= courtEscape(courtUrl('/bootstrap-5.3.8-dist/css/bootstrap.min.css')) ?>"> <!-- bootstrap css for grid -->
+        <link rel="stylesheet" href="bootstrap-5.3.8-dist/css/bootstrap.min.css"> <!-- bootstrap css for grid -->
         <!--<script src="[filepath]"></script>  bootstrap js script, Not used yet, remove when unncessary -->
 
         <!-- Custom CSS -->
-        <link rel="stylesheet" href="<?= courtEscape(courtUrl('/public/css/style.css')) ?>">
-        <link rel="stylesheet" href="<?= courtEscape(courtUrl('/public/css/ownerMgmt.css')) ?>">
+        <link rel="stylesheet" href="public/css/style.css">
+        <link rel="stylesheet" href="public/css/ownerMgmt.css">
 
-    <link rel="stylesheet" href="<?= courtEscape(courtUrl('/public/css/integration.css')) ?>">
-<link rel="stylesheet" href="<?= courtEscape(courtUrl('/public/css/darkMode.css')) ?>">
-<script src="<?= courtEscape(courtUrl('/public/js/theme.js')) ?>"></script>
+    <link rel="stylesheet" href="public/css/integration.css">
+<link rel="stylesheet" href="public/css/darkMode.css">
+<script src="public/js/theme.js"></script>
 </head>
 
     <body>
         <!-- Navigation -->
         <header class="container">
             <nav class="navbar navbar-expand-lg py-3" aria-label="Main navigation">
-                <a class="navbar-brand fw-bold" href="<?= courtEscape(courtUrl('/index.php?url=home/index')) ?>">CourtOne</a>
+                <a class="navbar-brand fw-bold" href="index.php?url=home/index">CourtOne</a>
 
                 <div class="d-flex gap-2 ms-auto order-lg-3">
-                    <a href="<?= courtEscape(courtUrl('/index.php?url=auth/')) ?><?= $role ? 'logout' : 'login' ?>" class="btn btn-primary"><?= $role ? 'Sign Out' : 'Sign In' ?></a>
+                    <a href="index.php?url=auth/<?= $role ? 'logout' : 'login' ?>" class="btn btn-primary"><?= $role ? 'Sign Out' : 'Sign In' ?></a>
 
                     <button class="navbar-toggler" type="button"
                             data-bs-toggle="collapse" data-bs-target="#mainMenu"
@@ -39,16 +39,16 @@
                 <div class="collapse navbar-collapse order-lg-2" id="mainMenu">
                     <ul class="navbar-nav mx-lg-auto gap-lg-3">
                         <li class="nav-item">
-                            <a class="nav-link active" href="<?= courtEscape(courtUrl('/index.php?url=home/index')) ?>">Home</a>
+                            <a class="nav-link active" href="index.php?url=home/index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="<?= courtEscape(courtUrl('/index.php?url=venue/browseVenues')) ?>">Venues</a>
+                            <a class="nav-link" href="index.php?url=venue/browseVenues">Venues</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="<?= courtEscape(courtUrl('/index.php?url=home/index#how-it-works')) ?>">How It Works</a>
+                            <a class="nav-link" href="index.php?url=home/index#how-it-works">How It Works</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="<?= courtEscape(courtUrl('/index.php?url=chat/index')) ?>">Chat</a>
+                            <a class="nav-link" href="index.php?url=chat/index">Chat</a>
                         </li>
                     </ul>
                 </div>
@@ -59,12 +59,12 @@
         <main class="container my-4">
 
             <div id="venue-link" class="bg-light rounded px-3 py-2 mb-3 ">
-                <a href="<?= courtEscape(courtUrl('/index.php?url=dashboard/ownerDashboard')) ?>" class="text-decoration-none">← Back to Venues</a>
+                <a href="index.php?url=dashboard/ownerDashboard" class="text-decoration-none">← Back to Venues</a>
             </div>
 
             <h1 class="h4 mb-3">Add venue</h1>
 
-            <form id="venue-form" action="<?= courtEscape(courtUrl('/index.php?url=venue/venueForm')) ?>" enctype="multipart/form-data" method="POST">
+            <form id="venue-form" action="index.php?url=venue/venueForm" enctype="multipart/form-data" method="POST">
 
                 <div class="row g-4">
 
@@ -140,7 +140,7 @@
                 <!-- buttons -->
                 <div class="d-flex flex-wrap gap-2 mt-4">
                     <button type="submit" class="btn btn-primary">Save venue</button>
-                    <a href="<?= courtEscape(courtUrl('/index.php?url=dashboard/ownerDashboard')) ?>" id="cancelBtn" class="btn btn-outline-secondary">Cancel</a>
+                    <a href="index.php?url=dashboard/ownerDashboard" id="cancelBtn" class="btn btn-outline-secondary">Cancel</a>
                     <button type="button" id="delete-venue" disabled title="Venue deletion is not available" class="btn btn-danger ms-md-auto">Delete venue</button>
                 </div>
 
@@ -156,7 +156,7 @@
 
 
 
-    <script src="<?= courtEscape(courtUrl('/public/js/integration.js')) ?>"></script><script src="<?= courtEscape(courtUrl('/bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js')) ?>"></script></body>
+    <script src="public/js/integration.js"></script><script src="bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script></body>
 
 
 </html>

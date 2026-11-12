@@ -5,18 +5,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Admin dashboard | CourtOne</title>
-    <link rel="stylesheet" href="<?= courtEscape(courtUrl('/bootstrap-5.3.8-dist/css/bootstrap.min.css')) ?>">
-    <link rel="stylesheet" href="<?= courtEscape(courtUrl('/public/css/style.css')) ?>">
-    <link rel="stylesheet" href="<?= courtEscape(courtUrl('/public/css/adminStyles.css')) ?>">
-    <link rel="stylesheet" href="<?= courtEscape(courtUrl('/public/css/darkMode.css')) ?>">
-    <script src="<?= courtEscape(courtUrl('/public/js/theme.js')) ?>"></script>
-<link rel="stylesheet" href="<?= courtEscape(courtUrl('/public/css/integration.css')) ?>">
+    <link rel="stylesheet" href="bootstrap-5.3.8-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="public/css/style.css">
+    <link rel="stylesheet" href="public/css/adminStyles.css">
+    <link rel="stylesheet" href="public/css/darkMode.css">
+    <script src="public/js/theme.js"></script>
+<link rel="stylesheet" href="public/css/integration.css">
 </head>
 <body>
     <!-- Show the logged-in role, desktop links, profile avatar, and mobile menu. -->
     <header class="container">
         <nav class="navbar navbar-expand-lg py-3" aria-label="Main navigation">
-            <a class="navbar-brand fw-bold" href="<?= courtEscape(courtUrl('/index.php?url=home/index')) ?>">CourtOne</a>
+            <a class="navbar-brand fw-bold" href="index.php?url=home/index">CourtOne</a>
 
             <div class="d-flex gap-2 ms-auto order-lg-3">
 
@@ -26,14 +26,14 @@
                         Dashboard
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end">
-<?php if ($role): ?><li><a class="dropdown-item" href="<?= courtEscape(courtUrl('/index.php?url=dashboard/dispatcher')) ?>">My Dashboard</a></li><?php endif; ?>
-<?php if ($role === 'user'): ?><li><a class="dropdown-item" href="<?= courtEscape(courtUrl('/index.php?url=booking/myBookings')) ?>">My Bookings</a></li><?php endif; ?>
-<?php if ($role === 'court_owner'): ?><li><a class="dropdown-item" href="<?= courtEscape(courtUrl('/index.php?url=staff/showAllStaff')) ?>">Manage Staff</a></li><?php endif; ?>
-<?php if (!$role): ?><li><a class="dropdown-item" href="<?= courtEscape(courtUrl('/index.php?url=auth/login')) ?>">Sign In</a></li><?php endif; ?>
+<?php if ($role): ?><li><a class="dropdown-item" href="index.php?url=dashboard/dispatcher">My Dashboard</a></li><?php endif; ?>
+<?php if ($role === 'user'): ?><li><a class="dropdown-item" href="index.php?url=booking/myBookings">My Bookings</a></li><?php endif; ?>
+<?php if ($role === 'court_owner'): ?><li><a class="dropdown-item" href="index.php?url=staff/showAllStaff">Manage Staff</a></li><?php endif; ?>
+<?php if (!$role): ?><li><a class="dropdown-item" href="index.php?url=auth/login">Sign In</a></li><?php endif; ?>
 </ul>
                 </div>
 
-                <a href="<?= courtEscape(courtUrl('/index.php?url=auth/')) ?><?= $role ? 'logout' : 'login' ?>" class="btn btn-primary"><?= $role ? 'Sign Out' : 'Sign In' ?></a>
+                <a href="index.php?url=auth/<?= $role ? 'logout' : 'login' ?>" class="btn btn-primary"><?= $role ? 'Sign Out' : 'Sign In' ?></a>
 
                 <button class="navbar-toggler" type="button"
                         data-bs-toggle="collapse" data-bs-target="#mainMenu"
@@ -46,16 +46,16 @@
             <div class="collapse navbar-collapse order-lg-2" id="mainMenu">
                 <ul class="navbar-nav mx-lg-auto gap-lg-3">
                     <li class="nav-item">
-                        <a class="nav-link" href="<?= courtEscape(courtUrl('/index.php?url=home/index')) ?>">Home</a>
+                        <a class="nav-link" href="index.php?url=home/index">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="<?= courtEscape(courtUrl('/index.php?url=venue/browseVenues')) ?>">Venues</a>
+                        <a class="nav-link" href="index.php?url=venue/browseVenues">Venues</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="<?= courtEscape(courtUrl('/index.php?url=home/index#how-it-works')) ?>">How It Works</a>
+                        <a class="nav-link" href="index.php?url=home/index#how-it-works">How It Works</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="<?= courtEscape(courtUrl('/index.php?url=chat/index')) ?>">Chat</a>
+                        <a class="nav-link" href="index.php?url=chat/index">Chat</a>
                     </li>
                 </ul>
             </div>
@@ -109,12 +109,12 @@
                         <table class="table align-middle user-table">
                             <thead><tr><th scope="col">Name</th><th scope="col">Email</th><th scope="col">Role</th><th scope="col">Status</th><th scope="col">Action</th></tr></thead>
                             <tbody id="user-rows"><?php foreach($users as $u): ?><tr><td><?= courtEscape($u['name']) ?></td><td><?= courtEscape($u['email']) ?></td><td><?= courtEscape($u['userType']) ?></td><td>Registered</td><td><?php if ((int)$u['userID'] !== (int)$_SESSION['userID']): ?>
-<form action="<?= courtEscape(courtUrl('/index.php?url=admin/deleteUser/')) ?><?= (int)$u['userID'] ?>" method="post" data-confirm="Delete this account?">
+<form action="index.php?url=admin/deleteUser/<?= (int)$u['userID'] ?>" method="post" data-confirm="Delete this account?">
 <button class="btn btn-sm btn-outline-danger">Delete</button><input type="hidden" name="csrfToken" value="<?= courtEscape($_SESSION['csrfToken']) ?>"></form>
 <?php else: ?>Current account<?php endif; ?></td></tr><?php endforeach; ?></tbody>
                         </table>
                     </div>
-                    <p id="empty-users" class="empty-message <?= $users?'d-none':'' ?>">No registered accounts yet. <a href="<?= courtEscape(courtUrl('/index.php?url=auth/signup')) ?>">Create an account</a>.</p>
+                    <p id="empty-users" class="empty-message <?= $users?'d-none':'' ?>">No registered accounts yet. <a href="index.php?url=auth/signup">Create an account</a>.</p>
                 </section>
 
                 <!-- Render editable venue listings, photos, status, and management actions. -->
@@ -126,8 +126,8 @@
                     <div class="table-responsive">
                         <table class="table align-middle mb-0 venue-table">
                             <thead><tr><th scope="col">Venue</th><th scope="col">Sport</th><th scope="col">Location</th><th scope="col">Status</th><th scope="col">Action</th></tr></thead>
-                            <tbody id="venue-rows"><?php foreach($venues as $v): ?><tr><td><?= courtEscape($v['venueName']) ?></td><td><?= courtEscape($v['sportsType']) ?></td><td><?= courtEscape($v['address']) ?></td><td>Listed</td><td><a class="btn btn-sm btn-primary" href="<?= courtEscape(courtUrl('/index.php?url=venue/viewVenue/')) ?><?= (int)$v['venueID'] ?>">View</a>
-<form class="d-inline" action="<?= courtEscape(courtUrl('/index.php?url=admin/deleteVenue/')) ?><?= (int)$v['venueID'] ?>" method="post" data-confirm="Delete this venue and its courts?">
+                            <tbody id="venue-rows"><?php foreach($venues as $v): ?><tr><td><?= courtEscape($v['venueName']) ?></td><td><?= courtEscape($v['sportsType']) ?></td><td><?= courtEscape($v['address']) ?></td><td>Listed</td><td><a class="btn btn-sm btn-primary" href="index.php?url=venue/viewVenue/<?= (int)$v['venueID'] ?>">View</a>
+<form class="d-inline" action="index.php?url=admin/deleteVenue/<?= (int)$v['venueID'] ?>" method="post" data-confirm="Delete this venue and its courts?">
 <button class="btn btn-sm btn-outline-danger">Delete</button><input type="hidden" name="csrfToken" value="<?= courtEscape($_SESSION['csrfToken']) ?>"></form></td></tr><?php endforeach; ?></tbody>
                         </table>
                     </div>
@@ -163,6 +163,6 @@
         </div>
     </main>
 
-    <script src="<?= courtEscape(courtUrl('/bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js')) ?>"></script>
-<script src="<?= courtEscape(courtUrl('/public/js/integration.js')) ?>"></script></body>
+    <script src="bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
+<script src="public/js/integration.js"></script></body>
 </html>

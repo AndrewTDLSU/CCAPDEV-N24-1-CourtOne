@@ -1,1 +1,1 @@
-</main><footer class="container border-top py-3 mt-5"><p class="text-secondary small mb-0">&copy; 2026 CourtOne. All rights reserved.</p></footer><script src="<?= courtEscape(courtUrl('/bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js')) ?>"></script></body></html>
+</main><footer class="container border-top py-3 mt-5"><p class="text-secondary small mb-0">&copy; 2026 CourtOne. All rights reserved.</p></footer><script src="/bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script></body></html>

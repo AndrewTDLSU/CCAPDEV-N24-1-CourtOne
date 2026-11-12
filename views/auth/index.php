@@ -8,14 +8,14 @@
     <title>CourtOne</title>
 
     <!-- Bootstrap CSS (Local) -->
-    <link rel="stylesheet" href="<?= courtEscape(courtUrl('/bootstrap-5.3.8-dist/css/bootstrap.min.css')) ?>">
+    <link rel="stylesheet" href="bootstrap-5.3.8-dist/css/bootstrap.min.css">
 
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="<?= courtEscape(courtUrl('/public/css/style.css')) ?>">
-    <link rel="stylesheet" href="<?= courtEscape(courtUrl('/public/css/home.css')) ?>">
-    <link rel="stylesheet" href="<?= courtEscape(courtUrl('/public/css/darkMode.css')) ?>">
-    <script src="<?= courtEscape(courtUrl('/public/js/theme.js')) ?>"></script>
-<link rel="stylesheet" href="<?= courtEscape(courtUrl('/public/css/integration.css')) ?>">
+    <link rel="stylesheet" href="public/css/style.css">
+    <link rel="stylesheet" href="public/css/home.css">
+    <link rel="stylesheet" href="public/css/darkMode.css">
+    <script src="public/js/theme.js"></script>
+<link rel="stylesheet" href="public/css/integration.css">
 </head>
 
 <body>
@@ -23,7 +23,7 @@
     <!-- Navigation -->
     <header class="container">
         <nav class="navbar navbar-expand-lg py-3" aria-label="Main navigation">
-            <a class="navbar-brand fw-bold" href="<?= courtEscape(courtUrl('/index.php?url=home/index')) ?>">CourtOne</a>
+            <a class="navbar-brand fw-bold" href="index.php?url=home/index">CourtOne</a>
 
             <div class="d-flex gap-2 ms-auto order-lg-3">
 
@@ -33,14 +33,14 @@
                         Dashboard
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end">
-<?php if ($role): ?><li><a class="dropdown-item" href="<?= courtEscape(courtUrl('/index.php?url=dashboard/dispatcher')) ?>">My Dashboard</a></li><?php endif; ?>
-<?php if ($role === 'user'): ?><li><a class="dropdown-item" href="<?= courtEscape(courtUrl('/index.php?url=booking/myBookings')) ?>">My Bookings</a></li><?php endif; ?>
-<?php if ($role === 'court_owner'): ?><li><a class="dropdown-item" href="<?= courtEscape(courtUrl('/index.php?url=staff/showAllStaff')) ?>">Manage Staff</a></li><?php endif; ?>
-<?php if (!$role): ?><li><a class="dropdown-item" href="<?= courtEscape(courtUrl('/index.php?url=auth/login')) ?>">Sign In</a></li><?php endif; ?>
+<?php if ($role): ?><li><a class="dropdown-item" href="index.php?url=dashboard/dispatcher">My Dashboard</a></li><?php endif; ?>
+<?php if ($role === 'user'): ?><li><a class="dropdown-item" href="index.php?url=booking/myBookings">My Bookings</a></li><?php endif; ?>
+<?php if ($role === 'court_owner'): ?><li><a class="dropdown-item" href="index.php?url=staff/showAllStaff">Manage Staff</a></li><?php endif; ?>
+<?php if (!$role): ?><li><a class="dropdown-item" href="index.php?url=auth/login">Sign In</a></li><?php endif; ?>
 </ul>
                 </div>
 
-                <a href="<?= courtEscape(courtUrl('/index.php?url=auth/')) ?><?= $role ? 'logout' : 'login' ?>" class="btn btn-primary"><?= $role ? 'Sign Out' : 'Sign In' ?></a>
+                <a href="index.php?url=auth/<?= $role ? 'logout' : 'login' ?>" class="btn btn-primary"><?= $role ? 'Sign Out' : 'Sign In' ?></a>
 
                 <button class="navbar-toggler" type="button"
                         data-bs-toggle="collapse" data-bs-target="#mainMenu"
@@ -53,16 +53,16 @@
             <div class="collapse navbar-collapse order-lg-2" id="mainMenu">
                 <ul class="navbar-nav mx-lg-auto gap-lg-3">
                     <li class="nav-item">
-                        <a class="nav-link active" href="<?= courtEscape(courtUrl('/index.php?url=home/index')) ?>">Home</a>
+                        <a class="nav-link active" href="index.php?url=home/index">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="<?= courtEscape(courtUrl('/index.php?url=venue/browseVenues')) ?>">Venues</a>
+                        <a class="nav-link" href="index.php?url=venue/browseVenues">Venues</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="<?= courtEscape(courtUrl('/index.php?url=home/index#how-it-works')) ?>">How It Works</a>
+                        <a class="nav-link" href="index.php?url=home/index#how-it-works">How It Works</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="<?= courtEscape(courtUrl('/index.php?url=chat/index')) ?>">Chat</a>
+                        <a class="nav-link" href="index.php?url=chat/index">Chat</a>
                     </li>
                 </ul>
             </div>
@@ -89,14 +89,14 @@
                 </div>
 
                 <div class="col-5 col-md-6 text-center">
-                    <img src="<?= courtEscape(courtUrl('/public/media/icons/sports.png')) ?>"
+                    <img src="public/media/icons/sports.png"
                          class="img-fluid"
                          alt="Sports illustration">
                 </div>
             </div>
 
             <!-- Search Bar -->
-            <form action="<?= courtEscape(courtUrl('/index.php')) ?>" method="get" id="venue-search-form" class="input-group mt-3 hero-search" role="search">
+            <form action="index.php" method="get" id="venue-search-form" class="input-group mt-3 hero-search" role="search">
                 <input type="hidden" name="url" value="venue/browseVenues"><input name="q" type="search" id="search" class="form-control"
                        placeholder="Search venues or locations"
                        aria-label="Search venues or locations">
@@ -112,7 +112,7 @@
         <section class="mb-5">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h2 class="h4 fw-bold mb-0">Available Venues</h2>
-                <a href="<?= courtEscape(courtUrl('/index.php?url=venue/browseVenues')) ?>" class="text-decoration-none">
+                <a href="index.php?url=venue/browseVenues" class="text-decoration-none">
                     View All →
                 </a>
             </div>
@@ -122,7 +122,7 @@
 <?php foreach (array_slice($venues, 0, 3) as $v): ?>
 <div class="col-6 col-lg-4 venue-column"><div class="card venue-card h-100">
 <img src="<?= courtEscape(courtImage($v)) ?>" class="card-img-top" alt="<?= courtEscape($v['venueName']) ?>">
-<div class="card-body d-flex flex-column"><h5 class="card-title"><?= courtEscape($v['venueName']) ?></h5><p class="card-text small mb-1"><?= courtEscape($v['sportsType']) ?></p><p class="card-text small text-secondary mb-3"><?= courtEscape($v['address']) ?></p><a href="<?= courtEscape(courtUrl('/index.php?url=venue/viewVenue/')) ?><?= (int)$v['venueID'] ?>" class="btn btn-primary btn-sm w-100 mt-auto">View Available Slots</a></div></div></div>
+<div class="card-body d-flex flex-column"><h5 class="card-title"><?= courtEscape($v['venueName']) ?></h5><p class="card-text small mb-1"><?= courtEscape($v['sportsType']) ?></p><p class="card-text small text-secondary mb-3"><?= courtEscape($v['address']) ?></p><a href="index.php?url=venue/viewVenue/<?= (int)$v['venueID'] ?>" class="btn btn-primary btn-sm w-100 mt-auto">View Available Slots</a></div></div></div>
 <?php endforeach; ?>
 <?php if (!$venues): ?><p class="text-secondary">No venues available yet.</p><?php endif; ?>
 </div>
@@ -170,7 +170,7 @@
     </footer>
 
     <!-- Bootstrap JavaScript (Local) -->
-    <script src="<?= courtEscape(courtUrl('/bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js')) ?>"></script>
+    <script src="bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
 
     <!-- Custom JavaScript -->
 
