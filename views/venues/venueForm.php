@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+<?php require_once __DIR__ . '/../partials/ViewHelpers.php'; ?>
+<!DOCTYPE html>
 <html lang="en">
     <head>
         <meta charset="UTF-8">
@@ -6,26 +7,26 @@
         <title>Venue Form</title>
 
         <!-- bootstrap link -->
-        <link rel="stylesheet" href="bootstrap-5.3.8-dist/css/bootstrap.min.css"> <!-- bootstrap css for grid -->
+        <link rel="stylesheet" href="/bootstrap-5.3.8-dist/css/bootstrap.min.css"> <!-- bootstrap css for grid -->
         <!--<script src="[filepath]"></script>  bootstrap js script, Not used yet, remove when unncessary -->
 
         <!-- Custom CSS -->
-        <link rel="stylesheet" href="public/css/style.css"> 
-        <link rel="stylesheet" href="public/css/ownerMgmt.css"> 
+        <link rel="stylesheet" href="/public/css/style.css">
+        <link rel="stylesheet" href="/public/css/ownerMgmt.css">
 
-        <link rel="stylesheet" href="public/css/darkMode.css">
-        <script src="public/js/theme.js"></script>
-
-    </head>
+    <link rel="stylesheet" href="/public/css/integration.css">
+<link rel="stylesheet" href="/public/css/darkMode.css">
+<script src="/public/js/theme.js"></script>
+</head>
 
     <body>
         <!-- Navigation -->
         <header class="container">
             <nav class="navbar navbar-expand-lg py-3" aria-label="Main navigation">
-                <a class="navbar-brand fw-bold" href="index.html">CourtOne</a>
+                <a class="navbar-brand fw-bold" href="/index.php?url=home/index">CourtOne</a>
 
                 <div class="d-flex gap-2 ms-auto order-lg-3">
-                    <a href="login.html" class="btn btn-primary">Sign In</a>
+                    <a href="/index.php?url=auth/<?= $role ? 'logout' : 'login' ?>" class="btn btn-primary"><?= $role ? 'Sign Out' : 'Sign In' ?></a>
 
                     <button class="navbar-toggler" type="button"
                             data-bs-toggle="collapse" data-bs-target="#mainMenu"
@@ -38,32 +39,32 @@
                 <div class="collapse navbar-collapse order-lg-2" id="mainMenu">
                     <ul class="navbar-nav mx-lg-auto gap-lg-3">
                         <li class="nav-item">
-                            <a class="nav-link active" href="index.html">Home</a>
+                            <a class="nav-link active" href="/index.php?url=home/index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="browseVenues.html">Venues</a>
+                            <a class="nav-link" href="/index.php?url=venue/browseVenues">Venues</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#how-it-works">How It Works</a>
+                            <a class="nav-link" href="/index.php?url=home/index#how-it-works">How It Works</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="chat.html">Chat</a>
+                            <a class="nav-link" href="/index.php?url=chat/index">Chat</a>
                         </li>
                     </ul>
                 </div>
             </nav>
         </header>
-        
+
         <!-- Bootstrap grid container -->
         <main class="container my-4">
 
             <div id="venue-link" class="bg-light rounded px-3 py-2 mb-3 ">
-                <a href="ownerDashboard.html" class="text-decoration-none">← Back to Venues</a>
+                <a href="/index.php?url=dashboard/ownerDashboard" class="text-decoration-none">← Back to Venues</a>
             </div>
 
-            <h1 class="h4 mb-3">Add / edit venue</h1>
+            <h1 class="h4 mb-3">Add venue</h1>
 
-            <form id="venue-form" enctype="multipart/form-data" method="POST">
+            <form id="venue-form" action="/index.php?url=venue/venueForm" enctype="multipart/form-data" method="POST">
 
                 <div class="row g-4">
 
@@ -71,9 +72,9 @@
                     <div class="col-12 col-md-4">
                         <label for="photos" class="photo-upload border rounded p-4 text-center mb-2 d-block">
                             Photo upload
-                            <span class="d-block text-muted small">Click to add (up to 5)</span>
+                            <span class="d-block text-muted small">Click to add photos (up to 5 MB each)</span>
                         </label>
-                        <input type="file" id="photos" name="photos" accept="image/*" multiple class="d-none">
+                        <input type="file" id="photos" name="photos[]" accept="image/*" multiple class="d-none">
 
                         <div id="photo-previews" class="row g-2">
                             <div class="col-4"><div class="thumb border rounded"></div></div>
@@ -87,33 +88,33 @@
                         <div class="row g-3">
 
                             <div class="col-12 col-sm-8">
-                                <label for="name" class="form-label">Venue name</label>
-                                <input type="text" id="venue-name" class="form-control" required>
+                                <label for="venue-name" class="form-label">Venue name</label>
+                                <input type="text" name="venueName" id="venue-name" class="form-control" required>
                             </div>
                             <div class="col-12 col-sm-4">
-                                <label for="sport" class="form-label">Sport</label>
-                                <select id="sport-choice" class="form-select" required>
-                                    <option value="">Select</option>
+                                <label for="sport-choice" class="form-label">Sport</label>
+                                <select name="sportsType" id="sport-choice" class="form-select" required>
+                                    <option value="">Select</option><option>Basketball</option><option>Badminton</option><option>Pickleball</option>
                                 </select>
                             </div>
 
                             <div class="col-12">
-                                <label for="location" class="form-label">Location</label>
-                                <input type="text" id="venue-location" class="form-control" required>
+                                <label for="venue-location" class="form-label">Location</label>
+                                <input type="text" name="address" id="venue-location" class="form-control" required>
                             </div>
 
                             <div class="col-12">
-                                <label for="description" class="form-label">Description</label>
-                                <textarea id="venue-description" class="form-control" rows="3"></textarea>
+                                <label for="venue-description" class="form-label">Description</label>
+                                <textarea name="description" id="venue-description" class="form-control" rows="3"></textarea>
                             </div>
 
                             <div class="col-6 col-sm-4">
-                                <label for="courts" class="form-label">Number of courts</label>
-                                <input type="number" id="venue-court-number" class="form-control" min="1" required>
+                                <label for="venue-court-number" class="form-label">Number of courts</label>
+                                <input type="number" id="venue-court-number" class="form-control" value="0" disabled aria-describedby="court-help">
                             </div>
                             <div class="col-6 col-sm-8">
-                                <label for="price" class="form-label">Price per hour (PHP)</label>
-                                <input type="number" id="price-per-session" class="form-control" min="0" required>
+                                <label for="price-per-session" class="form-label">Price per hour (PHP)</label>
+                                <input type="number" name="hourlyRate" id="price-per-session" class="form-control" min="0.01" step="0.01" required>
                             </div>
                         </div>
                     </div>
@@ -122,15 +123,15 @@
                 <!-- Operating hours and checked facilities are stored with the venue record. -->
                 <div class="card form-card mt-4">
                     <div class="card-body p-4">
-                        <h2 class="h5 mb-3">Operating hours and facilities</h2>
+                        <h2 class="h5 mb-3">Operating hours</h2>
                         <div class="row g-3">
                             <div class="col-12 col-sm-6">
-                                <label for="opens" class="form-label">Opens</label>
-                                <input type="time" id="venue-open-time" class="form-control" required>
+                                <label for="venue-open-time" class="form-label">Opens</label>
+                                <input type="time" name="openHour" id="venue-open-time" class="form-control" required>
                             </div>
                             <div class="col-12 col-sm-6">
-                                <label for="closes" class="form-label">Closes</label>
-                                <input type="time" id="venue-close-time" class="form-control" required>
+                                <label for="venue-close-time" class="form-label">Closes</label>
+                                <input type="time" name="closeHour" id="venue-close-time" class="form-control" required>
                             </div>
                         </div>
                     </div>
@@ -138,13 +139,13 @@
 
                 <!-- buttons -->
                 <div class="d-flex flex-wrap gap-2 mt-4">
-                    <a href="manageVenue.html" class="btn btn-primary">Save venue</a>
-                    <a href="ownerDashboard.html" id="cancelBtn" class="btn btn-outline-secondary">Cancel</a>
-                    <button type="button" id="delete-venue" class="btn btn-danger ms-md-auto">Delete venue</button>
+                    <button type="submit" class="btn btn-primary">Save venue</button>
+                    <a href="/index.php?url=dashboard/ownerDashboard" id="cancelBtn" class="btn btn-outline-secondary">Cancel</a>
+                    <button type="button" id="delete-venue" disabled title="Venue deletion is not available" class="btn btn-danger ms-md-auto">Delete venue</button>
                 </div>
 
-            </form>
-        </main>  
+            <p id="court-help" class="text-secondary small">After saving, add named courts from the venue statistics page.</p><input type="hidden" name="csrfToken" value="<?= courtEscape($_SESSION['csrfToken']) ?>"></form>
+        </main>
 
         <!-- Footer -->
         <footer class="container border-top py-3 mt-5">
@@ -153,9 +154,9 @@
             </p>
         </footer>
 
-        <script src="customScripts/cancelToSource.js" defer></script>
-        
-    </body>
 
-    
+
+    <script src="/public/js/integration.js"></script><script src="/bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script></body>
+
+
 </html>

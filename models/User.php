@@ -8,19 +8,19 @@ class User extends Model {
     // Enum user types
     private const USER_TYPES = ['user', 'admin', 'court_owner', 'staff'];
 
-    /*=============================================================== 
+    /*===============================================================
                         CREATE FUNCTIONS
         createUser($name, $email, $rawPassword, $userType = 'user') - create 1 user, should only be able to register as 'user' or 'court_owner'
-    ===============================================================*/ 
+    ===============================================================*/
 
     // Commits an encrypted hash configuration record matching the VARCHAR(255) requirement
     // Returns the new userID, or false if the email is already registered
     public function createUser($name, $email, $rawPassword, $userType) {
         $this->assertValidUserType($userType);
- 
+
         $passwordHash = password_hash($rawPassword, PASSWORD_DEFAULT);
         $sql = "INSERT INTO users (name, email, password_hash, userType) VALUES (?, ?, ?, ?)";
- 
+
         try {
             $stmt = $this->db->prepare($sql);
             $stmt->execute([$name, $email, $passwordHash, $userType]);
@@ -33,7 +33,7 @@ class User extends Model {
         }
     }
 
-    /*=============================================================== 
+    /*===============================================================
                         READ FUNCTIONS
         authenticateUser($email, $password) - password verification
         getUserByID($userID) - get 1 user by entry id
@@ -48,14 +48,14 @@ class User extends Model {
         $stmt = $this->db->prepare("SELECT * FROM users WHERE email = ?");
         $stmt->execute([$email]);
         $user = $stmt->fetch();
- 
+
         if ($user && password_verify($password, $user['password_hash'])) {
- 
+
             // upgrade the stored hash if PHP's default algorithm/cost has changed
             if (password_needs_rehash($user['password_hash'], PASSWORD_DEFAULT)) {
                 $this->updatePassword($user['userID'], $password);
             }
- 
+
             unset($user['password_hash']); // never pass the hash on to controllers/views
             return $user;
         }
@@ -71,7 +71,7 @@ class User extends Model {
         $row = $stmt->fetch();
         return $row ?: null;
     }
- 
+
     public function getUserByEmail($email) {
         $stmt = $this->db->prepare(
             "SELECT userID, name, email, userType FROM users WHERE email = ? LIMIT 1"
@@ -80,25 +80,25 @@ class User extends Model {
         $row = $stmt->fetch();
         return $row ?: null;
     }
- 
+
     // handy for a "this email is already registered" check on the sign-up form
     public function emailExists($email) {
         $stmt = $this->db->prepare("SELECT 1 FROM users WHERE email = ? LIMIT 1");
         $stmt->execute([$email]);
         return (bool) $stmt->fetchColumn();
     }
- 
+
     // for admin screens
     public function getAllUsers() {
         return $this->db->query(
             "SELECT userID, name, email, userType FROM users ORDER BY userID DESC"
         )->fetchAll();
     }
- 
+
     // e.g. getUsersByType('court_owner')
     public function getUsersByType($userType) {
         $this->assertValidUserType($userType);
- 
+
         $stmt = $this->db->prepare(
             "SELECT userID, name, email, userType FROM users WHERE userType = ? ORDER BY name"
         );
@@ -106,7 +106,7 @@ class User extends Model {
         return $stmt->fetchAll();
     }
 
-    /*=============================================================== 
+    /*===============================================================
                         UPDATE FUNCTIONS
         updatePassword($userID, $newRawPassword) - change password
         updateProfile($userID, $name, $email) - change profile details
@@ -117,7 +117,7 @@ class User extends Model {
       a "change my password" form, e.g. via authenticateUser().)*/
     public function updatePassword($userID, $newRawPassword) {
         $passwordHash = password_hash($newRawPassword, PASSWORD_DEFAULT);
- 
+
         $stmt = $this->db->prepare("UPDATE users SET password_hash = ? WHERE userID = ?");
         $stmt->execute([$passwordHash, $userID]);
         return $stmt->rowCount() > 0;
@@ -137,16 +137,22 @@ class User extends Model {
         }
     }
 
-    /*=============================================================== 
+    /*===============================================================
                         DELETE FUNCTIONS
         deleteUser($userID) - delete 1 user
     ===============================================================*/
 
-    /* Returns true if the user was deleted. Returns false if the user doesn't exist 
-    OR is still referenced by other tables (bookings, payment, staff, venues.ownerID), 
+    /* Returns true if the user was deleted. Returns false if the user doesn't exist
+    OR is still referenced by other tables (bookings, payment, staff, venues.ownerID),
     since those foreign keys block the delete.*/
     public function deleteUser($userID) {
         try {
+            // Preserve history even when the schema uses cascading foreign keys.
+            $history = $this->db->prepare('SELECT userID FROM bookings WHERE userID = ? UNION ALL SELECT userID FROM payments WHERE userID = ? UNION ALL SELECT ownerID FROM venues WHERE ownerID = ? LIMIT 1');
+            $history->execute([$userID, $userID, $userID]);
+            if ($history->fetchColumn()) {
+                return false;
+            }
             $stmt = $this->db->prepare("DELETE FROM users WHERE userID = ?");
             $stmt->execute([$userID]);
             return $stmt->rowCount() > 0;
@@ -158,25 +164,25 @@ class User extends Model {
         }
     }
 
-    /*=============================================================== 
+    /*===============================================================
                         HELPER FUNCTIONS
         assertValidUserType($userType) - enum user type validation
         isDuplicateEntry(PDOException $e) - duplicate user validation
         isForeignKeyViolation(PDOException $e) - protect FK relationship
     ===============================================================*/
- 
+
     // rejects anything that isn't a valid ENUM value before it reaches MySQL
     private function assertValidUserType($userType) {
         if (!in_array($userType, self::USER_TYPES, true)) {
             throw new InvalidArgumentException("Invalid user type: $userType");
         }
     }
- 
+
     // MySQL error 1062 = duplicate entry on a UNIQUE index
     private function isDuplicateEntry(PDOException $e) {
         return (int) ($e->errorInfo[1] ?? 0) === 1062;
     }
- 
+
     // MySQL error 1451 = cannot delete/update a parent row (FK constraint)
     private function isForeignKeyViolation(PDOException $e) {
         return (int) ($e->errorInfo[1] ?? 0) === 1451;

@@ -1,3 +1,4 @@
+<?php require_once __DIR__ . '/../partials/ViewHelpers.php'; ?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -7,13 +8,14 @@
     <title>User Dashboard - CourtOne</title>
 
     <!-- Bootstrap CSS (Local) -->
-    <link rel="stylesheet" href="bootstrap-5.3.8-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/bootstrap-5.3.8-dist/css/bootstrap.min.css">
 
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="public/css/style.css">
-    <link rel="stylesheet" href="public/css/userDashboard.css">
-    <link rel="stylesheet" href="public/css/darkMode.css">
-    <script src="public/js/theme.js"></script>
+    <link rel="stylesheet" href="/public/css/style.css">
+    <link rel="stylesheet" href="/public/css/userDashboard.css">
+    <link rel="stylesheet" href="/public/css/darkMode.css">
+    <script src="/public/js/theme.js"></script>
+<link rel="stylesheet" href="/public/css/integration.css">
 </head>
 
 <body>
@@ -21,27 +23,24 @@
     <!-- Navigation -->
     <header class="container">
         <nav class="navbar navbar-expand-lg py-3" aria-label="Main navigation">
-            <a class="navbar-brand fw-bold" href="index.html">CourtOne</a>
+            <a class="navbar-brand fw-bold" href="/index.php?url=home/index">CourtOne</a>
 
             <div class="d-flex gap-2 ms-auto order-lg-3">
-                
-                <!-- Temporary: to access dashboards w/out login and account roles -->
+
+                <!-- Account navigation -->
                 <div class="dropdown position-relative">
                     <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
                         Dashboard
                     </button>
-                    
-                    <!-- Change to a button from dropdown, should go to the right dashboard based on correct $_SESSION['role'] -->
                     <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href="index.php?url=dashboard/userDashboard">User Dashboard</a></li>
-                        <li><a class="dropdown-item" href="index.php?url=dashboard/staffDashboard">Staff Dashboard</a></li>
-                        <li><a class="dropdown-item" href="index.php?url=dashboard/ownerDashboard">Owner Dashboard</a></li>
-                        <li><a class="dropdown-item" href="index.php?url=dashboard/adminDashboard">Admin Dashboard</a></li>
-                    </ul>
-
+<?php if ($role): ?><li><a class="dropdown-item" href="/index.php?url=dashboard/dispatcher">My Dashboard</a></li><?php endif; ?>
+<?php if ($role === 'user'): ?><li><a class="dropdown-item" href="/index.php?url=booking/myBookings">My Bookings</a></li><?php endif; ?>
+<?php if ($role === 'court_owner'): ?><li><a class="dropdown-item" href="/index.php?url=staff/showAllStaff">Manage Staff</a></li><?php endif; ?>
+<?php if (!$role): ?><li><a class="dropdown-item" href="/index.php?url=auth/login">Sign In</a></li><?php endif; ?>
+</ul>
                 </div>
 
-                <a href="index.php?url=auth/login" class="btn btn-primary">Sign In</a>
+                <a href="/index.php?url=auth/<?= $role ? 'logout' : 'login' ?>" class="btn btn-primary"><?= $role ? 'Sign Out' : 'Sign In' ?></a>
 
                 <button class="navbar-toggler" type="button"
                         data-bs-toggle="collapse" data-bs-target="#mainMenu"
@@ -54,16 +53,16 @@
             <div class="collapse navbar-collapse order-lg-2" id="mainMenu">
                 <ul class="navbar-nav mx-lg-auto gap-lg-3">
                     <li class="nav-item">
-                        <a class="nav-link active" href="index.php?url=home/index">Home</a>
+                        <a class="nav-link" href="/index.php?url=home/index">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="index.php?url=venue/browseVenues">Venues</a>
+                        <a class="nav-link" href="/index.php?url=venue/browseVenues">Venues</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#how-it-works">How It Works</a>
+                        <a class="nav-link" href="/index.php?url=home/index#how-it-works">How It Works</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="index.php?url=booking/chat">Chat</a>
+                        <a class="nav-link" href="/index.php?url=chat/index">Chat</a>
                     </li>
                 </ul>
             </div>
@@ -80,7 +79,7 @@
                     <div class="card-body">
 
                         <h5 class="fw-bold">My Account</h5>
-                        <p class="text-secondary small">juan@example.com</p>
+                        <p class="text-secondary small"><?= courtEscape($profile['email']) ?></p>
                         <hr>
 
                         <nav class="nav nav-pills flex-column gap-2">
@@ -106,7 +105,7 @@
 
                 <!-- Welcome Section -->
                 <section id="dashboard">
-                    <h1 class="fw-bold fs-2">Welcome back, Juan!</h1>
+                    <h1 class="fw-bold fs-2">Welcome back, <?= courtEscape($profile['name']) ?>!</h1>
 
                     <p class="text-secondary mb-4">
                         Manage your bookings and account information.
@@ -119,7 +118,7 @@
                             <div class="card bg-primary-subtle border-0 h-100">
                                 <div class="card-body">
                                     <h6 class="fw-semibold">Upcoming Bookings</h6>
-                                    <h2 class="fw-bold text-primary mb-0">2</h2>
+                                    <h2 class="fw-bold text-primary mb-0"><?= count($upcomingBookings) ?></h2>
                                 </div>
                             </div>
                         </div>
@@ -128,7 +127,7 @@
                             <div class="card bg-success-subtle border-0 h-100">
                                 <div class="card-body">
                                     <h6 class="fw-semibold">Past Bookings</h6>
-                                    <h2 class="fw-bold text-success mb-0">1</h2>
+                                    <h2 class="fw-bold text-success mb-0"><?= count($bookingHistory) ?></h2>
                                 </div>
                             </div>
                         </div>
@@ -141,101 +140,23 @@
 
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h2 class="h4 fw-bold mb-0">Upcoming Bookings</h2>
-                        <a href="browseVenues.html" class="small">
+                        <a href="/index.php?url=venue/browseVenues" class="small">
                             Browse Venues →
                         </a>
                     </div>
 
-                    <!-- Booking 1 -->
-                    <div class="card shadow-sm mb-3">
-                        <div class="card-body">
-
-                            <div class="d-flex flex-column flex-sm-row gap-3">
-                                <img src="media/venues/pasay-sports-complex.jpg"
-                                     class="booking-image"
-                                     alt="Pasay Sports Complex">
-
-                                <div class="flex-grow-1">
-                                    <h5 class="fw-bold">Pasay Sports Complex</h5>
-
-                                    <p class="text-secondary small mb-2">
-                                        Basketball Court - Pasay City
-                                    </p>
-
-                                    <p class="mb-2">
-                                        October 18, 2026 | 2:00 PM - 4:00 PM
-                                    </p>
-
-                                    <span class="badge bg-success">
-                                        Confirmed
-                                    </span>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-
-                    <!-- Booking 2 -->
-                    <div class="card shadow-sm mb-3">
-                        <div class="card-body">
-
-                            <div class="d-flex flex-column flex-sm-row gap-3">
-                                <img src="media/venues/playground-by-cloverleaf.jpg"
-                                     class="booking-image"
-                                     alt="The Playground">
-
-                                <div class="flex-grow-1">
-                                    <h5 class="fw-bold">The Playground</h5>
-
-                                    <p class="text-secondary small mb-2">
-                                        Sports Court - Manila
-                                    </p>
-
-                                    <p class="mb-2">
-                                        October 24, 2026 | 6:00 PM - 8:00 PM
-                                    </p>
-
-                                    <span class="badge bg-success">
-                                        Confirmed
-                                    </span>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-
-                    <!-- Booking History -->
+<?php $rows=$upcomingBookings; ?><?php foreach ($rows as $b): ?>
+<div class="card shadow-sm mb-3"><div class="card-body"><div class="d-flex flex-column flex-sm-row gap-3">
+<img src="<?= courtEscape(courtImage($b)) ?>" class="booking-image" alt="<?= courtEscape($b['venueName']) ?>">
+<div class="flex-grow-1"><h5 class="fw-bold"><?= courtEscape($b['venueName']) ?></h5><p class="text-secondary small mb-2"><?= courtEscape($b['courtName']) ?></p><p class="mb-2"><?= courtEscape($b['bookingDate'].' | '.$b['bookingTime']) ?></p><span class="badge <?= $b['status']==='upcoming'?'bg-success':'bg-secondary' ?>"><?= courtEscape(ucfirst($b['status'])) ?></span> <a class="small" href="/index.php?url=booking/myBookings">Manage booking</a></div></div></div></div>
+<?php endforeach; ?><?php if (!$rows): ?><p class="text-secondary">No bookings to display.</p><?php endif; ?>                    <!-- Booking History -->
                     <h2 class="h4 fw-bold mt-4 mb-3">Booking History</h2>
 
-                    <div class="card shadow-sm">
-                        <div class="card-body">
-
-                            <div class="d-flex flex-column flex-sm-row gap-3">
-                                <img src="media/venues/koliseum-ng-bayan.jpg"
-                                     class="booking-image"
-                                     alt="Koliseum ng Bayan">
-
-                                <div class="flex-grow-1">
-                                    <h5 class="fw-bold">Koliseum ng Bayan</h5>
-
-                                    <p class="text-secondary small mb-2">
-                                        Sports Complex - Makati
-                                    </p>
-
-                                    <p class="mb-2">
-                                        September 26, 2026 | 4:00 PM - 6:00 PM
-                                    </p>
-
-                                    <span class="badge bg-secondary">
-                                        Completed
-                                    </span>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-
-                </section>
+<?php $rows=$bookingHistory; ?><?php foreach ($rows as $b): ?>
+<div class="card shadow-sm mb-3"><div class="card-body"><div class="d-flex flex-column flex-sm-row gap-3">
+<img src="<?= courtEscape(courtImage($b)) ?>" class="booking-image" alt="<?= courtEscape($b['venueName']) ?>">
+<div class="flex-grow-1"><h5 class="fw-bold"><?= courtEscape($b['venueName']) ?></h5><p class="text-secondary small mb-2"><?= courtEscape($b['courtName']) ?></p><p class="mb-2"><?= courtEscape($b['bookingDate'].' | '.$b['bookingTime']) ?></p><span class="badge <?= $b['status']==='upcoming'?'bg-success':'bg-secondary' ?>"><?= courtEscape(ucfirst($b['status'])) ?></span> <a class="small" href="/index.php?url=booking/myBookings">Manage booking</a></div></div></div></div>
+<?php endforeach; ?><?php if (!$rows): ?><p class="text-secondary">No bookings to display.</p><?php endif; ?>                </section>
 
                 <!-- My Profile -->
                 <section id="profile" class="mb-4">
@@ -245,8 +166,8 @@
                         <div class="card-body">
                             <h5 class="fw-bold mb-3">Account Information</h5>
 
-                            <p><strong>Name:</strong> Juan Dela Cruz</p>
-                            <p><strong>Email:</strong> juan@example.com</p>
+                            <p><strong>Name:</strong> <?= courtEscape($profile['name']) ?></p>
+                            <p><strong>Email:</strong> <?= courtEscape($profile['email']) ?></p>
                             <p class="mb-0">
                                 <strong>Account Type:</strong> Customer
                             </p>
@@ -266,7 +187,7 @@
     </footer>
 
     <!-- Bootstrap JS (Local) -->
-    <script src="bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>

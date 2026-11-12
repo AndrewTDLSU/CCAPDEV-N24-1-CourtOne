@@ -2,7 +2,7 @@
 /**
  * Transaction and Reservation Handling Model
  * Manages cellular checking rules inside the booking grid matrix array
- * 
+ *
  * activeSlot convention (relies on a UNIQUE index, see notes):
  *   1    = this booking is occupying its court/date/time slot
  *   NULL = slot is released (cancelled). MySQL allows many NULLs in a
@@ -13,16 +13,16 @@ class Booking extends Model {
     // Enum booking statuses
     private const STATUSES = ['upcoming', 'completed', 'cancelled'];
 
-    /*=============================================================== 
+    /*===============================================================
                         CREATE FUNCTIONS
         createBooking($date, $time, $courtID, $userID) - booking creation
-    ===============================================================*/ 
+    ===============================================================*/
 
     // create booking function
     public function createBooking($date, $time, $courtID, $userID) {
         $sql = "INSERT INTO bookings (bookingDate, bookingTime, courtID, userID, status, activeSlot)
                 VALUES (:date, :time, :courtID, :userID, 'upcoming', 1)";
- 
+
         try {
             $stmt = $this->db->prepare($sql);
             $stmt->execute([
@@ -40,7 +40,7 @@ class Booking extends Model {
         }
     }
 
-    /*=============================================================== 
+    /*===============================================================
                         READ FUNCTIONS
         getAllBookings() - all bookings
         getBookingByID($bookingID) - 1 booking by ID
@@ -58,7 +58,7 @@ class Booking extends Model {
 
     // all bookings with court, venue and user names (good for an admin/staff list)
     public function getAllBookings() {
-        $sql = "SELECT b.*, c.courtName, v.venueName, u.name AS userName
+        $sql = "SELECT b.*, c.courtName, v.venueName, (SELECT imageFilePath FROM images WHERE images.venueID = v.venueID ORDER BY imageID LIMIT 1) AS imageFilePath, u.name AS userName
                 FROM bookings b
                 JOIN courts c ON b.courtID = c.courtID
                 JOIN venues v ON c.venueID = v.venueID
@@ -66,7 +66,7 @@ class Booking extends Model {
                 ORDER BY b.bookingDate DESC, b.bookingTime DESC";
         return $this->db->query($sql)->fetchAll();
     }
- 
+
     // single booking row, or null if it doesn't exist
     public function getBookingByID($bookingID) {
         $stmt = $this->db->prepare("SELECT * FROM bookings WHERE bookingID = ? LIMIT 1");
@@ -74,17 +74,17 @@ class Booking extends Model {
         $row = $stmt->fetch();
         return $row ?: null;
     }
- 
+
     // to retrieve the user's booking
     // optional $status filter: 'upcoming' | 'completed' | 'cancelled'
     public function getBookingByUserID($userID, $status = null) {
-        $sql = "SELECT b.*, c.courtName, v.venueName
+        $sql = "SELECT b.*, c.courtName, v.venueName, (SELECT imageFilePath FROM images WHERE images.venueID = v.venueID ORDER BY imageID LIMIT 1) AS imageFilePath
                 FROM bookings b
                 JOIN courts c ON b.courtID = c.courtID
                 JOIN venues v ON c.venueID = v.venueID
                 WHERE b.userID = ?";
         $params = [$userID];
- 
+
         if ($status !== null) {
             if (!in_array($status, self::STATUSES, true)) {
                 throw new InvalidArgumentException("Invalid status: $status");
@@ -92,9 +92,9 @@ class Booking extends Model {
             $sql .= " AND b.status = ?";
             $params[] = $status;
         }
- 
+
         $sql .= " ORDER BY b.bookingDate DESC, b.bookingTime DESC";
- 
+
         $stmt = $this->db->prepare($sql);
         $stmt->execute($params);
         return $stmt->fetchAll();
@@ -115,12 +115,12 @@ class Booking extends Model {
                 LEFT JOIN payments p ON b.bookingID = p.bookingID
                 WHERE c.venueID = ?";
         $params = [$venueID];
- 
+
         if ($date !== null) {
             $sql .= " AND b.bookingDate = ?";
             $params[] = $date;
         }
- 
+
         if ($status !== null) {
             if (!in_array($status, self::STATUSES, true)) {
                 throw new InvalidArgumentException("Invalid status: $status");
@@ -128,9 +128,9 @@ class Booking extends Model {
             $sql .= " AND b.status = ?";
             $params[] = $status;
         }
- 
+
         $sql .= " ORDER BY b.bookingDate DESC, b.bookingTime DESC, c.courtName";
- 
+
         $stmt = $this->db->prepare($sql);
         $stmt->execute($params);
         return $stmt->fetchAll();
@@ -147,7 +147,7 @@ class Booking extends Model {
                 JOIN courts c ON b.courtID = c.courtID
                 WHERE c.venueID = ?";
         $params = [$venueID];
- 
+
         if ($status !== null) {
             if (!in_array($status, self::STATUSES, true)) {
                 throw new InvalidArgumentException("Invalid status: $status");
@@ -163,12 +163,12 @@ class Booking extends Model {
             $sql .= " AND b.bookingDate <= ?";
             $params[] = $dateTo;
         }
- 
+
         $stmt = $this->db->prepare($sql);
         $stmt->execute($params);
         return (int) $stmt->fetchColumn();
     }
- 
+
     // court usage for one venue: number of COMPLETED bookings per court
     // one row per court (courts with no completed bookings show 0), most used first
     // columns: courtID, courtName, completedBookings
@@ -178,7 +178,7 @@ class Booking extends Model {
         // so courts with no completed bookings still appear with 0
         $join = "LEFT JOIN bookings b ON b.courtID = c.courtID AND b.status = 'completed'";
         $params = [];
- 
+
         if ($dateFrom !== null) {
             $join .= " AND b.bookingDate >= ?";
             $params[] = $dateFrom;
@@ -188,17 +188,17 @@ class Booking extends Model {
             $params[] = $dateTo;
         }
         $params[] = $venueID;
- 
+
         $sql = "SELECT c.courtID, c.courtName, COUNT(b.bookingID) AS completedBookings
                 FROM courts c
                 $join
                 WHERE c.venueID = ?
                 GROUP BY c.courtID, c.courtName
                 ORDER BY completedBookings DESC, c.courtName";
- 
+
         $stmt = $this->db->prepare($sql);
         $stmt->execute($params);
- 
+
         $rows = [];
         foreach ($stmt->fetchAll() as $row) {
             $row['courtID']            = (int) $row['courtID'];
@@ -210,13 +210,13 @@ class Booking extends Model {
 
     // Filters active activeSlots parameters out of system matrices blocks rows
     public function fetchOccupiedGridCells($venueID, $date) {
-        $sql = "SELECT b.bookingTime, b.courtID, b.status 
+        $sql = "SELECT b.bookingTime, b.courtID, b.status
                 FROM bookings b
                 JOIN courts c ON b.courtID = c.courtID
                 WHERE c.venueID = ? AND b.bookingDate = ? AND b.activeSlot = 1";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$venueID, $date]);
-        
+
         $grid = [];
         while ($row = $stmt->fetch()) {
             $grid[$row['bookingTime']][$row['courtID']] = true;
@@ -226,7 +226,7 @@ class Booking extends Model {
 
     // full booking details including, court, venue, paid amount, and payment status
     public function fetchBookingExtendedDetails($bookingID) {
-        $sql = "SELECT b.*, c.courtName, v.venueName, p.amount, p.status as paymentStatus 
+        $sql = "SELECT b.*, c.courtName, v.venueName, (SELECT imageFilePath FROM images WHERE images.venueID = v.venueID ORDER BY imageID LIMIT 1) AS imageFilePath, p.amount, p.status as paymentStatus
                 FROM bookings b
                 JOIN courts c ON b.courtID = c.courtID
                 JOIN venues v ON c.venueID = v.venueID
@@ -235,7 +235,7 @@ class Booking extends Model {
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$bookingID]);
         return $stmt->fetch();
-    } 
+    }
 
     // bookings at one venue that held or used their slot (upcoming + completed),
     // i.e. everything except cancelled: the "total reservations" figure
@@ -246,7 +246,7 @@ class Booking extends Model {
                 JOIN courts c ON b.courtID = c.courtID
                 WHERE c.venueID = ? AND b.status <> 'cancelled'";
         $params = [$venueID];
- 
+
         if ($dateFrom !== null) {
             $sql .= " AND b.bookingDate >= ?";
             $params[] = $dateFrom;
@@ -255,7 +255,7 @@ class Booking extends Model {
             $sql .= " AND b.bookingDate <= ?";
             $params[] = $dateTo;
         }
- 
+
         $stmt = $this->db->prepare($sql);
         $stmt->execute($params);
         return (int) $stmt->fetchColumn();
@@ -267,7 +267,7 @@ class Booking extends Model {
     // counts upcoming + completed bookings by bookingDate (cancelled ones are left out)
     public function fetchMonthlyBookingsByVenue($venueID, $year) {
         $year = $this->assertValidYear($year);
- 
+
         $sql = "SELECT MONTH(b.bookingDate) AS month, COUNT(*) AS bookings
                 FROM bookings b
                 JOIN courts c ON b.courtID = c.courtID
@@ -276,12 +276,12 @@ class Booking extends Model {
                 GROUP BY MONTH(b.bookingDate)";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$venueID, sprintf('%04d-01-01', $year), sprintf('%04d-12-31', $year)]);
- 
+
         $byMonth = [];
         foreach ($stmt->fetchAll() as $row) {
             $byMonth[(int) $row['month']] = (int) $row['bookings'];
         }
- 
+
         $rows = [];
         for ($m = 1; $m <= 12; $m++) {
             $rows[] = ['month' => $m, 'bookings' => $byMonth[$m] ?? 0];
@@ -296,7 +296,7 @@ class Booking extends Model {
     //  add a createdAt column if you ever need real timestamps)
     public function fetchRecentBookingsByVenue($venueID, $limit = 10, $status = null) {
         $limit = max(1, min(100, (int) $limit));
- 
+
         $sql = "SELECT b.bookingID, b.bookingDate, b.bookingTime, b.status, b.courtID,
                        c.courtName,
                        u.userID, u.name AS userName, u.email AS userEmail,
@@ -307,7 +307,7 @@ class Booking extends Model {
                 LEFT JOIN payments p ON b.bookingID = p.bookingID
                 WHERE c.venueID = ?";
         $params = [$venueID];
- 
+
         if ($status !== null) {
             if (!in_array($status, self::STATUSES, true)) {
                 throw new InvalidArgumentException("Invalid status: $status");
@@ -315,9 +315,9 @@ class Booking extends Model {
             $sql .= " AND b.status = ?";
             $params[] = $status;
         }
- 
+
         $sql .= " ORDER BY b.bookingID DESC LIMIT $limit";
- 
+
         $stmt = $this->db->prepare($sql);
         $stmt->execute($params);
         return $stmt->fetchAll();
@@ -334,9 +334,9 @@ class Booking extends Model {
              ORDER BY year DESC"
         );
         $stmt->execute([$venueID]);
- 
+
         $years = array_map('intval', array_column($stmt->fetchAll(), 'year'));
- 
+
         $thisYear = (int) date('Y');
         if (!in_array($thisYear, $years, true)) {
             array_unshift($years, $thisYear);
@@ -345,7 +345,7 @@ class Booking extends Model {
         return $years;
     }
 
-    /*=============================================================== 
+    /*===============================================================
                         UPDATE FUNCTIONS
         - The ff. just changes the booking status
         updateBookingStatusToCompleted($bookingID)
@@ -359,14 +359,14 @@ class Booking extends Model {
         $stmt->execute([$bookingID]);
         return $stmt->rowCount() > 0;
     }
- 
+
     // releases the slot (activeSlot = NULL) so someone else can book it
     public function updateBookingStatusToCancelled($bookingID) {
         $stmt = $this->db->prepare("UPDATE bookings SET status = 'cancelled', activeSlot = NULL WHERE bookingID = ?");
         $stmt->execute([$bookingID]);
         return $stmt->rowCount() > 0;
     }
- 
+
     // should be the default state but just in case...
     // re-claims the slot; returns false if someone else has booked it since
     public function updateBookingStatusToUpcoming($bookingID) {
@@ -382,7 +382,7 @@ class Booking extends Model {
         }
     }
 
-    /*=============================================================== 
+    /*===============================================================
                         DELETE FUNCTIONS
         deleteBooking($bookingID) - delete entire booking entry
     ===============================================================*/
@@ -391,13 +391,13 @@ class Booking extends Model {
     public function deleteBooking($bookingID) {
         try {
             $this->db->beginTransaction();
- 
+
             $this->db->prepare("DELETE FROM payments WHERE bookingID = ?")->execute([$bookingID]);
- 
+
             $stmt = $this->db->prepare("DELETE FROM bookings WHERE bookingID = ?");
             $stmt->execute([$bookingID]);
             $deleted = $stmt->rowCount() > 0;
- 
+
             $this->db->commit();
             return $deleted;
         } catch (Exception $e) {
@@ -408,7 +408,7 @@ class Booking extends Model {
         }
     }
 
-    /*=============================================================== 
+    /*===============================================================
                         HELPER FUNCTIONS
         isDuplicateSlot(PDOException $e) - prevents duplicate entry
     ===============================================================*/
@@ -417,7 +417,7 @@ class Booking extends Model {
     private function isDuplicateSlot(PDOException $e) {
         return (int) ($e->errorInfo[1] ?? 0) === 1062;
     }
-    
+
 }
 
 ?>

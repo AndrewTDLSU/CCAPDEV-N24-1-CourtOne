@@ -4,10 +4,10 @@ class DashboardController extends Controller {
     // Resolves secure system path routing entries handling roles
 
     public function dispatcher() {
-        // [SESSION] if (!isset($_SESSION['role'])) {
-            // [SESSION] header('Location: /index.php?url=auth/login');
-            // [SESSION] exit;
-        // [SESSION] }
+        if (!isset($_SESSION['role'])) {
+            header('Location: /index.php?url=auth/login');
+            exit;
+        }
 
         $dashboards = [
             'user' => 'userDashboard',
@@ -16,8 +16,7 @@ class DashboardController extends Controller {
             'staff' => 'staffDashboard'
         ];
 
-        $tempRole = 'admin'; // [TEMP]
-        $role = $tempRole; // [SESSION] was: $role = $_SESSION['role'];
+        $role = $_SESSION['role'];
 
         if (!isset($dashboards[$role])) {
             header('HTTP/1.1 403 Forbidden');
@@ -30,23 +29,23 @@ class DashboardController extends Controller {
 
 
     public function adminDashboard() {
-        // [SESSION] $this->restrictToRoles(['admin']);
+        $this->restrictToRoles(['admin']);
         $venueModel = $this->model('Venue');
         $userModel = $this->model('User');
 
         $this->view('dashboards/admin', [
             'pageTitle' => 'Admin Controller Core Panel',
             'venues'    => $venueModel->fetchAllVenues(),
+            'bookings' => $this->model('Booking')->getAllBookings(),
             'users'     => $userModel->getAllUsers() // full list of users
         ]);
     }
 
     public function ownerDashboard() {
-        // [SESSION] $this->restrictToRoles(['court_owner']);
+        $this->restrictToRoles(['court_owner']);
 
         $venueModel = $this->model('Venue');
-        $tempOwnerID = 2; // [TEMP]
-        $venues = $venueModel->fetchVenuesByOwner($tempOwnerID); // [SESSION] was: $venues = $venueModel->fetchVenuesByOwner($_SESSION['userID']);
+        $venues = $venueModel->fetchVenuesByOwner($_SESSION['userID']);
 
         $this->view('dashboards/owner', [
             'pageTitle' => 'Owner Dashboard',
@@ -55,10 +54,9 @@ class DashboardController extends Controller {
     }
 
     public function userDashboard() {
-        // [SESSION] $this->restrictToRoles(['user']);
+        $this->restrictToRoles(['user']);
 
-        $tempUserID = 4; // [TEMP]
-        $userID = $tempUserID; // [SESSION] was: $userID = $_SESSION['userID'];
+        $userID = $_SESSION['userID'];
 
         $bookingModel = $this->model('Booking');
         $userModel = $this->model('User');
@@ -72,11 +70,9 @@ class DashboardController extends Controller {
     }
 
     public function staffDashboard() {
-        // [SESSION] $this->restrictToRoles(['staff']);
+        $this->restrictToRoles(['staff']);
 
-        $tempVenueID = 1; // [TEMP]
-        $tempStaffID = 3; // [TEMP]
-        $venueID = $tempVenueID; // [SESSION] was: $venueID = $_SESSION['venueID'];
+        $venueID = $_SESSION['venueID'];
 
         $bookingModel = $this->model('Booking');
         $staffModel = $this->model('Staff');
@@ -84,7 +80,7 @@ class DashboardController extends Controller {
 
         $this->view('dashboards/staff', [
             'pageTitle' => 'Staff Dashboard',
-            'profile' => $userModel->getUserByID($tempStaffID), // [SESSION] was: 'profile' => $userModel->getUserByID($_SESSION['userID']),
+            'profile' => $userModel->getUserByID($_SESSION['userID']),
             'recentBookings' => $bookingModel->fetchRecentBookingsByVenue($venueID, 10),
             'upcomingBookings' => $bookingModel->fetchAllBookingsByVenue($venueID, null, 'upcoming')
         ]);
@@ -94,10 +90,9 @@ class DashboardController extends Controller {
     // each booking row posts to index.php?url=dashboard/changeBookingStatus
     // with: bookingID and status (completed | cancelled | upcoming)
     public function changeBookingStatus() {
-        // [SESSION] $this->restrictToRoles(['staff']);
-        $tempVenueID = 1; // [TEMP]
+        $this->restrictToRoles(['staff']);
 
-        $back = '/index.php?url=dashboards/staff';
+        $back = '/index.php?url=dashboard/staffDashboard';
 
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             header('Location: ' . $back);
@@ -113,15 +108,15 @@ class DashboardController extends Controller {
         $booking = $bookingModel->getBookingByID($bookingID);
 
         // staff can only change bookings of their own venue
-        if (!$booking || !$courtModel->courtBelongsToVenue($booking['courtID'], $tempVenueID)) { // [SESSION] was: if (!$booking || !$courtModel->courtBelongsToVenue($booking['courtID'], $_SESSION['venueID'])) {
-            // [SESSION] $_SESSION['staffMessage'] = ['type' => 'danger', 'text' => 'Booking not found.'];
+        if (!$booking || !$courtModel->courtBelongsToVenue($booking['courtID'], $_SESSION['venueID'])) {
+            $_SESSION['staffMessage'] = ['type' => 'danger', 'text' => 'Booking not found.'];
             header('Location: ' . $back);
             exit;
         }
 
         // a cancelled booking is final: its slot was released and its payment settled
         if ($booking['status'] === 'cancelled') {
-            // [SESSION] $_SESSION['staffMessage'] = ['type' => 'danger', 'text' => 'Cancelled bookings cannot be changed.'];
+            $_SESSION['staffMessage'] = ['type' => 'danger', 'text' => 'Cancelled bookings cannot be changed.'];
             header('Location: ' . $back);
             exit;
         }
@@ -145,15 +140,15 @@ class DashboardController extends Controller {
                 }
             }
         } else {
-            // [SESSION] $_SESSION['staffMessage'] = ['type' => 'danger', 'text' => 'Invalid booking status.'];
+            $_SESSION['staffMessage'] = ['type' => 'danger', 'text' => 'Invalid booking status.'];
             header('Location: ' . $back);
             exit;
         }
 
         if ($changed) {
-            // [SESSION] $_SESSION['staffMessage'] = ['type' => 'success', 'text' => 'Booking status updated.'];
+            $_SESSION['staffMessage'] = ['type' => 'success', 'text' => 'Booking status updated.'];
         } else {
-            // [SESSION] $_SESSION['staffMessage'] = ['type' => 'danger', 'text' => 'The status was not changed. It may already be set to that value.'];
+            $_SESSION['staffMessage'] = ['type' => 'danger', 'text' => 'The status was not changed. It may already be set to that value.'];
         }
 
         header('Location: ' . $back);
@@ -161,9 +156,9 @@ class DashboardController extends Controller {
     }
 
     private function restrictToRoles($allowed) {
-        // [SESSION] if (!isset($_SESSION['role']) || !in_array($_SESSION['role'], $allowed)) {
-            // [SESSION] header('HTTP/1.1 403 Forbidden');
-            // [SESSION] exit("Access Validation Exception: Current user session lacks authorized access clearance.");
-        // [SESSION] }
+        if (!isset($_SESSION['role']) || !in_array($_SESSION['role'], $allowed)) {
+            header('HTTP/1.1 403 Forbidden');
+            exit("Access Validation Exception: Current user session lacks authorized access clearance.");
+        }
     }
 }

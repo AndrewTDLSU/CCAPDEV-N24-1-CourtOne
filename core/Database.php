@@ -4,11 +4,11 @@ class Database {
     private $pdo;
 
     private function __construct() {
-        $host = "localhost";
-        $dbname = "courtbooking";
-        $username = "root";
-        $password = "ccinfom_#dlsu2025"; /* change depending on what machine you're using */
-        
+        $host = getenv("COURTONE_DB_HOST") ?: "localhost";
+        $dbname = getenv("COURTONE_DB_NAME") ?: "courtbooking";
+        $username = getenv("COURTONE_DB_USER") ?: "root";
+        $password = getenv("COURTONE_DB_PASSWORD") !== false ? getenv("COURTONE_DB_PASSWORD") : "banawe27"; /* change depending on what machine you're using */
+
         $options = [
             PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,

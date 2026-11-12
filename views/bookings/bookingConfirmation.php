@@ -1,3 +1,4 @@
+<?php require_once __DIR__ . '/../partials/ViewHelpers.php'; ?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -7,12 +8,13 @@
     <title>Booking Confirmed - CourtOne</title>
 
     <!-- Bootstrap CSS (Local) -->
-    <link rel="stylesheet" href="bootstrap-5.3.8-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/bootstrap-5.3.8-dist/css/bootstrap.min.css">
 
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="public/css/style.css">
-    <link rel="stylesheet" href="public/css/darkMode.css">
-    <script src="public/js/theme.js"></script>
+    <link rel="stylesheet" href="/public/css/style.css">
+    <link rel="stylesheet" href="/public/css/darkMode.css">
+    <script src="/public/js/theme.js"></script>
+<link rel="stylesheet" href="/public/css/integration.css">
 </head>
 
 <body>
@@ -20,27 +22,24 @@
     <!-- Navigation -->
     <header class="container">
         <nav class="navbar navbar-expand-lg py-3" aria-label="Main navigation">
-            <a class="navbar-brand fw-bold" href="index.html">CourtOne</a>
+            <a class="navbar-brand fw-bold" href="/index.php?url=home/index">CourtOne</a>
 
             <div class="d-flex gap-2 ms-auto order-lg-3">
-                
-                <!-- Temporary: to access dashboards w/out login and account roles -->
+
+                <!-- Account navigation -->
                 <div class="dropdown position-relative">
                     <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
                         Dashboard
                     </button>
-                    
-                    <!-- Change to a button from dropdown, should go to the right dashboard based on correct $_SESSION['role'] -->
                     <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href="index.php?url=dashboard/userDashboard">User Dashboard</a></li>
-                        <li><a class="dropdown-item" href="index.php?url=dashboard/staffDashboard">Staff Dashboard</a></li>
-                        <li><a class="dropdown-item" href="index.php?url=dashboard/ownerDashboard">Owner Dashboard</a></li>
-                        <li><a class="dropdown-item" href="index.php?url=dashboard/adminDashboard">Admin Dashboard</a></li>
-                    </ul>
-
+<?php if ($role): ?><li><a class="dropdown-item" href="/index.php?url=dashboard/dispatcher">My Dashboard</a></li><?php endif; ?>
+<?php if ($role === 'user'): ?><li><a class="dropdown-item" href="/index.php?url=booking/myBookings">My Bookings</a></li><?php endif; ?>
+<?php if ($role === 'court_owner'): ?><li><a class="dropdown-item" href="/index.php?url=staff/showAllStaff">Manage Staff</a></li><?php endif; ?>
+<?php if (!$role): ?><li><a class="dropdown-item" href="/index.php?url=auth/login">Sign In</a></li><?php endif; ?>
+</ul>
                 </div>
 
-                <a href="index.php?url=auth/login" class="btn btn-primary">Sign In</a>
+                <a href="/index.php?url=auth/<?= $role ? 'logout' : 'login' ?>" class="btn btn-primary"><?= $role ? 'Sign Out' : 'Sign In' ?></a>
 
                 <button class="navbar-toggler" type="button"
                         data-bs-toggle="collapse" data-bs-target="#mainMenu"
@@ -53,16 +52,16 @@
             <div class="collapse navbar-collapse order-lg-2" id="mainMenu">
                 <ul class="navbar-nav mx-lg-auto gap-lg-3">
                     <li class="nav-item">
-                        <a class="nav-link active" href="index.php?url=home/index">Home</a>
+                        <a class="nav-link" href="/index.php?url=home/index">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="index.php?url=venue/browseVenues">Venues</a>
+                        <a class="nav-link" href="/index.php?url=venue/browseVenues">Venues</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#how-it-works">How It Works</a>
+                        <a class="nav-link" href="/index.php?url=home/index#how-it-works">How It Works</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="index.php?url=booking/chat">Chat</a>
+                        <a class="nav-link" href="/index.php?url=chat/index">Chat</a>
                     </li>
                 </ul>
             </div>
@@ -87,26 +86,26 @@
 
                     <!-- Venue Image -->
                     <div class="col-12 col-md-5">
-                        <img src="media/venues/pasay-sports-complex.jpg"
+                        <img src="<?= courtEscape(courtImage($booking)) ?>"
                              class="img-fluid rounded w-100"
                              style="height: 220px; object-fit: cover;"
-                             alt="Pasay Sports Complex">
+                             alt="<?= courtEscape($booking['venueName']) ?>">
                     </div>
 
                     <!-- Venue Information -->
                     <div class="col-12 col-md-7">
-                        <h2 class="h4 fw-bold">Pasay Sports Complex</h2>
+                        <h2 class="h4 fw-bold"><?= courtEscape($booking['venueName']) ?></h2>
 
-                        <p class="mb-2">Location: Pasay City</p>
-                        <p class="mb-2">Court: Basketball Court</p>
-                        <p class="mb-2">Date: October 18, 2026</p>
-                        <p class="mb-2">Time: 2:00 PM - 4:00 PM</p>
-                        <p class="mb-3">Duration: 2 hours</p>
+                        <p class="mb-2">Payment: <?= courtEscape($booking['paymentStatus']) ?></p>
+                        <p class="mb-2">Court: <?= courtEscape($booking['courtName']) ?></p>
+                        <p class="mb-2">Date: <?= courtEscape($booking['bookingDate']) ?></p>
+                        <p class="mb-2">Time: <?= courtEscape($booking['bookingTime']) ?></p>
+                        <p class="mb-3">Duration: 1 hour</p>
 
                         <div class="bg-primary-subtle rounded p-3">
                             <strong>Total Amount:</strong>
                             <span class="float-end fw-bold text-primary">
-                                &#8369;400.00
+                                ₱<?= number_format($booking['amount'],2) ?>
                             </span>
                         </div>
                     </div>
@@ -115,12 +114,12 @@
 
                 <!-- Navigation Buttons -->
                 <div class="d-flex flex-wrap gap-2 mt-4">
-                    <a href="index.php?url=dashboard/userDashboard#bookings"
+                    <a href="/index.php?url=booking/myBookings"
                        class="btn btn-primary">
                         View My Bookings
                     </a>
 
-                    <a href="index.html"
+                    <a href="/index.php?url=home/index"
                        class="btn btn-outline-primary">
                         Back to Home
                     </a>
@@ -140,32 +139,32 @@
                         <tbody>
                             <tr>
                                 <th scope="row">Booking ID</th>
-                                <td>CT-20261018-001</td>
+                                <td><?= (int)$booking['bookingID'] ?></td>
                             </tr>
 
                             <tr>
                                 <th scope="row">Venue</th>
-                                <td>Pasay Sports Complex</td>
+                                <td><?= courtEscape($booking['venueName']) ?></td>
                             </tr>
 
                             <tr>
                                 <th scope="row">Court</th>
-                                <td>Basketball Court</td>
+                                <td><?= courtEscape($booking['courtName']) ?></td>
                             </tr>
 
                             <tr>
                                 <th scope="row">Date</th>
-                                <td>October 18, 2026</td>
+                                <td><?= courtEscape($booking['bookingDate']) ?></td>
                             </tr>
 
                             <tr>
                                 <th scope="row">Time</th>
-                                <td>2:00 PM - 4:00 PM</td>
+                                <td><?= courtEscape($booking['bookingTime']) ?></td>
                             </tr>
 
                             <tr>
                                 <th scope="row">Total Amount</th>
-                                <td>&#8369;400.00</td>
+                                <td>₱<?= number_format($booking['amount'],2) ?></td>
                             </tr>
 
                             <tr>
@@ -193,7 +192,7 @@
     </footer>
 
     <!-- Bootstrap JavaScript (Local) -->
-    <script src="bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>

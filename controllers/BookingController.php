@@ -2,11 +2,10 @@
 class BookingController extends Controller {
 
     public function reserve() {
-        // [SESSION] if (!isset($_SESSION['userID']) || ($_SESSION['role'] ?? '') !== 'user') {
-            // [SESSION] header('Location: /index.php?url=auth/login');
-            // [SESSION] exit;
-        // [SESSION] }
-        $tempUserID = 4; // [TEMP]
+        if (!isset($_SESSION['userID']) || ($_SESSION['role'] ?? '') !== 'user') {
+            header('Location: /index.php?url=auth/login');
+            exit;
+        }
 
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             header('Location: /index.php?url=venue/browseVenues');
@@ -18,8 +17,8 @@ class BookingController extends Controller {
         $courtID = (int) ($_POST['courtID'] ?? 0);
 
         if ($courtID <= 0 || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $date) ||
-            !preg_match('/^\d{2}:00:00$/', $time) ||
-            strtotime($date) === false || $date < date('Y-m-d')) {
+            !preg_match('/^(?:[01]\d|2[0-3]):[0-5]\d:00$/', $time) ||
+            strtotime($date) === false || date('Y-m-d', strtotime($date)) !== $date || strtotime($date . ' ' . $time) <= time()) {
             die('Invalid booking date, time, or court.');
         }
 
@@ -48,7 +47,7 @@ class BookingController extends Controller {
             $end = strtotime('24:00:00');
         }
 
-        if ($selected < $start || $selected >= $end) {
+        if ($selected < $start || $selected + 3600 > $end || ($selected - $start) % 3600 !== 0) {
             die('Time is outside the venue opening hours.');
         }
 
@@ -58,7 +57,7 @@ class BookingController extends Controller {
             $db->beginTransaction();
 
             $bookingID = $bookingModel->createBooking(
-                $date, $time, $courtID, $tempUserID // [SESSION] was: $date, $time, $courtID, $_SESSION['userID']
+                $date, $time, $courtID, $_SESSION['userID']
             );
 
             if (!$bookingID) {
@@ -68,7 +67,7 @@ class BookingController extends Controller {
 
             $paymentID = $paymentModel->createPayment(
                 $bookingID,
-                $tempUserID, // [SESSION] was: $_SESSION['userID'],
+                $_SESSION['userID'],
                 $venue['hourlyRate']
             );
 
@@ -93,11 +92,10 @@ class BookingController extends Controller {
 
     // fixed this, added proper indentation and session check for payment method page. it used to redirect back to checkout, not being able to finish transaction.
     public function payment($bookingID) {
-        // [SESSION] if (!isset($_SESSION['userID'])) {
-            // [SESSION] header('Location: /index.php?url=auth/login');
-            // [SESSION] exit;
-        // [SESSION] }
-        $tempUserID = 4; // [TEMP]
+        if (!isset($_SESSION['userID'])) {
+            header('Location: /index.php?url=auth/login');
+            exit;
+        }
 
         $bookingModel = $this->model('Booking');
         $paymentModel = $this->model('Payment');
@@ -106,7 +104,7 @@ class BookingController extends Controller {
         $payment = $paymentModel->fetchPaymentByBooking($bookingID);
 
         if (!$booking || !$payment ||
-            (int) $booking['userID'] !== (int) $tempUserID) { // [SESSION] was: (int) $booking['userID'] !== (int) $_SESSION['userID']) {
+            (int) $booking['userID'] !== (int) $_SESSION['userID']) {
             die('Booking not found or access denied.');
         }
 
@@ -131,7 +129,7 @@ class BookingController extends Controller {
                 $stmt->execute([$bookingID]);
                 $current = $stmt->fetch();
 
-                if (!$current || (int) $current['userID'] !== (int) $tempUserID || // [SESSION] was: if (!$current || (int) $current['userID'] !== (int) $_SESSION['userID'] ||
+                if (!$current || (int) $current['userID'] !== (int) $_SESSION['userID'] ||
                     $current['status'] !== 'upcoming') {
                     throw new RuntimeException('This booking can no longer be paid.');
                 }
@@ -169,17 +167,16 @@ class BookingController extends Controller {
 
 
     public function bookingConfirmation($bookingID) {
-        // [SESSION] if (!isset($_SESSION['userID'])) {
-            // [SESSION] header('Location: /index.php?url=auth/login');
-            // [SESSION] exit;
-        // [SESSION] }
-        $tempUserID = 4; // [TEMP]
+        if (!isset($_SESSION['userID'])) {
+            header('Location: /index.php?url=auth/login');
+            exit;
+        }
 
         $bookingModel = $this->model('Booking');
         $booking = $bookingModel->fetchBookingExtendedDetails($bookingID);
 
         if (!$booking ||
-            (int) $booking['userID'] !== (int) $tempUserID) { // [SESSION] was: (int) $booking['userID'] !== (int) $_SESSION['userID']) {
+            (int) $booking['userID'] !== (int) $_SESSION['userID']) {
             die('Booking not found or access denied.');
         }
 
@@ -201,22 +198,20 @@ class BookingController extends Controller {
 
     // GET: list only the logged-in customer's bookings.
     public function myBookings() {
-        // [SESSION] if (!isset($_SESSION['userID']) || ($_SESSION['role'] ?? '') !== 'user') {
-            // [SESSION] header('Location: /index.php?url=auth/login');
-            // [SESSION] exit;
-        // [SESSION] }
-        $tempUserID = 4; // [TEMP]
+        if (!isset($_SESSION['userID']) || ($_SESSION['role'] ?? '') !== 'user') {
+            header('Location: /index.php?url=auth/login');
+            exit;
+        }
         if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
             http_response_code(405);
             die('Method not allowed.');
         }
 
-        // [SESSION] if (empty($_SESSION['bookingCancelToken'])) {
-            // [SESSION] $_SESSION['bookingCancelToken'] = bin2hex(random_bytes(32));
-        // [SESSION] }
-        $tempCancelToken = 'TEMP_CANCEL_TOKEN'; // [TEMP]
+        if (empty($_SESSION['bookingCancelToken'])) {
+            $_SESSION['bookingCancelToken'] = bin2hex(random_bytes(32));
+        }
 
-        $userID = (int) $tempUserID; // [SESSION] was: $userID = (int) $_SESSION['userID'];
+        $userID = (int) $_SESSION['userID'];
         $bookings = $this->model('Booking')->getBookingByUserID($userID);
         $payments = $this->model('Payment')->fetchAllPaymentsByUser($userID);
 
@@ -229,27 +224,24 @@ class BookingController extends Controller {
             'pageTitle' => 'My Bookings',
             'bookings' => $bookings,
             'paymentsByBooking' => $paymentsByBooking,
-            'cancelToken' => $tempCancelToken // [SESSION] was: 'cancelToken' => $_SESSION['bookingCancelToken']
+            'cancelToken' => $_SESSION['bookingCancelToken']
         ]);
     }
 
     // POST: cancel a customer's own future booking, preserving the booking record.
     public function cancelBooking($bookingID = null) {
-        // [SESSION] if (!isset($_SESSION['userID']) || ($_SESSION['role'] ?? '') !== 'user') {
-            // [SESSION] header('Location: /index.php?url=auth/login');
-            // [SESSION] exit;
-        // [SESSION] }
-        $tempUserID = 4; // [TEMP]
-        $tempCancelToken = 'TEMP_CANCEL_TOKEN'; // [TEMP]
+        if (!isset($_SESSION['userID']) || ($_SESSION['role'] ?? '') !== 'user') {
+            header('Location: /index.php?url=auth/login');
+            exit;
+        }
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             http_response_code(405);
             die('Use the cancel button from My Bookings.');
         }
 
         $token = $_POST['cancelToken'] ?? '';
-        // [SESSION] if (!is_string($token) || empty($_SESSION['bookingCancelToken']) ||
-            // [SESSION] !hash_equals($_SESSION['bookingCancelToken'], $token)) {
-        if (!is_string($token) || !hash_equals($tempCancelToken, $token)) { // [TEMP]
+        if (!is_string($token) || empty($_SESSION['bookingCancelToken']) ||
+            !hash_equals($_SESSION['bookingCancelToken'], $token)) {
             http_response_code(403);
             die('Invalid cancellation request.');
         }
@@ -269,7 +261,7 @@ class BookingController extends Controller {
             $stmt->execute([$bookingID]);
             $booking = $stmt->fetch();
 
-            if (!$booking || (int) $booking['userID'] !== (int) $tempUserID) { // [SESSION] was: if (!$booking || (int) $booking['userID'] !== (int) $_SESSION['userID']) {
+            if (!$booking || (int) $booking['userID'] !== (int) $_SESSION['userID']) {
                 throw new RuntimeException('Booking not found or access denied.');
             }
             $startTime = strtotime($booking['bookingDate'] . ' ' . $booking['bookingTime']);
@@ -307,13 +299,12 @@ class BookingController extends Controller {
 
     public function chat() {
         // A user must be logged in to send or read messages.
-        // [SESSION] if (!isset($_SESSION['userID'])) {
-            // [SESSION] header('Location: /index.php?url=auth/login');
-            // [SESSION] exit;
-        // [SESSION] }
-        $tempUserID = 4; // [TEMP]
+        if (!isset($_SESSION['userID'])) {
+            header('Location: /index.php?url=auth/login');
+            exit;
+        }
 
-        $senderID = (int) $tempUserID; // [SESSION] was: $senderID = (int) $_SESSION['userID'];
+        $senderID = (int) $_SESSION['userID'];
         $receiverID = (int) ($_POST['receiverID'] ?? $_GET['receiverID'] ?? 0);
 
         $chatModel = $this->model('Chat');

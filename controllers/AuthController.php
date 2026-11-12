@@ -3,12 +3,12 @@ class AuthController extends Controller {
 
     public function login() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
-            $password = $_POST['password'];
+            $email = trim($_POST['email'] ?? '');
+            $password = $_POST['password'] ?? '';
             $loginTarget = $_POST['loginType'] ?? ''; // 'customer_app' or 'staff_app'
 
             $userModel = $this->model('User');
-            
+
             if ($loginTarget === 'staff_app') {
 
             // Authenticate using the shared users table
@@ -22,12 +22,12 @@ class AuthController extends Controller {
                 $venue = $staffModel->getVenueByStaff($user['userID']);
 
                 if ($venue) {
-                    // [SESSION] session_regenerate_id(true);
+                    session_regenerate_id(true);
 
-                    // [SESSION] $_SESSION['userID'] = $user['userID'];
-                    // [SESSION] $_SESSION['staffID'] = $user['userID'];
-                    // [SESSION] $_SESSION['venueID'] = $venue['venueID'];
-                    // [SESSION] $_SESSION['role'] = 'staff';
+                    $_SESSION['userID'] = $user['userID'];
+                    $_SESSION['staffID'] = $user['userID'];
+                    $_SESSION['venueID'] = $venue['venueID'];
+                    $_SESSION['role'] = 'staff';
 
                     header('Location: /index.php?url=dashboard/staffDashboard');
                     exit;
@@ -39,12 +39,12 @@ class AuthController extends Controller {
 
             if ($user && in_array($user['userType'], ['user', 'court_owner', 'admin'], true)) {
 
-                // [SESSION] session_regenerate_id(true);
+                session_regenerate_id(true);
 
-                // [SESSION] $_SESSION['userID'] = $user['userID'];
-                // [SESSION] $_SESSION['role'] = $user['userType'];
+                $_SESSION['userID'] = $user['userID'];
+                $_SESSION['role'] = $user['userType'];
 
-                // [SESSION] unset($_SESSION['staffID'], $_SESSION['venueID']);
+                unset($_SESSION['staffID'], $_SESSION['venueID']);
 
                 header('Location: /index.php?url=dashboard/dispatcher');
                 exit;
@@ -58,12 +58,16 @@ class AuthController extends Controller {
 
     public function signup() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $name  = htmlspecialchars($_POST['name'], ENT_QUOTES, 'UTF-8');
-            $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
-            $pass  = $_POST['password'];
+            $name = trim($_POST['name'] ?? '');
+            $email = trim($_POST['email'] ?? '');
+            $pass = $_POST['password'] ?? '';
             $role = $_POST['userType'] ?? '';
 
-            if (!in_array($role, ['user', 'court_owner'], true)) {
+            if ($name === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                $data['error'] = 'Please enter your name and a valid email address.';
+            } elseif (strlen($pass) < 8 || $pass !== ($_POST['confirmPassword'] ?? '')) {
+                $data['error'] = 'Passwords must match and contain at least 8 characters.';
+            } elseif (!in_array($role, ['user', 'court_owner'], true)) {
                 $data['error'] = "Invalid account type selected.";
             } else {
                 $userModel = $this->model('User');
@@ -73,7 +77,7 @@ class AuthController extends Controller {
                     exit;
                 }
 
-                $data['error'] = "Database processing error occurred during account creation.";
+                $data['error'] = "This email address is already registered.";
             }
         }
 
@@ -83,7 +87,7 @@ class AuthController extends Controller {
 
 
     public function logout() {
-        // [SESSION] session_destroy();
+        session_destroy();
         header('Location: /index.php?url=home/index');
         exit;
     }
