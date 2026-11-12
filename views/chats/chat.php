@@ -27,11 +27,19 @@
                         Dashboard
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end">
-<?php if ($role): ?><li><a class="dropdown-item" href="index.php?url=dashboard/dispatcher">My Dashboard</a></li><?php endif; ?>
-<?php if ($role === 'user'): ?><li><a class="dropdown-item" href="index.php?url=booking/myBookings">My Bookings</a></li><?php endif; ?>
-<?php if ($role === 'court_owner'): ?><li><a class="dropdown-item" href="index.php?url=staff/showAllStaff">Manage Staff</a></li><?php endif; ?>
-<?php if (!$role): ?><li><a class="dropdown-item" href="index.php?url=auth/login">Sign In</a></li><?php endif; ?>
-</ul>
+                    <?php if ($role): ?>
+                        <li><a class="dropdown-item" href="index.php?url=dashboard/dispatcher">My Dashboard</a></li>
+                    <?php endif; ?>
+                    <?php if ($role === 'user'): ?>
+                        <li><a class="dropdown-item" href="index.php?url=booking/myBookings">My Bookings</a></li>
+                    <?php endif; ?>
+                    <?php if ($role === 'court_owner'): ?>
+                        <li><a class="dropdown-item" href="index.php?url=staff/showAllStaff">Manage Staff</a></li>
+                    <?php endif; ?>
+                    <?php if (!$role): ?>
+                        <li><a class="dropdown-item" href="index.php?url=auth/login">Sign In</a></li>
+                    <?php endif; ?>
+                    </ul> 
                 </div>
 
                 <a href="index.php?url=auth/<?= $role ? 'logout' : 'login' ?>" class="btn btn-primary"><?= $role ? 'Sign Out' : 'Sign In' ?></a>
@@ -67,21 +75,48 @@
         <h1>Messages</h1>
         <a href="index.php?url=home/index">Close Message Window</a>
 
-        <div class="layout">
+    <div class="layout">
 
-            <!-- Conversations -->
-            <aside>
-                <h3>Conversations</h3>
+        <!-- Conversations -->
+        <aside>
+            <h3>Conversations</h3>
 
-<?php foreach($users as $u): if((int)$u['userID']===$senderID)continue; ?><a class="conversation-link" href="index.php?url=chat/index&amp;receiverID=<?= (int)$u['userID'] ?>" <?= (int)$u['userID']===$receiverID?'aria-current="true"':'' ?>><?= courtEscape($u['name']) ?></a><?php endforeach; ?>
-            </aside>
+            <?php foreach($users as $u): if((int)$u['userID']===$senderID)continue; ?>
+                <a class="conversation-link" href="index.php?url=chat/index&amp;receiverID=<?= (int)$u['userID'] ?>" <?= (int)$u['userID']===$receiverID?'aria-current="true"':'' ?>><?= courtEscape($u['name']) ?></a>
+            <?php endforeach; ?>
+        </aside>
 
-            <!-- Chat Window -->
-            <section>
-<h2 id="chatTitle"><?php $recipient='Choose a conversation'; foreach($users as $u)if((int)$u['userID']===$receiverID)$recipient=$u['name']; echo courtEscape($recipient); ?></h2><div class="messages" aria-live="polite"><?php foreach($messages as $message): ?><p class="<?= (int)$message['senderID']===$senderID?'sent':'received' ?>"><?= courtEscape($message['body']) ?><small class="d-block"><?= courtEscape($message['createdAt']) ?></small></p><?php endforeach; ?><?php if(!$messages): ?><p>No messages yet.</p><?php endif; ?></div><?php if($receiverID): ?><form method="post" action="index.php?url=chat/index"><input type="hidden" name="receiverID" value="<?= (int)$receiverID ?>"><input type="text" id="messageInput" name="message" maxlength="500" required placeholder="Type a message..." aria-label="Message"><button type="submit">Send</button><input type="hidden" name="csrfToken" value="<?= courtEscape($_SESSION['csrfToken']) ?>"></form><?php endif; ?>
-            </section>
+        <!-- Chat Window -->
+        <section>
+            <h2 id="chatTitle">
+                <?php
+                    $recipient='Choose a conversation';
+                    foreach($users as $u) if((int)$u['userID']===$receiverID) $recipient=$u['name'];
+                    echo courtEscape($recipient);
+                ?>
+            </h2>
+            <div class="messages" aria-live="polite">
+                <?php foreach($messages as $message): ?>
+                    <p class="<?= (int)$message['senderID']===$senderID?'sent':'received' ?>">
+                        <?= courtEscape($message['body']) ?>
+                        <small class="d-block"><?= courtEscape($message['createdAt']) ?></small>
+                    </p>
+                <?php endforeach; ?>
+                <?php if(!$messages): ?>
+                    <p>No messages yet.</p>
+                <?php endif; ?>
+            </div>
+            <?php if($receiverID): ?>
+                <form method="post" action="index.php?url=chat/index">
+                    <input type="hidden" name="receiverID" value="<?= (int)$receiverID ?>">
+                    <input type="text" id="messageInput" name="message" maxlength="500" required placeholder="Type a message..." aria-label="Message">
+                    <button type="submit">Send</button>
+                    <input type="hidden" name="csrfToken" value="<?= courtEscape($_SESSION['csrfToken']) ?>">
+                </form>
+            <?php endif; ?>
+        </section>
 
-        </div>
+    </div>
     </main>
 
 

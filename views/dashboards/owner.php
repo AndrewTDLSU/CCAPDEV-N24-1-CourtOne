@@ -31,16 +31,24 @@
 
                     <!-- Account navigation -->
                     <div class="dropdown position-relative">
-                        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                            Dashboard
-                        </button>
-                        <ul class="dropdown-menu dropdown-menu-end">
-<?php if ($role): ?><li><a class="dropdown-item" href="index.php?url=dashboard/dispatcher">My Dashboard</a></li><?php endif; ?>
-<?php if ($role === 'user'): ?><li><a class="dropdown-item" href="index.php?url=booking/myBookings">My Bookings</a></li><?php endif; ?>
-<?php if ($role === 'court_owner'): ?><li><a class="dropdown-item" href="index.php?url=staff/showAllStaff">Manage Staff</a></li><?php endif; ?>
-<?php if (!$role): ?><li><a class="dropdown-item" href="index.php?url=auth/login">Sign In</a></li><?php endif; ?>
-</ul>
-                    </div>
+                    <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                        Dashboard
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                    <?php if ($role): ?>
+                        <li><a class="dropdown-item" href="index.php?url=dashboard/dispatcher">My Dashboard</a></li>
+                    <?php endif; ?>
+                    <?php if ($role === 'user'): ?>
+                        <li><a class="dropdown-item" href="index.php?url=booking/myBookings">My Bookings</a></li>
+                    <?php endif; ?>
+                    <?php if ($role === 'court_owner'): ?>
+                        <li><a class="dropdown-item" href="index.php?url=staff/showAllStaff">Manage Staff</a></li>
+                    <?php endif; ?>
+                    <?php if (!$role): ?>
+                        <li><a class="dropdown-item" href="index.php?url=auth/login">Sign In</a></li>
+                    <?php endif; ?>
+                    </ul> 
+                </div>
 
                     <a href="index.php?url=auth/<?= $role ? 'logout' : 'login' ?>" class="btn btn-primary"><?= $role ? 'Sign Out' : 'Sign In' ?></a>
 
@@ -107,7 +115,20 @@
                     </a>
                 </div>
 
-<?php foreach ($venues as $v): ?><div class="col-6 col-lg-3"><div class="card h-100 box-shadow"><img src="<?= courtEscape(courtImage($v)) ?>" class="card-img-top" alt="<?= courtEscape($v['venueName']) ?>" height="200"><div class="card-body"><h4 class="card-title"><?= courtEscape($v['venueName']) ?></h4><p class="card-text"><?= courtEscape($v['address']) ?></p><a href="index.php?url=venue/venueStatistics/<?= (int)$v['venueID'] ?>" class="btn btn-primary">View Statistics</a><a class="d-block mt-2" href="index.php?url=venue/viewVenue/<?= (int)$v['venueID'] ?>">View available slots</a></div></div></div><?php endforeach; ?></div>
+            <?php foreach ($venues as $v): ?>
+                <div class="col-6 col-lg-3">
+                    <div class="card h-100 box-shadow">
+                        <img src="<?= courtEscape(courtImage($v)) ?>" class="card-img-top" alt="<?= courtEscape($v['venueName']) ?>" height="200">
+                        <div class="card-body">
+                            <h4 class="card-title"><?= courtEscape($v['venueName']) ?></h4>
+                                <p class="card-text"><?= courtEscape($v['address']) ?></p>
+                                <a href="index.php?url=venue/venueStatistics/<?= (int)$v['venueID'] ?>" class="btn btn-primary">View Statistics</a>
+                                <a class="d-block mt-2" href="index.php?url=venue/viewVenue/<?= (int)$v['venueID'] ?>">View available slots</a>
+                            </div>
+                         </div>
+                    </div>
+                    <?php endforeach; ?>
+                </div>
 
         </main>
 

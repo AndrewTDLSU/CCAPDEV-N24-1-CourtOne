@@ -32,15 +32,23 @@
 
                     <!-- Account navigation -->
                     <div class="dropdown position-relative">
-                        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                            Dashboard
-                        </button>
+                    <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                        Dashboard
+                    </button>
                         <ul class="dropdown-menu dropdown-menu-end">
-<?php if ($role): ?><li><a class="dropdown-item" href="index.php?url=dashboard/dispatcher">My Dashboard</a></li><?php endif; ?>
-<?php if ($role === 'user'): ?><li><a class="dropdown-item" href="index.php?url=booking/myBookings">My Bookings</a></li><?php endif; ?>
-<?php if ($role === 'court_owner'): ?><li><a class="dropdown-item" href="index.php?url=staff/showAllStaff">Manage Staff</a></li><?php endif; ?>
-<?php if (!$role): ?><li><a class="dropdown-item" href="index.php?url=auth/login">Sign In</a></li><?php endif; ?>
-</ul>
+                            <?php if ($role): ?>
+                                <li><a class="dropdown-item" href="index.php?url=dashboard/dispatcher">My Dashboard</a></li>
+                            <?php endif; ?>
+                            <?php if ($role === 'user'): ?>
+                                <li><a class="dropdown-item" href="index.php?url=booking/myBookings">My Bookings</a></li>
+                            <?php endif; ?>
+                            <?php if ($role === 'court_owner'): ?>
+                                <li><a class="dropdown-item" href="index.php?url=staff/showAllStaff">Manage Staff</a></li>
+                            <?php endif; ?>
+                            <?php if (!$role): ?>
+                                <li><a class="dropdown-item" href="index.php?url=auth/login">Sign In</a></li>
+                            <?php endif; ?>
+                        </ul> 
                     </div>
 
                     <a href="index.php?url=auth/<?= $role ? 'logout' : 'login' ?>" class="btn btn-primary"><?= $role ? 'Sign Out' : 'Sign In' ?></a>
@@ -81,10 +89,22 @@
 
             <!-- title and venue filter -->
             <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
-                <h1 class="h4 mb-0">Manage staff</h1><?php if($error): ?><p class="alert alert-danger"><?= courtEscape($error) ?></p><?php endif; ?><?php if($success): ?><p class="alert alert-success">Staff account created.</p><?php endif; ?>
-                <form action="index.php" method="get"><input type="hidden" name="url" value="staff/showAllStaff"><select name="venueID" onchange="this.form.submit()" id="venue-filter" class="form-select w-auto">
-                    <option value="0">All venues</option><?php foreach($venues as $v): ?><option value="<?= (int)$v['venueID'] ?>" <?= (int)$venueID===(int)$v['venueID']?'selected':'' ?>><?= courtEscape($v['venueName']) ?></option><?php endforeach; ?>
-                </select></form>
+                <h1 class="h4 mb-0">Manage staff</h1>
+                <?php if($error): ?>
+                    <p class="alert alert-danger"><?= courtEscape($error) ?></p>
+                <?php endif; ?>
+                <?php if($success): ?>
+                    <p class="alert alert-success">Staff account created.</p>
+                <?php endif; ?>
+                <form action="index.php" method="get">
+                    <input type="hidden" name="url" value="staff/showAllStaff">
+                    <select name="venueID" onchange="this.form.submit()" id="venue-filter" class="form-select w-auto">
+                        <option value="0">All venues</option>
+                        <?php foreach($venues as $v): ?>
+                            <option value="<?= (int)$v['venueID'] ?>" <?= (int)$venueID===(int)$v['venueID']?'selected':'' ?>><?= courtEscape($v['venueName']) ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </form>
             </div>
 
             <div class="row g-4">

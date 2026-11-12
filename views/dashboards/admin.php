@@ -26,11 +26,19 @@
                         Dashboard
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end">
-<?php if ($role): ?><li><a class="dropdown-item" href="index.php?url=dashboard/dispatcher">My Dashboard</a></li><?php endif; ?>
-<?php if ($role === 'user'): ?><li><a class="dropdown-item" href="index.php?url=booking/myBookings">My Bookings</a></li><?php endif; ?>
-<?php if ($role === 'court_owner'): ?><li><a class="dropdown-item" href="index.php?url=staff/showAllStaff">Manage Staff</a></li><?php endif; ?>
-<?php if (!$role): ?><li><a class="dropdown-item" href="index.php?url=auth/login">Sign In</a></li><?php endif; ?>
-</ul>
+                    <?php if ($role): ?>
+                        <li><a class="dropdown-item" href="index.php?url=dashboard/dispatcher">My Dashboard</a></li>
+                    <?php endif; ?>
+                    <?php if ($role === 'user'): ?>
+                        <li><a class="dropdown-item" href="index.php?url=booking/myBookings">My Bookings</a></li>
+                    <?php endif; ?>
+                    <?php if ($role === 'court_owner'): ?>
+                        <li><a class="dropdown-item" href="index.php?url=staff/showAllStaff">Manage Staff</a></li>
+                    <?php endif; ?>
+                    <?php if (!$role): ?>
+                        <li><a class="dropdown-item" href="index.php?url=auth/login">Sign In</a></li>
+                    <?php endif; ?>
+                    </ul> 
                 </div>
 
                 <a href="index.php?url=auth/<?= $role ? 'logout' : 'login' ?>" class="btn btn-primary"><?= $role ? 'Sign Out' : 'Sign In' ?></a>
@@ -74,7 +82,11 @@
         </aside>
         <!-- Hold the dashboard metrics and the panel controlled by the selected tab. -->
         <div class="admin-content">
-<?php if (isset($_SESSION['adminMessage'])): ?><div class="alert alert-<?= courtEscape($_SESSION['adminMessage']['type']) ?>" role="status"><?= courtEscape($_SESSION['adminMessage']['text']) ?></div><?php unset($_SESSION['adminMessage']); endif; ?>
+            <?php if (isset($_SESSION['adminMessage'])): ?>
+            <div class="alert alert-<?= courtEscape($_SESSION['adminMessage']['type']) ?>" role="status">
+                <?= courtEscape($_SESSION['adminMessage']['text']) ?>
+            </div>
+            <?php unset($_SESSION['adminMessage']); endif; ?>
             <!-- Display browser-stored account, venue, reservation, and owner totals. -->
             <section class="summary-grid" aria-label="Dashboard summary">
                 <article class="summary-card">
@@ -107,11 +119,35 @@
                     </div>
                     <div class="table-responsive">
                         <table class="table align-middle user-table">
-                            <thead><tr><th scope="col">Name</th><th scope="col">Email</th><th scope="col">Role</th><th scope="col">Status</th><th scope="col">Action</th></tr></thead>
-                            <tbody id="user-rows"><?php foreach($users as $u): ?><tr><td><?= courtEscape($u['name']) ?></td><td><?= courtEscape($u['email']) ?></td><td><?= courtEscape($u['userType']) ?></td><td>Registered</td><td><?php if ((int)$u['userID'] !== (int)$_SESSION['userID']): ?>
-<form action="index.php?url=admin/deleteUser/<?= (int)$u['userID'] ?>" method="post" data-confirm="Delete this account?">
-<button class="btn btn-sm btn-outline-danger">Delete</button><input type="hidden" name="csrfToken" value="<?= courtEscape($_SESSION['csrfToken']) ?>"></form>
-<?php else: ?>Current account<?php endif; ?></td></tr><?php endforeach; ?></tbody>
+                            <thead>
+                                <tr>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Email</th>
+                                    <th scope="col">Role</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="user-rows">
+                                <?php foreach($users as $u): ?>
+                                    <tr>
+                                        <td><?= courtEscape($u['name']) ?></td>
+                                        <td><?= courtEscape($u['email']) ?></td>
+                                        <td><?= courtEscape($u['userType']) ?></td>
+                                        <td>Registered</td>
+                                        <td>
+                                            <?php if ((int)$u['userID'] !== (int)$_SESSION['userID']): ?>
+                                                <form action="index.php?url=admin/deleteUser/<?= (int)$u['userID'] ?>" method="post" data-confirm="Delete this account?">
+                                                    <button class="btn btn-sm btn-outline-danger">Delete</button>
+                                                    <input type="hidden" name="csrfToken" value="<?= courtEscape($_SESSION['csrfToken']) ?>">
+                                                </form>
+                                            <?php else: ?>
+                                                Current account
+                                            <?php endif; ?>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
                         </table>
                     </div>
                     <p id="empty-users" class="empty-message <?= $users?'d-none':'' ?>">No registered accounts yet. <a href="index.php?url=auth/signup">Create an account</a>.</p>
@@ -125,10 +161,32 @@
                     </div>
                     <div class="table-responsive">
                         <table class="table align-middle mb-0 venue-table">
-                            <thead><tr><th scope="col">Venue</th><th scope="col">Sport</th><th scope="col">Location</th><th scope="col">Status</th><th scope="col">Action</th></tr></thead>
-                            <tbody id="venue-rows"><?php foreach($venues as $v): ?><tr><td><?= courtEscape($v['venueName']) ?></td><td><?= courtEscape($v['sportsType']) ?></td><td><?= courtEscape($v['address']) ?></td><td>Listed</td><td><a class="btn btn-sm btn-primary" href="index.php?url=venue/viewVenue/<?= (int)$v['venueID'] ?>">View</a>
-<form class="d-inline" action="index.php?url=admin/deleteVenue/<?= (int)$v['venueID'] ?>" method="post" data-confirm="Delete this venue and its courts?">
-<button class="btn btn-sm btn-outline-danger">Delete</button><input type="hidden" name="csrfToken" value="<?= courtEscape($_SESSION['csrfToken']) ?>"></form></td></tr><?php endforeach; ?></tbody>
+                            <thead>
+                                <tr>
+                                    <th scope="col">Venue</th>
+                                    <th scope="col">Sport</th>
+                                    <th scope="col">Location</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="venue-rows">
+                                <?php foreach($venues as $v): ?>
+                                    <tr>
+                                        <td><?= courtEscape($v['venueName']) ?></td>
+                                        <td><?= courtEscape($v['sportsType']) ?></td>
+                                        <td><?= courtEscape($v['address']) ?></td>
+                                        <td>Listed</td>
+                                        <td>
+                                            <a class="btn btn-sm btn-primary" href="index.php?url=venue/viewVenue/<?= (int)$v['venueID'] ?>">View</a>
+                                            <form class="d-inline" action="index.php?url=admin/deleteVenue/<?= (int)$v['venueID'] ?>" method="post" data-confirm="Delete this venue and its courts?">
+                                                <button class="btn btn-sm btn-outline-danger">Delete</button>
+                                                <input type="hidden" name="csrfToken" value="<?= courtEscape($_SESSION['csrfToken']) ?>">
+                                            </form>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
                         </table>
                     </div>
                     <p id="empty-venues" class="empty-message <?= $venues?'d-none':'' ?>">No venues have been added yet.</p>
@@ -141,12 +199,26 @@
                     </div>
                     <div class="table-responsive">
                         <table class="table align-middle mb-0">
-                            <thead><tr><th scope="col">Venue</th><th scope="col">Date</th><th scope="col">Court / time</th></tr></thead>
+                            <thead>
+                                <tr>
+                                    <th scope="col">Venue</th>
+                                    <th scope="col">Date</th>
+                                    <th scope="col">Court / time</th>
+                                </tr>
+                            </thead>
                             <tbody id="booking-rows">
-<?php foreach ($bookings as $b): ?><tr>
-<td><?= courtEscape($b['venueName']) ?></td><td><?= courtEscape($b['bookingDate']) ?></td>
-<td><?= courtEscape($b['courtName'].' / '.$b['bookingTime']) ?><br><small><?= courtEscape($b['userName'].' · '.$b['status']) ?></small></td>
-</tr><?php endforeach; ?></tbody>
+                                <?php foreach ($bookings as $b): ?>
+                                    <tr>
+                                        <td><?= courtEscape($b['venueName']) ?></td>
+                                        <td><?= courtEscape($b['bookingDate']) ?></td>
+                                        <td>
+                                            <?= courtEscape($b['courtName'].' / '.$b['bookingTime']) ?>
+                                            <br>
+                                            <small><?= courtEscape($b['userName'].' · '.$b['status']) ?></small>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
                         </table>
                     </div>
                     <p id="empty-bookings" class="empty-message <?= $bookings ? 'd-none' : '' ?>">No reservations yet.</p>

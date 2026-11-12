@@ -37,11 +37,19 @@
                             Dashboard
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end">
-<?php if ($role): ?><li><a class="dropdown-item" href="index.php?url=dashboard/dispatcher">My Dashboard</a></li><?php endif; ?>
-<?php if ($role === 'user'): ?><li><a class="dropdown-item" href="index.php?url=booking/myBookings">My Bookings</a></li><?php endif; ?>
-<?php if ($role === 'court_owner'): ?><li><a class="dropdown-item" href="index.php?url=staff/showAllStaff">Manage Staff</a></li><?php endif; ?>
-<?php if (!$role): ?><li><a class="dropdown-item" href="index.php?url=auth/login">Sign In</a></li><?php endif; ?>
-</ul>
+                            <?php if ($role): ?>
+                                <li><a class="dropdown-item" href="index.php?url=dashboard/dispatcher">My Dashboard</a></li>
+                            <?php endif; ?>
+                            <?php if ($role === 'user'): ?>
+                                <li><a class="dropdown-item" href="index.php?url=booking/myBookings">My Bookings</a></li>
+                            <?php endif; ?>
+                            <?php if ($role === 'court_owner'): ?>
+                                <li><a class="dropdown-item" href="index.php?url=staff/showAllStaff">Manage Staff</a></li>
+                            <?php endif; ?>
+                            <?php if (!$role): ?>
+                                <li><a class="dropdown-item" href="index.php?url=auth/login">Sign In</a></li>
+                            <?php endif; ?>
+                        </ul> 
                     </div>
 
                     <a href="index.php?url=auth/<?= $role ? 'logout' : 'login' ?>" class="btn btn-primary"><?= $role ? 'Sign Out' : 'Sign In' ?></a>

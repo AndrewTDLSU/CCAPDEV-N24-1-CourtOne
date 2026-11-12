@@ -13,10 +13,10 @@
         <!--<script src="[filepath]"></script>  bootstrap js script, Not used yet, remove when unncessary -->
 
         <link rel="stylesheet" href="public/css/style.css"> <!-- Custom CSS -->
-    <link rel="stylesheet" href="public/css/integration.css">
-<link rel="stylesheet" href="public/css/darkMode.css">
-<script src="public/js/theme.js"></script>
-</head>
+        <link rel="stylesheet" href="public/css/integration.css">
+        <link rel="stylesheet" href="public/css/darkMode.css">
+        <script src="public/js/theme.js"></script>
+    </head>
 
     <body>
         <div class="container my-4">

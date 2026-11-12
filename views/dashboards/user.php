@@ -33,11 +33,19 @@
                         Dashboard
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end">
-<?php if ($role): ?><li><a class="dropdown-item" href="index.php?url=dashboard/dispatcher">My Dashboard</a></li><?php endif; ?>
-<?php if ($role === 'user'): ?><li><a class="dropdown-item" href="index.php?url=booking/myBookings">My Bookings</a></li><?php endif; ?>
-<?php if ($role === 'court_owner'): ?><li><a class="dropdown-item" href="index.php?url=staff/showAllStaff">Manage Staff</a></li><?php endif; ?>
-<?php if (!$role): ?><li><a class="dropdown-item" href="index.php?url=auth/login">Sign In</a></li><?php endif; ?>
-</ul>
+                    <?php if ($role): ?>
+                        <li><a class="dropdown-item" href="index.php?url=dashboard/dispatcher">My Dashboard</a></li>
+                    <?php endif; ?>
+                    <?php if ($role === 'user'): ?>
+                        <li><a class="dropdown-item" href="index.php?url=booking/myBookings">My Bookings</a></li>
+                    <?php endif; ?>
+                    <?php if ($role === 'court_owner'): ?>
+                        <li><a class="dropdown-item" href="index.php?url=staff/showAllStaff">Manage Staff</a></li>
+                    <?php endif; ?>
+                    <?php if (!$role): ?>
+                        <li><a class="dropdown-item" href="index.php?url=auth/login">Sign In</a></li>
+                    <?php endif; ?>
+                    </ul> 
                 </div>
 
                 <a href="index.php?url=auth/<?= $role ? 'logout' : 'login' ?>" class="btn btn-primary"><?= $role ? 'Sign Out' : 'Sign In' ?></a>
@@ -145,18 +153,51 @@
                         </a>
                     </div>
 
-<?php $rows=$upcomingBookings; ?><?php foreach ($rows as $b): ?>
-<div class="card shadow-sm mb-3"><div class="card-body"><div class="d-flex flex-column flex-sm-row gap-3">
-<img src="<?= courtEscape(courtImage($b)) ?>" class="booking-image" alt="<?= courtEscape($b['venueName']) ?>">
-<div class="flex-grow-1"><h5 class="fw-bold"><?= courtEscape($b['venueName']) ?></h5><p class="text-secondary small mb-2"><?= courtEscape($b['courtName']) ?></p><p class="mb-2"><?= courtEscape($b['bookingDate'].' | '.$b['bookingTime']) ?></p><span class="badge <?= $b['status']==='upcoming'?'bg-success':'bg-secondary' ?>"><?= courtEscape(ucfirst($b['status'])) ?></span> <a class="small" href="index.php?url=booking/myBookings">Manage booking</a></div></div></div></div>
-<?php endforeach; ?><?php if (!$rows): ?><p class="text-secondary">No bookings to display.</p><?php endif; ?>                    <!-- Booking History -->
+                    <?php $rows=$upcomingBookings; ?>
+                    <?php foreach ($rows as $b): ?>
+                        <div class="card shadow-sm mb-3">
+                            <div class="card-body">
+                                <div class="d-flex flex-column flex-sm-row gap-3">
+                                    <img src="<?= courtEscape(courtImage($b)) ?>" class="booking-image" alt="<?= courtEscape($b['venueName']) ?>">
+                                    <div class="flex-grow-1">
+                                        <h5 class="fw-bold"><?= courtEscape($b['venueName']) ?></h5>
+                                        <p class="text-secondary small mb-2"><?= courtEscape($b['courtName']) ?></p>
+                                        <p class="mb-2"><?= courtEscape($b['bookingDate'].' | '.$b['bookingTime']) ?></p>
+                                        <span class="badge <?= $b['status']==='upcoming'?'bg-success':'bg-secondary' ?>"><?= courtEscape(ucfirst($b['status'])) ?></span>
+                                        <a class="small" href="index.php?url=booking/myBookings">Manage booking</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                    <?php if (!$rows): ?>
+                        <p class="text-secondary">No bookings to display.</p>
+                    <?php endif; ?>
+
+                    <!-- Booking History -->
                     <h2 class="h4 fw-bold mt-4 mb-3">Booking History</h2>
 
-<?php $rows=$bookingHistory; ?><?php foreach ($rows as $b): ?>
-<div class="card shadow-sm mb-3"><div class="card-body"><div class="d-flex flex-column flex-sm-row gap-3">
-<img src="<?= courtEscape(courtImage($b)) ?>" class="booking-image" alt="<?= courtEscape($b['venueName']) ?>">
-<div class="flex-grow-1"><h5 class="fw-bold"><?= courtEscape($b['venueName']) ?></h5><p class="text-secondary small mb-2"><?= courtEscape($b['courtName']) ?></p><p class="mb-2"><?= courtEscape($b['bookingDate'].' | '.$b['bookingTime']) ?></p><span class="badge <?= $b['status']==='upcoming'?'bg-success':'bg-secondary' ?>"><?= courtEscape(ucfirst($b['status'])) ?></span> <a class="small" href="index.php?url=booking/myBookings">Manage booking</a></div></div></div></div>
-<?php endforeach; ?><?php if (!$rows): ?><p class="text-secondary">No bookings to display.</p><?php endif; ?>                </section>
+                    <?php $rows=$bookingHistory; ?>
+                    <?php foreach ($rows as $b): ?>
+                        <div class="card shadow-sm mb-3">
+                            <div class="card-body">
+                                <div class="d-flex flex-column flex-sm-row gap-3">
+                                    <img src="<?= courtEscape(courtImage($b)) ?>" class="booking-image" alt="<?= courtEscape($b['venueName']) ?>">
+                                    <div class="flex-grow-1">
+                                        <h5 class="fw-bold"><?= courtEscape($b['venueName']) ?></h5>
+                                        <p class="text-secondary small mb-2"><?= courtEscape($b['courtName']) ?></p>
+                                        <p class="mb-2"><?= courtEscape($b['bookingDate'].' | '.$b['bookingTime']) ?></p>
+                                        <span class="badge <?= $b['status']==='upcoming'?'bg-success':'bg-secondary' ?>"><?= courtEscape(ucfirst($b['status'])) ?></span>
+                                        <a class="small" href="index.php?url=booking/myBookings">Manage booking</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                    <?php if (!$rows): ?>
+                        <p class="text-secondary">No bookings to display.</p>
+                    <?php endif; ?>
+                </section>
 
                 <!-- My Profile -->
                 <section id="profile" class="mb-4">

@@ -27,11 +27,19 @@
                         Dashboard
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end">
-<?php if ($role): ?><li><a class="dropdown-item" href="index.php?url=dashboard/dispatcher">My Dashboard</a></li><?php endif; ?>
-<?php if ($role === 'user'): ?><li><a class="dropdown-item" href="index.php?url=booking/myBookings">My Bookings</a></li><?php endif; ?>
-<?php if ($role === 'court_owner'): ?><li><a class="dropdown-item" href="index.php?url=staff/showAllStaff">Manage Staff</a></li><?php endif; ?>
-<?php if (!$role): ?><li><a class="dropdown-item" href="index.php?url=auth/login">Sign In</a></li><?php endif; ?>
-</ul>
+                    <?php if ($role): ?>
+                        <li><a class="dropdown-item" href="index.php?url=dashboard/dispatcher">My Dashboard</a></li>
+                    <?php endif; ?>
+                    <?php if ($role === 'user'): ?>
+                        <li><a class="dropdown-item" href="index.php?url=booking/myBookings">My Bookings</a></li>
+                    <?php endif; ?>
+                    <?php if ($role === 'court_owner'): ?>
+                        <li><a class="dropdown-item" href="index.php?url=staff/showAllStaff">Manage Staff</a></li>
+                    <?php endif; ?>
+                    <?php if (!$role): ?>
+                        <li><a class="dropdown-item" href="index.php?url=auth/login">Sign In</a></li>
+                    <?php endif; ?>
+                    </ul> 
                 </div>
 
                 <a href="index.php?url=auth/<?= $role ? 'logout' : 'login' ?>" class="btn btn-primary"><?= $role ? 'Sign Out' : 'Sign In' ?></a>
@@ -68,17 +76,37 @@
         <p>Find sports courts near you!</p>
 
         <!-- Search and Filter -->
-        <form class="filters" action="index.php" method="get"><input type="hidden" name="url" value="venue/browseVenues">
+        <form class="filters" action="index.php" method="get">
+            <input type="hidden" name="url" value="venue/browseVenues">
 
             <input type="text" id="searchInput"
-                   placeholder="Search venues or locations"
-                   name="q" value="<?= courtEscape($search) ?>" aria-label="Search venues or locations">
+                placeholder="Search venues or locations"
+                name="q" value="<?= courtEscape($search) ?>" aria-label="Search venues or locations">
 
-<select id="sportFilter" name="sport" aria-label="Sport"><?php foreach (['all','Basketball','Badminton','Pickleball'] as $option): ?><option value="<?= $option ?>" <?= $sport===$option?'selected':'' ?>><?= $option==='all'?'All Sports':$option ?></option><?php endforeach; ?></select><button class="btn btn-primary" type="submit">Search</button></form>
+            <select id="sportFilter" name="sport" aria-label="Sport">
+                <?php foreach (['all','Basketball','Badminton','Pickleball'] as $option): ?>
+                    <option value="<?= $option ?>" <?= $sport===$option?'selected':'' ?>><?= $option==='all'?'All Sports':$option ?></option>
+                <?php endforeach; ?>
+            </select>
+            <button class="btn btn-primary" type="submit">Search</button>
+        </form>
         <h2>Available Venues</h2>
         <p id="count"><?= count($venues) ?> venues found</p>
 
-<div class="grid"><?php foreach ($venues as $v): ?><div class="venue"><img src="<?= courtEscape(courtImage($v)) ?>" alt="<?= courtEscape($v['venueName']) ?>"><h3><?= courtEscape($v['venueName']) ?></h3><p><?= courtEscape($v['sportsType']) ?></p><p>Location: <?= courtEscape($v['address']) ?></p><a href="index.php?url=venue/viewVenue/<?= (int)$v['venueID'] ?>">View Available Slots</a></div><?php endforeach; ?></div><?php if (!$venues): ?><p>No venues match your search.</p><?php endif; ?>
+        <div class="grid">
+            <?php foreach ($venues as $v): ?>
+                <div class="venue">
+                    <img src="<?= courtEscape(courtImage($v)) ?>" alt="<?= courtEscape($v['venueName']) ?>">
+                    <h3><?= courtEscape($v['venueName']) ?></h3>
+                    <p><?= courtEscape($v['sportsType']) ?></p>
+                    <p>Location: <?= courtEscape($v['address']) ?></p>
+                    <a href="index.php?url=venue/viewVenue/<?= (int)$v['venueID'] ?>">View Available Slots</a>
+                </div>
+            <?php endforeach; ?>
+        </div>
+        <?php if (!$venues): ?>
+            <p>No venues match your search.</p>
+        <?php endif; ?>
     </main>
 
 
