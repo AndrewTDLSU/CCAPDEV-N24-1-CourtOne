@@ -16,6 +16,8 @@
     <link rel="stylesheet" href="public/css/integration.css">
 <link rel="stylesheet" href="public/css/darkMode.css">
 <script src="public/js/theme.js"></script>
+    <link rel="stylesheet" href="<?= courtEscape(courtUrl('public/css/phase3.css')) ?>">
+    <link rel="icon" type="image/png" href="<?= courtEscape(courtUrl('public/media/icons/courtone-logo.png')) ?>">
 </head>
 
     <body>

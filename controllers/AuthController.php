@@ -28,6 +28,7 @@ class AuthController extends Controller {
                     $_SESSION['staffID'] = $user['userID'];
                     $_SESSION['venueID'] = $venue['venueID'];
                     $_SESSION['role'] = 'staff';
+                    $_SESSION['displayName'] = $user['name'];
 
                     header('Location: ' . courtUrl('/index.php?url=dashboard/staffDashboard'));
                     exit;
@@ -43,6 +44,7 @@ class AuthController extends Controller {
 
                 $_SESSION['userID'] = $user['userID'];
                 $_SESSION['role'] = $user['userType'];
+                    $_SESSION['displayName'] = $user['name'];
 
                 unset($_SESSION['staffID'], $_SESSION['venueID']);
 

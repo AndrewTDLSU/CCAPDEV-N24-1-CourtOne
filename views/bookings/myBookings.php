@@ -16,58 +16,14 @@
     <link rel="stylesheet" href="public/css/darkMode.css">
     <script src="public/js/theme.js"></script>
 <link rel="stylesheet" href="public/css/integration.css">
+    <link rel="stylesheet" href="<?= courtEscape(courtUrl('public/css/phase3.css')) ?>">
+    <link rel="icon" type="image/png" href="<?= courtEscape(courtUrl('public/media/icons/courtone-logo.png')) ?>">
 </head>
 
 <body>
 
     <!-- Navigation -->
-    <header class="container">
-        <nav class="navbar navbar-expand-lg py-3" aria-label="Main navigation">
-            <a class="navbar-brand fw-bold" href="index.php?url=home/index">CourtOne</a>
-
-            <div class="d-flex gap-2 ms-auto order-lg-3">
-
-                <!-- Account navigation -->
-                <div class="dropdown position-relative">
-                    <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                        Dashboard
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end">
-<?php if ($role): ?><li><a class="dropdown-item" href="index.php?url=dashboard/dispatcher">My Dashboard</a></li><?php endif; ?>
-<?php if ($role === 'user'): ?><li><a class="dropdown-item" href="index.php?url=booking/myBookings">My Bookings</a></li><?php endif; ?>
-<?php if ($role === 'court_owner'): ?><li><a class="dropdown-item" href="index.php?url=staff/showAllStaff">Manage Staff</a></li><?php endif; ?>
-<?php if (!$role): ?><li><a class="dropdown-item" href="index.php?url=auth/login">Sign In</a></li><?php endif; ?>
-</ul>
-                </div>
-
-                <a href="index.php?url=auth/<?= $role ? 'logout' : 'login' ?>" class="btn btn-primary"><?= $role ? 'Sign Out' : 'Sign In' ?></a>
-
-                <button class="navbar-toggler" type="button"
-                        data-bs-toggle="collapse" data-bs-target="#mainMenu"
-                        aria-controls="mainMenu" aria-expanded="false"
-                        aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-            </div>
-
-            <div class="collapse navbar-collapse order-lg-2" id="mainMenu">
-                <ul class="navbar-nav mx-lg-auto gap-lg-3">
-                    <li class="nav-item">
-                        <a class="nav-link" href="index.php?url=home/index">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="index.php?url=venue/browseVenues">Venues</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="index.php?url=home/index#how-it-works">How It Works</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="index.php?url=chat/index">Chat</a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-    </header>
+    <?php require __DIR__ . '/../partials/Nav.php'; ?>
 
 <main class="container my-4"><div class="row g-4"><aside class="col-12 col-md-3"><div class="card shadow-sm border-0"><div class="card-body"><h5 class="fw-bold">My Account</h5><hr><nav class="nav nav-pills flex-column gap-2"><a class="nav-link" href="index.php?url=dashboard/userDashboard">Dashboard</a><a class="nav-link active" href="index.php?url=booking/myBookings">My Bookings</a><a class="nav-link" href="index.php?url=dashboard/userDashboard#profile">Profile</a></nav></div></div></aside><div class="col-12 col-md-9"><div class="d-flex justify-content-between align-items-center mb-3"><h1 class="fw-bold fs-2">My Bookings</h1><a href="index.php?url=venue/browseVenues">Browse Venues →</a></div>
 <?php if(($_GET['notice']??'')==='cancelled'): ?><div class="alert alert-success" role="status">Your booking has been cancelled.</div><?php endif; ?>
