@@ -11,9 +11,12 @@
     <link rel="stylesheet" href="public/css/darkMode.css">
     <script src="public/js/theme.js"></script>
 <link rel="stylesheet" href="public/css/integration.css">
+    <link rel="stylesheet" href="<?= courtEscape(courtUrl('public/css/phase3.css')) ?>">
+    <link rel="icon" type="image/png" href="<?= courtEscape(courtUrl('public/media/icons/courtone-logo.png')) ?>">
 </head>
 <body>
     <div class="page-shell">
+<<<<<<< HEAD
         <header class="container">
         <nav class="navbar navbar-expand-lg py-3" aria-label="Main navigation">
             <a class="navbar-brand fw-bold" href="index.php?url=home/index">CourtOne</a>
@@ -69,6 +72,9 @@
             </div>
         </nav>
     </header>
+=======
+        <?php require __DIR__ . '/../partials/Nav.php'; ?>
+>>>>>>> bf55e45 (Fixed all backend suggestions as per ms' last recommendation)
 
         <main>
             <!-- Display a recovery message when the requested venue is missing or inactive. -->
@@ -94,6 +100,18 @@
                             <li><span class="icon people-icon" aria-hidden="true">●●●</span><span id="venue-courts"><?= count($courts).' courts' ?></span></li>
                         </ul>
                         <p id="venue-description" class="venue-description"><?= courtEscape($venue['description']) ?></p>
+                        <?php if (!empty($staffContacts)): ?>
+                        <div class="court-staff-contact">
+                          <strong>Questions about this venue?</strong>
+                          <?php if (!empty($_SESSION['userID'])): ?>
+                            <?php foreach ($staffContacts as $member): ?>
+                              <a class="btn btn-outline-primary btn-sm" href="<?= courtEscape(courtUrl('index.php?url=chat/index&receiverID=' . (int) $member['userID'])) ?>">Message <?= courtEscape($member['name']) ?></a>
+                            <?php endforeach; ?>
+                          <?php else: ?>
+                            <a class="btn btn-outline-primary btn-sm" href="<?= courtEscape(courtUrl('index.php?url=auth/login')) ?>">Sign in to message staff</a>
+                          <?php endif; ?>
+                        </div>
+                        <?php endif; ?>
                     </div>
                 </section>
 

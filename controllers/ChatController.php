@@ -1,8 +1,7 @@
 <?php
 class ChatController extends Controller {
 
-    // View messages and send new messages
-    // URL: index.php?url=chat/index&receiverID={userID}
+    // Existing Phase-2 message posting and routing are preserved.
     public function index() {
         if (!isset($_SESSION['userID'])) {
             header('Location: ' . courtUrl('/index.php?url=auth/login'));
@@ -15,9 +14,10 @@ class ChatController extends Controller {
         $chatModel = $this->model('Chat');
         $userModel = $this->model('User');
 
-        $validReceiver = $receiverID > 0 &&
-                         $receiverID !== $senderID &&
-                         $userModel->getUserByID($receiverID);
+        $recipient = $receiverID > 0 && $receiverID !== $senderID
+            ? $userModel->getUserByID($receiverID)
+            : null;
+        $validReceiver = (bool) $recipient;
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $message = trim($_POST['message'] ?? '');
@@ -40,17 +40,20 @@ class ChatController extends Controller {
             ? $chatModel->getMessages($senderID, $receiverID)
             : [];
 
+        // Frontend-adjacent queries: only show actual conversation peers,
+        // and label available staff with their associated venue.
         $this->view('chats/chat', [
-            'pageTitle'  => 'Chat',
-            'senderID'   => $senderID,
+            'pageTitle' => 'Messages',
+            'senderID' => $senderID,
             'receiverID' => $receiverID,
-            'users'      => $userModel->getAllUsers(),
-            'messages'   => $messages
+            'recipient' => $recipient,
+            'conversations' => $chatModel->getConversationsForUser($senderID),
+            'staffDirectory' => $chatModel->getStaffDirectory($senderID),
+            'messages' => $messages
         ]);
     }
 
-    // Optional endpoint to dynamically refresh messages without a page reload
-    // URL: index.php?url=chat/fetchMessages&receiverID={userID}
+    // Preserve the existing Phase-2 optional refresh endpoint.
     public function fetchMessages() {
         if (!isset($_SESSION['userID'])) {
             http_response_code(401);

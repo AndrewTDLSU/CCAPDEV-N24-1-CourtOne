@@ -13,10 +13,19 @@
         <!--<script src="[filepath]"></script>  bootstrap js script, Not used yet, remove when unncessary -->
 
         <link rel="stylesheet" href="public/css/style.css"> <!-- Custom CSS -->
+<<<<<<< HEAD
         <link rel="stylesheet" href="public/css/integration.css">
         <link rel="stylesheet" href="public/css/darkMode.css">
         <script src="public/js/theme.js"></script>
     </head>
+=======
+    <link rel="stylesheet" href="public/css/integration.css">
+<link rel="stylesheet" href="public/css/darkMode.css">
+<script src="public/js/theme.js"></script>
+    <link rel="stylesheet" href="<?= courtEscape(courtUrl('public/css/phase3.css')) ?>">
+    <link rel="icon" type="image/png" href="<?= courtEscape(courtUrl('public/media/icons/courtone-logo.png')) ?>">
+</head>
+>>>>>>> bf55e45 (Fixed all backend suggestions as per ms' last recommendation)
 
     <body>
         <div class="container my-4">

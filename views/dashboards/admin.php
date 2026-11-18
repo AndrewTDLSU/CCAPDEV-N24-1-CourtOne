@@ -11,9 +11,12 @@
     <link rel="stylesheet" href="public/css/darkMode.css">
     <script src="public/js/theme.js"></script>
 <link rel="stylesheet" href="public/css/integration.css">
+    <link rel="stylesheet" href="<?= courtEscape(courtUrl('public/css/phase3.css')) ?>">
+    <link rel="icon" type="image/png" href="<?= courtEscape(courtUrl('public/media/icons/courtone-logo.png')) ?>">
 </head>
 <body>
     <!-- Show the logged-in role, desktop links, profile avatar, and mobile menu. -->
+<<<<<<< HEAD
     <header class="container">
         <nav class="navbar navbar-expand-lg py-3" aria-label="Main navigation">
             <a class="navbar-brand fw-bold" href="index.php?url=home/index">CourtOne</a>
@@ -69,6 +72,9 @@
             </div>
         </nav>
     </header>
+=======
+    <?php require __DIR__ . '/../partials/Nav.php'; ?>
+>>>>>>> bf55e45 (Fixed all backend suggestions as per ms' last recommendation)
     <!-- Arrange dashboard navigation beside the summary and selected content panel. -->
     <main class="admin-layout">
         <!-- Provide keyboard-accessible tabs for the four admin dashboard sections. -->

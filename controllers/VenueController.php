@@ -64,6 +64,7 @@ public function browseVenues() {
             'venue' => $venue,
             'courts' => $courtModel->fetchCourtByVenue($venueID),
             'images' => $imageModel->fetchImageByVenue($venueID),
+            'staffContacts' => $this->model('Staff')->getStaffByVenue($venueID),
             'grid' => $bookingModel->fetchOccupiedGridCells($venueID, $targetDate),
             'targetDate' => $targetDate
         ]);
@@ -92,7 +93,7 @@ public function browseVenues() {
             // Save optional venue photos
             if (!empty($_FILES['photos']['name'][0])) {
                 $imageModel = $this->model('Image');
-                $uploadDir = __DIR__ . '/../public/uploads/';
+                $uploadDir = __DIR__ . '/../public/media/uploads/';
 
                 if (!is_dir($uploadDir)) {
                     mkdir($uploadDir, 0755, true);
@@ -116,7 +117,7 @@ public function browseVenues() {
                     $filename = uniqid('venue_') . '.' . $extension;
 
                     if (move_uploaded_file($tmp, $uploadDir . $filename)) {
-                        $imageModel->createImage('/public/uploads/' . $filename, $venueID);
+                        $imageModel->createImage('/public/media/uploads/' . $filename, $venueID);
                     }
                 }
             }
