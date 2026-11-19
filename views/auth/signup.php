@@ -79,7 +79,7 @@
 
             <!-- Center the CourtOne brand above the account forms. -->
             <main class="auth-layout">
-                <h1 class="brand">CourtOne</h1>
+                <h1 class="brand"><span class="brand-dark">Sign</span>up</h1>
 
                 <!-- Show the sign-up form first; its submit handler validates the entered details. -->
                 <section class="auth-panel" id="signup-panel" aria-label="Sign up form">
@@ -106,16 +106,18 @@
                             </svg>
                             Create Account
                         </button>
-                    <input type="hidden" name="csrfToken" value="<?= courtEscape($_SESSION['csrfToken']) ?>"></form>
+                        <input type="hidden" name="csrfToken" value="<?= courtEscape($_SESSION['csrfToken']) ?>">
+                    </form>
                     <!-- Switch to the login panel without leaving this page. -->
                     <p class="signup-link">Already have an account? <a class="auth-switch" href="index.php?url=auth/login">Sign in</a></p>
                     <!-- Show validation and account-service feedback after submission. -->
-                    <p class="auth-message" role="alert"><?= courtEscape($error ?? '') ?></p>
+                    <p class="auth-message" role="alert"<?= empty($error) ? ' hidden' : '' ?>><?= courtEscape($error ?? '') ?></p>
                 </section>
 
                 <!-- Keep the login form hidden initially and reveal it through the sign-in prompt. -->
                 <section class="auth-panel" id="login-panel" aria-label="Sign in form" hidden>
-                    <form class="auth-form" id="login-form" action="index.php?url=auth/login" method="post"><input type="hidden" name="loginType" value="customer_portal">
+                    <form class="auth-form" id="login-form" action="index.php?url=auth/login" method="post">
+                        <input type="hidden" name="loginType" value="customer_portal">
                         <!-- Collect credentials for the prototype login view. -->
                         <input class="auth-input" type="email" id="login-email" name="email" aria-label="Email" placeholder="email" autocomplete="email" required>
                         <input class="auth-input" type="password" id="login-password" name="password" aria-label="Password" placeholder="password" autocomplete="current-password" required>
@@ -126,7 +128,8 @@
                             </svg>
                             Sign In
                         </button>
-                    <input type="hidden" name="csrfToken" value="<?= courtEscape($_SESSION['csrfToken']) ?>"></form>
+                        <input type="hidden" name="csrfToken" value="<?= courtEscape($_SESSION['csrfToken']) ?>">
+                    </form>
                     <!-- Return to sign-up if the visitor does not yet have a profile. -->
                     <p class="signup-link">New here? <button class="auth-switch" type="button" data-show-panel="signup-panel">Sign up now</button></p>
                     <!-- Display the prototype's sign-in status after form submission. -->
@@ -137,5 +140,6 @@
         <!-- Attach mobile navigation, panel switching, validation, and demo registration behavior. -->
 
         <script src="bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
-<script src="public/js/integration.js"></script></body>
+        <script src="public/js/integration.js"></script>
+    </body>
 </html>

@@ -5,14 +5,13 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Login</title>
-
-        <!-- bootstrap link -->
-        <link rel="stylesheet" href="bootstrap-5.3.8-dist/css/bootstrap.min.css"> <!-- bootstrap css for grid -->
-        <!--<script src="[filepath]"></script>  bootstrap js script, Not used yet, remove when unncessary -->
-
-        <link rel="stylesheet" href="public/css/style.css"> <!-- Custom CSS -->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>CourtOne | Sign Up</title>
+    <link rel="stylesheet" href="public/css/style.css">
+    <link rel="stylesheet" href="bootstrap-5.3.8-dist/css/bootstrap.min.css">
+        <link rel="stylesheet" href="public/css/loginStyles.css">
+        <link rel="stylesheet" href="public/css/darkMode.css">
+        <script src="public/js/theme.js"></script>
 <<<<<<< HEAD
         <link rel="stylesheet" href="public/css/integration.css">
         <link rel="stylesheet" href="public/css/darkMode.css">
@@ -28,50 +27,45 @@
 >>>>>>> bf55e45 (Fixed all backend suggestions as per ms' last recommendation)
 
     <body>
-        <div class="container my-4">
+        <div class="page-shell">
+        <?php require __DIR__ . '/../partials/Nav.php'; ?>
+        <main class="auth-layout">
+            <h1 class="brand"><span class="brand-dark">Log</span>in</h1>
 
-            <!-- Logo and tagline (WIP) -->
-            <div class="row">
-                <div class="col-md-12 p-5 text-center">
-                    <h1>CourtOne</h1>
-                    <small>Court Booking Website</small>
-                </div>
-            </div>
+            <!-- Show the sign-in form first with the exact same layout and proportions as Signup -->
+            <section class="auth-panel" id="login-panel" aria-label="Sign in form">
+                <form class="auth-form" id="login-form" action="index.php?url=auth/login" method="POST">
+                    <!-- Select between Customer/Owner/Admin and Staff portals -->
+                    <select class="auth-input" id="loginType" name="loginType" aria-label="Account portal" required>
+                        <option value="customer_portal">Customer / Owner / Admin</option>
+                        <option value="staff_app">Staff</option>
+                    </select>
 
-            <!-- Username and Password form -->
-            <div class="row g-4 justify-content-center">
-                <div class="col-12 col-sm-10 col-md-6 col-lg-4">
-                    <div class="card">
-                        <div class="card-body">
-                            <h2 class="text-center h4 mb-3">Login</h2>
+                    <!-- Collect credentials -->
+                    <input class="auth-input" type="email" id="username" name="email" aria-label="Email" placeholder="email" autocomplete="email" autofocus required>
+                    <input class="auth-input" type="password" id="password" name="password" aria-label="Password" placeholder="password" autocomplete="current-password" required>
 
-                            <!-- Show with JS when login fails (remove d-none) -->
-                            <div id="login-error" class="alert alert-danger <?= empty($error) ? 'd-none' : '' ?>" role="alert">
-                                <?= courtEscape($error ?? '') ?>
-                            </div>
+                    <!-- Submit button styled identically to Create Account -->
+                    <button class="auth-button" type="submit">
+                        <svg aria-hidden="true" viewBox="0 0 24 24">
+                            <path d="M12 12a4.2 4.2 0 1 0 0-8.4 4.2 4.2 0 0 0 0 8.4ZM3.8 21v-1.4c0-3 3.7-5.4 8.2-5.4s8.2 2.4 8.2 5.4V21H3.8Z"/>
+                        </svg>
+                        Log In
+                    </button>
 
-                            <form action="index.php?url=auth/login" method="POST" class="border rounded p-3">
+                    <input type="hidden" name="csrfToken" value="<?= courtEscape($_SESSION['csrfToken']) ?>">
+                </form>
 
-                                <div class="mb-3">
-                                    <label class="form-label" for="loginType">Account portal</label><select class="form-select mb-3" id="loginType" name="loginType"><option value="customer_portal">Customer / Owner / Admin</option><option value="staff_app">Staff</option></select><label for="username" class="form-label">Email:</label>
-                                    <input type="email" id="username" required name="email" value="" class="form-control autofocus" > <!-- removed required attributes to access /index.php?url=home/index -->
-                                </div>
+                <!-- Switch to the signup page -->
+                <p class="signup-link">New here? <a class="auth-switch" href="index.php?url=auth/signup">Sign up now</a></p>
 
-                                <div class="mb-3">
-                                    <label for="password" class="form-label">Password:</label>
-                                    <input type="password" id="password" name="password" required class="form-control" > <!-- removed required attributes to access /index.php?url=home/index -->
-                                </div>
+                <!-- Show validation and authentication feedback below the link, matching Signup -->
+                <p id="login-error" class="auth-message alert-warning" role="alert"<?= empty($error) ? ' hidden' : '' ?>><?= courtEscape($error ?? '') ?></p>
+            </section>
+        </main>
+    </div>
 
-                                <button type="submit" class="btn btn-primary">Log In</button> <!-- achor link to /index.php?url=home/index instead of type="submit" to skip backend for now -->
-
-                            <input type="hidden" name="csrfToken" value="<?= courtEscape($_SESSION['csrfToken']) ?>"></form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <p class="text-center mt-2">New here? <span> <a href="index.php?url=auth/signup">Sign up now</a> </span> </p>
-
-        </div>
-    </body>
+    <script src="bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
+    <script src="public/js/integration.js"></script>
+</body>
 </html>
