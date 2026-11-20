@@ -27,32 +27,31 @@ class AuthController extends Controller {
                     $_SESSION['userID'] = $user['userID'];
                     $_SESSION['staffID'] = $user['userID'];
                     $_SESSION['venueID'] = $venue['venueID'];
-                    $_SESSION['role'] = 'staff';
-                    $_SESSION['displayName'] = $user['name'];
+                    $_SESSION['role'] = 'staff'; // store 'staff' role into the session
 
                     header('Location: ' . courtUrl('/index.php?url=dashboard/staffDashboard'));
                     exit;
                 }
             }
-            } elseif ($loginTarget === 'customer_portal') {
+            } elseif ($loginTarget === 'customer_portal') {  // Authenticate using the other roles if user is not a staff member
 
-            $user = $userModel->authenticateUser($email, $password);
+                $user = $userModel->authenticateUser($email, $password);
 
-            if ($user && in_array($user['userType'], ['user', 'court_owner', 'admin'], true)) {
+                // user is not a staff member
+                if ($user && in_array($user['userType'], ['user', 'court_owner', 'admin'], true)) {
 
-                session_regenerate_id(true);
+                    session_regenerate_id(true); // create a new session ID to prevent session fixation attacks
 
-                $_SESSION['userID'] = $user['userID'];
-                $_SESSION['role'] = $user['userType'];
-                    $_SESSION['displayName'] = $user['name'];
+                    $_SESSION['userID'] = $user['userID'];
+                    $_SESSION['role'] = $user['userType']; // store their role to the session
 
-                unset($_SESSION['staffID'], $_SESSION['venueID']);
+                    unset($_SESSION['staffID'], $_SESSION['venueID']);
 
-                header('Location: ' . courtUrl('/index.php?url=dashboard/dispatcher'));
-                exit;
+                    header('Location: ' . courtUrl('/index.php?url=dashboard/dispatcher'));
+                    exit;
+                }
             }
-        }
-            $data['error'] = "Authentication mismatch. Invalid credentials provided.";
+        $data['error'] = "Authentication mismatch. Invalid credentials provided.";
         }
         $data['pageTitle'] = 'Login Gateway';
         $this->view('auth/login', $data);

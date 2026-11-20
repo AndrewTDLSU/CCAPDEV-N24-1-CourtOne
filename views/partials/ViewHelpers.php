@@ -1,6 +1,7 @@
 <?php
 // Keep the existing Phase-2 HTML escaping helper and CSRF handling unchanged.
 if (!function_exists('courtEscape')) {
+    // htmlspecialchars() wrapper for escaping output in views, preventing XSS attacks.
     function courtEscape($value) { return htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8'); }
 }
 
@@ -11,6 +12,7 @@ if (!function_exists('courtImage')) {
      * A complete COURTONE_MEDIA_BASE_URL may point to the Proxmox media host.
      */
     function courtImage($record) {
+        // replace empty or invalid image paths with a default sports icon
         $path = is_array($record) ? trim((string) ($record['imageFilePath'] ?? '')) : '';
         if ($path === '') return courtUrl('public/media/icons/sports.png');
 

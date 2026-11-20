@@ -18,7 +18,8 @@ class User extends Model {
     public function createUser($name, $email, $rawPassword, $userType) {
         $this->assertValidUserType($userType);
 
-        $passwordHash = password_hash($rawPassword, PASSWORD_DEFAULT);
+        // password_hash() uses bcrypt by default, which is compatible with VARCHAR(255, stores password to mysql as a hash, and is secure against rainbow table attacks. The default cost is 10, which is a good balance between security and performance.
+        $passwordHash = password_hash($rawPassword, PASSWORD_DEFAULT); 
         $sql = "INSERT INTO users (name, email, password_hash, userType) VALUES (?, ?, ?, ?)";
 
         try {
@@ -45,10 +46,12 @@ class User extends Model {
 
     // Returns the user row (without the hash) or false on bad credentials
     public function authenticateUser($email, $password) {
+        // fetch the user record by email
         $stmt = $this->db->prepare("SELECT * FROM users WHERE email = ?");
         $stmt->execute([$email]);
         $user = $stmt->fetch();
 
+        // verify the provided password against the stored hash using password_verify()
         if ($user && password_verify($password, $user['password_hash'])) {
 
             // upgrade the stored hash if PHP's default algorithm/cost has changed
@@ -64,6 +67,7 @@ class User extends Model {
 
     // single user, or null if not found
     public function getUserByID($userID) {
+        // fetches a single user record based on the provided user ID, or null if not found
         $stmt = $this->db->prepare(
             "SELECT userID, name, email, userType FROM users WHERE userID = ? LIMIT 1"
         );
@@ -73,6 +77,7 @@ class User extends Model {
     }
 
     public function getUserByEmail($email) {
+        // fetches a single user record based on the provided email, or null if not found
         $stmt = $this->db->prepare(
             "SELECT userID, name, email, userType FROM users WHERE email = ? LIMIT 1"
         );
@@ -83,6 +88,7 @@ class User extends Model {
 
     // handy for a "this email is already registered" check on the sign-up form
     public function emailExists($email) {
+        // checks if an email is already registered in the users table by querying for a matching email and returning true if found, false otherwise
         $stmt = $this->db->prepare("SELECT 1 FROM users WHERE email = ? LIMIT 1");
         $stmt->execute([$email]);
         return (bool) $stmt->fetchColumn();
@@ -90,6 +96,7 @@ class User extends Model {
 
     // for admin screens
     public function getAllUsers() {
+        // returns all users with their userID, name, email, and userType, ordered by userID in descending order
         return $this->db->query(
             "SELECT userID, name, email, userType FROM users ORDER BY userID DESC"
         )->fetchAll();
@@ -97,8 +104,9 @@ class User extends Model {
 
     // e.g. getUsersByType('court_owner')
     public function getUsersByType($userType) {
-        $this->assertValidUserType($userType);
+        $this->assertValidUserType($userType); // validate the provided user type against the defined enum values before querying the database
 
+        // returns all users of a specific type with their userID, name, email, and userType, ordered by name
         $stmt = $this->db->prepare(
             "SELECT userID, name, email, userType FROM users WHERE userType = ? ORDER BY name"
         );
@@ -108,16 +116,18 @@ class User extends Model {
 
     /*===============================================================
                         UPDATE FUNCTIONS
+        *The ff. is not in the specs, just in case...
         updatePassword($userID, $newRawPassword) - change password
-        updateProfile($userID, $name, $email) - change profile details
+        updateProfile($userID, $name, $email) - change profile details 
     ===============================================================*/
 
     // Hashes the new password and stores it. Returns true on success.
     /* (Verify the user's current password in the controller first if this is
       a "change my password" form, e.g. via authenticateUser().)*/
     public function updatePassword($userID, $newRawPassword) {
-        $passwordHash = password_hash($newRawPassword, PASSWORD_DEFAULT);
+        $passwordHash = password_hash($newRawPassword, PASSWORD_DEFAULT); // hash the new password using PHP's default algorithm (bcrypt) for secure storage
 
+        // update the user's password hash in the database for the specified user ID, returning true if a row was affected (indicating success)
         $stmt = $this->db->prepare("UPDATE users SET password_hash = ? WHERE userID = ?");
         $stmt->execute([$passwordHash, $userID]);
         return $stmt->rowCount() > 0;
@@ -126,6 +136,7 @@ class User extends Model {
     // Updates name and email. Returns false if nothing changed or the email is taken.
     public function updateProfile($userID, $name, $email) {
         try {
+            // prepare the SQL statement to update the user's name and email for a specific user ID
             $stmt = $this->db->prepare("UPDATE users SET name = ?, email = ? WHERE userID = ?");
             $stmt->execute([$name, $email, $userID]);
             return $stmt->rowCount() > 0;
@@ -153,6 +164,7 @@ class User extends Model {
             if ($history->fetchColumn()) {
                 return false;
             }
+            // prepare the SQL statement to delete a user record based on the provided user ID
             $stmt = $this->db->prepare("DELETE FROM users WHERE userID = ?");
             $stmt->execute([$userID]);
             return $stmt->rowCount() > 0;

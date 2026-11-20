@@ -1,7 +1,6 @@
 <?php
 class VenueController extends Controller {
 
-
 public function browseVenues() {
 
     // Get venues from the database
@@ -64,13 +63,13 @@ public function browseVenues() {
             'venue' => $venue,
             'courts' => $courtModel->fetchCourtByVenue($venueID),
             'images' => $imageModel->fetchImageByVenue($venueID),
-            'staffContacts' => $this->model('Staff')->getStaffByVenue($venueID),
             'grid' => $bookingModel->fetchOccupiedGridCells($venueID, $targetDate),
             'targetDate' => $targetDate
         ]);
     }
 
     public function venueForm() {
+        // Only allow venue owners to access this form
         if (!isset($_SESSION['userID']) || ($_SESSION['role'] ?? '') !== 'court_owner') {
             http_response_code(403);
             die('Only venue owners can register venues.');
@@ -93,7 +92,7 @@ public function browseVenues() {
             // Save optional venue photos
             if (!empty($_FILES['photos']['name'][0])) {
                 $imageModel = $this->model('Image');
-                $uploadDir = __DIR__ . '/../public/media/uploads/';
+                $uploadDir = __DIR__ . '/../public/uploads/';
 
                 if (!is_dir($uploadDir)) {
                     mkdir($uploadDir, 0755, true);
@@ -117,7 +116,7 @@ public function browseVenues() {
                     $filename = uniqid('venue_') . '.' . $extension;
 
                     if (move_uploaded_file($tmp, $uploadDir . $filename)) {
-                        $imageModel->createImage('/public/media/uploads/' . $filename, $venueID);
+                        $imageModel->createImage('/public/uploads/' . $filename, $venueID);
                     }
                 }
             }
@@ -133,12 +132,14 @@ public function browseVenues() {
 
 
     public function addCourt($venueID) {
+        // Only allow venue owners to add courts to their own venues
         if (!isset($_SESSION['userID']) || ($_SESSION['role'] ?? '') !== 'court_owner') {
             die('Only venue owners can add courts.');
         }
 
         $venueModel = $this->model('Venue');
 
+        // Check if the logged-in user is the owner of the venue
         if (!$venueModel->isVenueOwner($venueID, $_SESSION['userID'])) {
             die('This is not your venue.');
         }
@@ -166,8 +167,8 @@ public function browseVenues() {
     }
 
     public function manageVenues() {
-        $venueModel = $this->model('Venue');
-        $role = $_SESSION['role'] ?? '';
+        $venueModel = $this->model('Venue'); // load the Venue model to fetch venues based on the user's role
+        $role = $_SESSION['role'] ?? ''; // get the user's role from the session, default to empty string if not set
 
         if ($role === 'admin') {
             $venues = $venueModel->fetchAllVenues();
@@ -191,6 +192,7 @@ public function browseVenues() {
     public function venueStatistics($venueID) {
         $venueModel = $this->model('Venue');
 
+        // Only allow venue owners to view statistics of their own venues
         if (!isset($_SESSION['userID']) ||
             ($_SESSION['role'] ?? '') !== 'court_owner' ||
             !$venueModel->isVenueOwner($venueID, $_SESSION['userID'])) {

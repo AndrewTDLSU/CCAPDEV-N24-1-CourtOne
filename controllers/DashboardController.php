@@ -3,12 +3,15 @@ class DashboardController extends Controller {
 
     // Resolves secure system path routing entries handling roles
 
+    // direct user to their appropriate dashboard based on their role
     public function dispatcher() {
+        // session role protection: only logged-in users with a valid role can access the dispatcher
         if (!isset($_SESSION['role'])) {
             header('Location: ' . courtUrl('/index.php?url=auth/login'));
             exit;
         }
 
+        // list of dashboards for each role
         $dashboards = [
             'user' => 'userDashboard',
             'court_owner' => 'ownerDashboard',
@@ -16,6 +19,7 @@ class DashboardController extends Controller {
             'staff' => 'staffDashboard'
         ];
 
+        // Determine the user's role and redirect to the appropriate dashboard
         $role = $_SESSION['role'];
 
         if (!isset($dashboards[$role])) {
@@ -155,6 +159,7 @@ class DashboardController extends Controller {
         exit;
     }
 
+    // helper function to restrict access to certain roles
     private function restrictToRoles($allowed) {
         if (!isset($_SESSION['role']) || !in_array($_SESSION['role'], $allowed)) {
             header('HTTP/1.1 403 Forbidden');

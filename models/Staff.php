@@ -17,20 +17,23 @@ class Staff extends Model {
     // User and Staff share the same PDO singleton, so one transaction covers both.
     public function createStaffAccount($name, $email, $rawPassword, $venueID) {
         try {
-            $this->db->beginTransaction();
+            $this->db->beginTransaction(); // start a transaction to ensure atomicity of user creation and staff assignment
  
+            // create the user account with userType = 'staff'
             $userModel = new User();
             $userID = $userModel->createUser($name, $email, $rawPassword, 'staff');
  
+            // if the user creation failed due to duplicate email, roll back the transaction and return false
             if ($userID === false) {
                 $this->db->rollBack();
                 return false; // email already taken
             }
  
+            // assign the new staff user to the specified venue
             $stmt = $this->db->prepare("INSERT INTO staff (staffID, venueID) VALUES (?, ?)");
             $stmt->execute([$userID, $venueID]);
  
-            $this->db->commit();
+            $this->db->commit(); // commit the transaction if both operations succeeded
             return $userID;
         } catch (Exception $e) {
             if ($this->db->inTransaction()) {
@@ -54,6 +57,7 @@ class Staff extends Model {
     // a staff user not assigned to any venue yet still appears, with venueID/venueName = null
     // columns: userID, name, email, venueID, venueName  (no password hash)
     public function getAllStaff() {
+        // returns all staff users with their associated venue names, ordered by user name
         $sql = "SELECT u.userID, u.name, u.email, v.venueID, v.venueName
                 FROM users u
                 LEFT JOIN staff  s ON s.staffID = u.userID
@@ -67,6 +71,7 @@ class Staff extends Model {
     // optional $venueID narrows it to one of that owner's venues; a venue the owner doesn't own simply returns no rows, so this can't leak another owner's staff
     // columns: userID, name, email, venueID, venueName  (no password hash)
     public function getAllStaffByVenueOwner($ownerID, $venueID = null) {
+        // returns all staff users working at venues owned by a specific owner, optionally filtered by a specific venue ID, ordered by venue name and user name
         $sql = "SELECT u.userID, u.name, u.email, v.venueID, v.venueName
                 FROM staff s
                 JOIN users  u ON s.staffID = u.userID
@@ -74,12 +79,13 @@ class Staff extends Model {
                 WHERE v.ownerID = ?";
         $params = [$ownerID];
  
+        // if a specific venueID is provided, add it to the SQL query and parameters
         if ($venueID !== null) {
             $sql .= " AND v.venueID = ?";
             $params[] = $venueID;
         }
  
-        $sql .= " ORDER BY v.venueName, u.name";
+        $sql .= " ORDER BY v.venueName, u.name"; // order the results by venue name and then by user name
  
         $stmt = $this->db->prepare($sql);
         $stmt->execute($params);
@@ -88,6 +94,7 @@ class Staff extends Model {
  
     // all staff working at a venue (name/email come from users; no password hash)
     public function getStaffByVenue($venueID) {
+        // returns all staff users working at a specific venue, ordered by user name
         $sql = "SELECT u.userID, u.name, u.email
                 FROM staff s
                 JOIN users u ON s.staffID = u.userID
@@ -101,6 +108,7 @@ class Staff extends Model {
     // which venue does this staff member work at? (venue row, or null)
     // use after login to scope a staff user to their venue
     public function getVenueByStaff($staffID) {
+        // returns the venue associated with a specific staff user, or null if the staff user is not assigned to any venue
         $sql = "SELECT v.*
                 FROM staff s
                 JOIN venues v ON s.venueID = v.venueID
@@ -114,6 +122,7 @@ class Staff extends Model {
  
     // authorization helper: may this user act on this venue as staff?
     public function isStaffOfVenue($staffID, $venueID) {
+        // checks if a staff user is assigned to a specific venue by querying the staff table for a matching staff ID and venue ID
         $stmt = $this->db->prepare("SELECT 1 FROM staff WHERE staffID = ? AND venueID = ? LIMIT 1");
         $stmt->execute([$staffID, $venueID]);
         return (bool) $stmt->fetchColumn();
@@ -121,6 +130,7 @@ class Staff extends Model {
  
     // count number of staff per venue
     public function countStaffByVenue($venueID) {
+        // returns the count of staff users assigned to a specific venue by querying the staff table for the number of records with the given venue ID
         $stmt = $this->db->prepare("SELECT COUNT(*) FROM staff WHERE venueID = ?");
         $stmt->execute([$venueID]);
         return (int) $stmt->fetchColumn();

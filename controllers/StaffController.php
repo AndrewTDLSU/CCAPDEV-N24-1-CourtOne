@@ -9,7 +9,7 @@ class StaffController Extends Controller {
     // filter: index.php?url=staff/showAllStaff/7  or  index.php?url=staff/showAllStaff&venueID=7
     // display to /views/venues/manageStaff.php
     public function showAllStaff($venueID = null) {
-        // check if session stored the user id and the correct role
+        // check if session stored the user id and the correct role, fallback to null if not provided
         if (!isset($_SESSION['userID']) || ($_SESSION['role'] ?? '') !== 'court_owner') {
             http_response_code(403);
             die('Only venue owners can manage staff.');
@@ -18,7 +18,7 @@ class StaffController Extends Controller {
         $ownerID = $_SESSION['userID'];
 
         // no filter = all of the owner's venues
-        $venueID = (int) ($venueID ?? $_GET['venueID'] ?? 0);
+        $venueID = (int) ($venueID ?? $_GET['venueID'] ?? 0); // get venueID from URL parameter or GET parameter, default to 0 if not provided
         if ($venueID === 0) {
             $venueID = null;
         }
@@ -32,9 +32,10 @@ class StaffController Extends Controller {
             'failed'         => 'The staff account could not be created. Please try again.'
         ];
 
-        $code = $_GET['error'] ?? '';
-        $error = is_string($code) ? ($messages[$code] ?? '') : '';
+        $code = $_GET['error'] ?? ''; // get error code from URL parameter and map to message, default to empty string if not provided
+        $error = is_string($code) ? ($messages[$code] ?? '') : ''; // map error code to message, default to empty string if not provided
 
+        // load the models for venues and staff
         $venueModel = $this->model('Venue');
         $staffModel = $this->model('Staff');
 
@@ -54,7 +55,7 @@ class StaffController Extends Controller {
     // input data from /views/venues/manageStaff.php
     // form posts: name, email, password, venueID
     public function createStaff() {
-        // check if session stored the user id and the correct role
+        // check if session stored the user id and the correct role, fallback to null if not provided
         if (!isset($_SESSION['userID']) || ($_SESSION['role'] ?? '') !== 'court_owner') {
             http_response_code(403);
             die('Only venue owners can create staff accounts.');
@@ -73,16 +74,19 @@ class StaffController Extends Controller {
         $password = $_POST['password'] ?? '';
         $venueID = (int) ($_POST['venueID'] ?? 0);
 
+        // validate input, if any of the required fields are missing, redirect back with an error code
         if ($name === '' || $email === '' || $password === '' || $venueID === 0) {
             header('Location: ' . $back . '&error=missing_fields');
             exit;
         }
 
+        // validate email format
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             header('Location: ' . $back . '&error=invalid_email');
             exit;
         }
 
+        // validate password length
         if (strlen($password) < 8) {
             header('Location: ' . $back . '&error=short_password');
             exit;
@@ -91,6 +95,7 @@ class StaffController Extends Controller {
         // owners can only add staff to their own venues
         $venueModel = $this->model('Venue');
 
+        // check if the venue belongs to the logged-in owner
         if (!$venueModel->isVenueOwner($venueID, $_SESSION['userID'])) {
             http_response_code(403);
             die('This is not your venue.');
@@ -109,11 +114,13 @@ class StaffController Extends Controller {
             exit;
         }
 
+        // if the email is already taken, redirect back with an error code
         if ($result === false) {
             header('Location: ' . $back . '&error=email_taken');
             exit;
         }
 
+        // if everything is successful, redirect back with a success message
         header('Location: ' . $back . '&success=1');
         exit;
     }

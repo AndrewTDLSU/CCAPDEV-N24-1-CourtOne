@@ -16,9 +16,11 @@ class Court extends Model {
     // An invalid $venueID throws a PDOException (foreign key violation).
     public function createCourt($courtName, $venueID) {
         try {
-            $stmt = $this->db->prepare("INSERT INTO courts (courtName, venueID) VALUES (?, ?)");
-            $stmt->execute([$courtName, $venueID]);
-            return (int) $this->db->lastInsertId();
+            $stmt = $this->db->prepare("INSERT INTO courts (courtName, venueID) VALUES (?, ?)"); // prepare the SQL statement to insert a new court with the given name and venue ID
+             $stmt->bindParam(1, $courtName); // bind the court name to the first parameter
+            $stmt->bindParam(2, $venueID); // bind the venue ID to the second parameter
+            $stmt->execute([$courtName, $venueID]); // execute the statement with the provided parameters
+            return (int) $this->db->lastInsertId(); // return the ID of the newly inserted court
         } catch (PDOException $e) {
             if ($this->isDuplicateEntry($e)) {
                 return false; // name already used in this venue
@@ -37,6 +39,7 @@ class Court extends Model {
 
     // every court with its venue name (for admin screens)
     public function fetchAllCourts() {
+        // returns all courts with their associated venue names, ordered by venue name and court name
         $sql = "SELECT c.courtID, c.courtName, c.venueID, v.venueName
                 FROM courts c
                 JOIN venues v ON c.venueID = v.venueID
@@ -46,6 +49,7 @@ class Court extends Model {
 
     // single court with its venue name, or null if not found
     public function fetchCourtByID($courtID) {
+        // returns a single court with its associated venue name based on the provided court ID, or null if not found
         $sql = "SELECT c.courtID, c.courtName, c.venueID, v.venueName
                 FROM courts c
                 JOIN venues v ON c.venueID = v.venueID
@@ -60,6 +64,7 @@ class Court extends Model {
     // all courts in one venue (this is the same job as Venue::fetchCourtsByVenue();
     // keep one of them and have the other call it, or delete the Venue one)
     public function fetchCourtByVenue($venueID) {
+        // returns all courts for a specific venue, ordered by court name
         $stmt = $this->db->prepare("SELECT * FROM courts WHERE venueID = ? ORDER BY courtName");
         $stmt->execute([$venueID]);
         return $stmt->fetchAll();
@@ -67,6 +72,7 @@ class Court extends Model {
  
     // number of courts per venue
     public function countCourtsByVenue($venueID) {
+        // returns the count of courts for a specific venue
         $stmt = $this->db->prepare("SELECT COUNT(*) FROM courts WHERE venueID = ?");
         $stmt->execute([$venueID]);
         return (int) $stmt->fetchColumn();
@@ -82,8 +88,9 @@ class Court extends Model {
     (venueID is not editable here: moving a court would break its booking history.)*/
     public function updateCourtName($courtID, $courtName) {
         try {
+            // prepare the SQL statement to update the court name for a specific court ID
             $stmt = $this->db->prepare("UPDATE courts SET courtName = ? WHERE courtID = ?");
-            $stmt->execute([$courtName, $courtID]);
+            $stmt->execute([$courtName, $courtID]); //bind_param() is not necessary here since we are passing the parameters directly to execute()
             return $stmt->rowCount() > 0;
         } catch (PDOException $e) {
             if ($this->isDuplicateEntry($e)) {
@@ -102,6 +109,15 @@ class Court extends Model {
     bookings (the foreign key blocks it, so booking/payment history is kept).*/
     public function deleteCourt($courtID) {
         try {
+            // lock the court row to prevent concurrent modifications while checking for bookings and deleting related records
+            $lock = $this->db->prepare('SELECT courtID FROM courts WHERE courtID = ? FOR UPDATE');
+            $lock->execute([$courtID]);
+            // check if any bookings exist for the court before proceeding with deletion
+            $history = $this->db->prepare('SELECT b.bookingID FROM bookings b WHERE b.courtID = ? LIMIT 1');
+            $history->execute([$courtID]);
+            if ($history->fetchColumn()) {
+                return false;
+            }
             $stmt = $this->db->prepare("DELETE FROM courts WHERE courtID = ?");
             $stmt->execute([$courtID]);
             return $stmt->rowCount() > 0;

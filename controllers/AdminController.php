@@ -8,7 +8,7 @@ class AdminController Extends Controller {
     // delete 1 venue together with its courts, staff assignments and photos
     // each venue's delete button posts to: index.php?url=admin/deleteVenue/{venueID}
     public function deleteVenue($venueID = null) {
-        // admin role protection
+        // admin role protection, also uses coalescing operator if role doesn't exist, fallback to null
         if (($_SESSION['role'] ?? '') !== 'admin') {
             http_response_code(403);
             die('Only admins can delete venues.');
@@ -69,7 +69,7 @@ class AdminController Extends Controller {
     // delete 1 user
     // each user's delete button posts to: index.php?url=admin/deleteUser/{userID}
     public function deleteUser($userID = null) {
-        // admin role protection
+        // admin role protection, also uses coalescing operator if role doesn't exist, fallback to null
         if (($_SESSION['role'] ?? '') !== 'admin') {
             http_response_code(403);
             die('Only admins can delete users.');
@@ -85,6 +85,7 @@ class AdminController Extends Controller {
         $userID = (int) ($userID ?? $_POST['userID'] ?? 0);
 
         // an admin deleting their own account would lock everyone out
+        // if the userID to delete is the same as the logged-in admin, fallback to the dashboard with an error message
         if ($userID === (int) ($_SESSION['userID'] ?? 0)) {
             $_SESSION['adminMessage'] = ['type' => 'danger', 'text' => 'You cannot delete your own account.'];
             header('Location: ' . $back);

@@ -2,6 +2,7 @@
 class BookingController extends Controller {
 
     public function reserve() {
+        // session role protection: only logged-in users with the 'user' role can reserve a court.
         if (!isset($_SESSION['userID']) || ($_SESSION['role'] ?? '') !== 'user') {
             header('Location: ' . courtUrl('/index.php?url=auth/login'));
             exit;
@@ -198,6 +199,7 @@ class BookingController extends Controller {
 
     // GET: list only the logged-in customer's bookings.
     public function myBookings() {
+        // session role protection: only logged-in users with the 'user' role can reserve a court.
         if (!isset($_SESSION['userID']) || ($_SESSION['role'] ?? '') !== 'user') {
             header('Location: ' . courtUrl('/index.php?url=auth/login'));
             exit;
@@ -230,6 +232,7 @@ class BookingController extends Controller {
 
     // POST: cancel a customer's own future booking, preserving the booking record.
     public function cancelBooking($bookingID = null) {
+        // session role protection: only logged-in users with the 'user' role can reserve a court.
         if (!isset($_SESSION['userID']) || ($_SESSION['role'] ?? '') !== 'user') {
             header('Location: ' . courtUrl('/index.php?url=auth/login'));
             exit;

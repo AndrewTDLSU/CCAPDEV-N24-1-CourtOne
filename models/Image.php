@@ -20,8 +20,9 @@ class Image extends Model {
     // Stores the reference to an uploaded file. Returns the new imageID.
     // An invalid $venueID throws a PDOException (foreign key violation).
     public function createImage($filePath, $venueID) {
-        $this->assertValidPath($filePath);
+        $this->assertValidPath($filePath); // validate the file path before inserting it into the database
  
+        // prepare the SQL statement to insert a new image record with the given file path and venue ID
         $stmt = $this->db->prepare("INSERT INTO images (imageFilePath, venueID) VALUES (?, ?)");
         $stmt->execute([$filePath, $venueID]);
         return (int) $this->db->lastInsertId();
@@ -38,6 +39,7 @@ class Image extends Model {
 
     // every image with its venue name (for admin screens)
     public function fetchAllImages() {
+        // returns all images with their associated venue names, ordered by venue name and image ID
         $sql = "SELECT i.imageID, i.imageFilePath, i.venueID, v.venueName
                 FROM images i
                 JOIN venues v ON i.venueID = v.venueID
@@ -48,6 +50,7 @@ class Image extends Model {
     // to make images viewable per venues
     // all images of one venue, in the order they were added
     public function fetchImageByVenue($venueID) {
+        // returns all images for a specific venue, ordered by image ID
         $stmt = $this->db->prepare("SELECT * FROM images WHERE venueID = ? ORDER BY imageID");
         $stmt->execute([$venueID]);
         return $stmt->fetchAll();
@@ -55,6 +58,7 @@ class Image extends Model {
 
     // single image, or null if not found
     public function fetchImageByID($imageID) {
+        // returns a single image record based on the provided image ID, or null if not found
         $stmt = $this->db->prepare("SELECT * FROM images WHERE imageID = ? LIMIT 1");
         $stmt->execute([$imageID]);
         $row = $stmt->fetch();
@@ -64,6 +68,7 @@ class Image extends Model {
     // authorization helper: does this image belong to this venue?
     // use with Venue::isVenueOwner() before an owner deletes or edits an image
     public function imageBelongsToVenue($imageID, $venueID) {
+        // checks if an image belongs to a specific venue by querying the database for a matching image ID and venue ID
         $stmt = $this->db->prepare("SELECT 1 FROM images WHERE imageID = ? AND venueID = ? LIMIT 1");
         $stmt->execute([$imageID, $venueID]);
         return (bool) $stmt->fetchColumn();
@@ -71,6 +76,7 @@ class Image extends Model {
  
     // handy for limiting uploads per venue
     public function countImagesByVenue($venueID) {
+        // returns the count of images for a specific venue by querying the database for the number of records with the given venue ID
         $stmt = $this->db->prepare("SELECT COUNT(*) FROM images WHERE venueID = ?");
         $stmt->execute([$venueID]);
         return (int) $stmt->fetchColumn();
@@ -110,6 +116,7 @@ class Image extends Model {
     // single image deletion (database record only)
     // call fetchImageByID() first if you need the file path to delete the file from disk
     public function deleteImage($imageID) {
+        // prepare the SQL statement to delete an image record based on the provided image ID
         $stmt = $this->db->prepare("DELETE FROM images WHERE imageID = ?");
         $stmt->execute([$imageID]);
         return $stmt->rowCount() > 0;
@@ -119,6 +126,7 @@ class Image extends Model {
     // returns how many were deleted (0 if the venue had none)
     // call fetchImageByVenue() first if you need the file paths to delete the files from disk
     public function deleteImagesByVenue($venueID) {
+        // prepare the SQL statement to delete all image records associated with a specific venue ID
         $stmt = $this->db->prepare("DELETE FROM images WHERE venueID = ?");
         $stmt->execute([$venueID]);
         return $stmt->rowCount();
