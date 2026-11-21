@@ -89,7 +89,7 @@ public function browseVenues() {
             ];
 
             // Use the Validator class to validate the input data
-            $validator = new Validator();
+            $validator = $this->validator('Validator');
             if (!$validator->validate($_POST, $rules)) {
                 die('Invalid input. Please check your entries.');
             }
@@ -173,7 +173,7 @@ public function browseVenues() {
             'courtName' => ['required' => true, 'type' => 'string', 'pattern' => '/^[A-Za-z0-9_]+$/'] // pattern allows letters, numbers, spaces, periods, apostrophes, and hyphens
         ];
 
-        $validator = new Validator();
+        $validator = $this->validator('Validator');
         if (!$validator->validate($_POST, $rules)) {
             die('Invalid court name.');
         }

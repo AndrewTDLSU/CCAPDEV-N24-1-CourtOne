@@ -14,7 +14,7 @@ class AuthController extends Controller {
             ];
 
             // Instantiate the Validator class and validate the input
-            $validator = new Validator();
+            $validator = $this->validator('Validator');
             if (!$validator->validate($_POST, $rules)) {
                 $data['error'] = 'Please enter a valid email address and password.';
             }
@@ -95,7 +95,7 @@ class AuthController extends Controller {
                 'userType' => ['required' => true, 'type' => 'string']
             ];
 
-            $validator = new Validator(); // Instantiate the Validator class
+            $validator = $this->validator('Validator'); // Instantiate the Validator class
             if (!$validator->validate($_POST, $rules)) {
                 $data['error'] = 'Please fill in all required fields with valid data.';
             } elseif (strlen($pass) < 8 || $pass !== ($_POST['confirmPassword'] ?? '')) {

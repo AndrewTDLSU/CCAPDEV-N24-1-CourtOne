@@ -25,7 +25,7 @@ class BookingController extends Controller {
         ];
 
         // Instantiate the Validator class and validate the input
-        $validator = new Validator();
+        $validator = $this->validator('Validator');
         if (!$validator->validate($_POST, $rules)) {
             die('Invalid booking date, time, or court.');
         }

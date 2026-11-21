@@ -11,6 +11,12 @@ class Controller {
         return new $model();
     }
 
+    // Instantiates matching data validator layers on request
+    protected function validator($validator) {
+        require_once __DIR__ . '/../core/Validator.php';
+        return new $validator();
+    }
+
     // Maps database arrays straight into HTML component views templates
     protected function view($view, $data = []) {
         // Unpacks incoming array strings directly into simple local variable slots
