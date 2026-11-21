@@ -48,6 +48,17 @@ public function browseVenues() {
 
         $venue = $venueModel->fetchVenueByID($venueID);
 
+        // Validate the venueID to ensure it's a positive integer
+        $rules = [
+            'venueID' => ['required' => true, 'type' => 'integer', 'min' => 1]
+        ];
+
+        // Use the Validator class to validate the venueID
+        $validator = new Validator();
+        if (!$validator->validate(['venueID' => $venueID], $rules)) {
+            die('Invalid venue ID.');
+        }
+
         if (!$venue) {
             die('Venue not found.');
         }
@@ -76,6 +87,24 @@ public function browseVenues() {
         }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+            // Define validation rules for the input fields
+            $rules = [
+                'venueName' => ['required' => true, 'type' => 'string'],
+                'address' => ['required' => true, 'type' => 'string'],
+                'description' => ['required' => true, 'type' => 'string'],
+                'sportsType' => ['required' => true, 'type' => 'string'],
+                'openHour' => ['required' => true, 'type' => 'string', 'pattern' => '/^\d{2}:\d{2}$/'],
+                'closeHour' => ['required' => true, 'type' => 'string', 'pattern' => '/^\d{2}:\d{2}$/'],
+                'hourlyRate' => ['required' => true, 'type' => 'float', 'min' => 0]
+            ];
+
+            // Use the Validator class to validate the input data
+            $validator = new Validator();
+            if (!$validator->validate($_POST, $rules)) {
+                die('Invalid input. Please check your entries.');
+            }
+
             $venueModel = $this->model('Venue');
 
             $venueID = $venueModel->registerVenue(
@@ -135,6 +164,17 @@ public function browseVenues() {
         // Only allow venue owners to add courts to their own venues
         if (!isset($_SESSION['userID']) || ($_SESSION['role'] ?? '') !== 'court_owner') {
             die('Only venue owners can add courts.');
+        }
+
+        // Validate the venueID to ensure it's a positive integer
+        $rules = [
+            'venueID' => ['required' => true, 'type' => 'integer', 'min' => 1]
+        ];
+
+        // Use the Validator class to validate the venueID
+        $validator = new Validator();
+        if (!$validator->validate(['venueID' => $venueID], $rules)) {
+            die('Invalid venue ID.');
         }
 
         $venueModel = $this->model('Venue');

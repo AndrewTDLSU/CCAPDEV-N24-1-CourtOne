@@ -17,6 +17,20 @@ class BookingController extends Controller {
         $time = $_POST['time'] ?? '';
         $courtID = (int) ($_POST['courtID'] ?? 0);
 
+        // Define validation rules for the input fields
+        $rules = [
+            'date' => ['required' => true, 'type' => 'string', 'pattern' => '/^\d{4}-\d{2}-\d{2}$/'],
+            'time' => ['required' => true, 'type' => 'string', 'pattern' => '/^(?:[01]\d|2[0-3]):[0-5]\d:00$/'],
+            'courtID' => ['required' => true, 'type' => 'int', 'min' => 1]
+        ];
+
+        // Instantiate the Validator class and validate the input
+        $validator = new Validator();
+        if (!$validator->validate($_POST, $rules)) {
+            die('Invalid booking date, time, or court.');
+        }
+
+        // Additional validation to ensure the date is valid and not in the past
         if ($courtID <= 0 || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $date) ||
             !preg_match('/^(?:[01]\d|2[0-3]):[0-5]\d:00$/', $time) ||
             strtotime($date) === false || date('Y-m-d', strtotime($date)) !== $date || strtotime($date . ' ' . $time) <= time()) {
@@ -109,6 +123,11 @@ class BookingController extends Controller {
             die('Booking not found or access denied.');
         }
 
+        if (!$booking || !$payment ||
+            (int) $booking['userID'] !== (int) $_SESSION['userID']) {
+            die('Booking not found or access denied.');
+        }
+
         // Cancelled bookings cannot be paid, even by visiting checkout directly.
         if ($booking['status'] === 'cancelled') {
             header('Location: ' . courtUrl('/index.php?url=booking/myBookings'));
@@ -120,6 +139,17 @@ class BookingController extends Controller {
 
             if (!in_array($method, ['GCash', 'Card'], true)) {
                 die('Please select a valid payment method.');
+            }
+
+            // Define validation rules for the input fields
+            $rules = [
+                'paymentMethod' => ['required' => true, 'type' => 'string', 'pattern' => '/^(GCash|Card)$/']
+            ];
+
+            // 
+            $validator = new Validator();
+            if (!$validator->validate($_POST, $rules)) {
+                die('Invalid payment method.');
             }
 
             // Lock this booking during payment so cancellation cannot race it.

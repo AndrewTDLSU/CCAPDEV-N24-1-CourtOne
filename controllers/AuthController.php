@@ -7,6 +7,18 @@ class AuthController extends Controller {
             $password = $_POST['password'] ?? '';
             $loginTarget = $_POST['loginType'] ?? ''; // 'customer_app' or 'staff_app'
 
+            // Define validation rules for the input fields
+            $rules = [
+                'email' => ['required' => true, 'type' => 'email'],
+                'password' => ['required' => true, 'type' => 'string']
+            ];
+
+            // Instantiate the Validator class and validate the input
+            $validator = new Validator();
+            if (!$validator->validate($_POST, $rules)) {
+                $data['error'] = 'Please enter a valid email address and password.';
+            }
+
             $userModel = $this->model('User');
 
             if ($loginTarget === 'staff_app') {
@@ -64,8 +76,17 @@ class AuthController extends Controller {
             $pass = $_POST['password'] ?? '';
             $role = $_POST['userType'] ?? '';
 
-            if ($name === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                $data['error'] = 'Please enter your name and a valid email address.';
+            // Define validation rules for the input fields
+            $rules = [
+                'name' => ['required' => true, 'type' => 'string', 'pattern' => "/^[\p{L} .'-]+$/u"], // pattern allows letters, spaces, periods, apostrophes, and hyphens
+                'email' => ['required' => true, 'type' => 'email', 'max' => 254],
+                'password' => ['required' => true, 'type' => 'string', 'minLength' => 8],
+                'userType' => ['required' => true, 'type' => 'string']
+            ];
+
+            $validator = new Validator(); // Instantiate the Validator class
+            if (!$validator->validate($_POST, $rules)) {
+                $data['error'] = 'Please fill in all required fields with valid data.';
             } elseif (strlen($pass) < 8 || $pass !== ($_POST['confirmPassword'] ?? '')) {
                 $data['error'] = 'Passwords must match and contain at least 8 characters.';
             } elseif (!in_array($role, ['user', 'court_owner'], true)) {
