@@ -141,17 +141,6 @@ class BookingController extends Controller {
                 die('Please select a valid payment method.');
             }
 
-            // Define validation rules for the input fields
-            $rules = [
-                'paymentMethod' => ['required' => true, 'type' => 'string', 'pattern' => '/^(GCash|Card)$/']
-            ];
-
-            // 
-            $validator = new Validator();
-            if (!$validator->validate($_POST, $rules)) {
-                die('Invalid payment method.');
-            }
-
             // Lock this booking during payment so cancellation cannot race it.
             $db = Database::getInstance();
             try {

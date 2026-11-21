@@ -48,17 +48,6 @@ public function browseVenues() {
 
         $venue = $venueModel->fetchVenueByID($venueID);
 
-        // Validate the venueID to ensure it's a positive integer
-        $rules = [
-            'venueID' => ['required' => true, 'type' => 'integer', 'min' => 1]
-        ];
-
-        // Use the Validator class to validate the venueID
-        $validator = new Validator();
-        if (!$validator->validate(['venueID' => $venueID], $rules)) {
-            die('Invalid venue ID.');
-        }
-
         if (!$venue) {
             die('Venue not found.');
         }
@@ -166,17 +155,6 @@ public function browseVenues() {
             die('Only venue owners can add courts.');
         }
 
-        // Validate the venueID to ensure it's a positive integer
-        $rules = [
-            'venueID' => ['required' => true, 'type' => 'integer', 'min' => 1]
-        ];
-
-        // Use the Validator class to validate the venueID
-        $validator = new Validator();
-        if (!$validator->validate(['venueID' => $venueID], $rules)) {
-            die('Invalid venue ID.');
-        }
-
         $venueModel = $this->model('Venue');
 
         // Check if the logged-in user is the owner of the venue
@@ -190,6 +168,15 @@ public function browseVenues() {
         }
 
         $courtName = trim($_POST['courtName'] ?? '');
+
+        $rules = [
+            'courtName' => ['required' => true, 'type' => 'string', 'pattern' => '/^[A-Za-z0-9_]+$/'] // pattern allows letters, numbers, spaces, periods, apostrophes, and hyphens
+        ];
+
+        $validator = new Validator();
+        if (!$validator->validate($_POST, $rules)) {
+            die('Invalid court name.');
+        }
 
         if ($courtName === '') {
             die('Court name is required.');
