@@ -76,6 +76,7 @@ class AuthController extends Controller {
             $pass = $_POST['password'] ?? '';
             $role = $_POST['userType'] ?? '';
 
+            // Assisted by VSCode Copilot
             // Define validation rules for the input fields
             $rules = [
                 'name' => ['required' => true, 'type' => 'string', 'pattern' => "/^[\p{L} .'-]+$/u"], // pattern allows letters, spaces, periods, apostrophes, and hyphens
@@ -84,7 +85,7 @@ class AuthController extends Controller {
                 'password' => [
                     'required' => true,
                     'type' => 'string',
-                    'minLength' => 8,
+                    'min' => 8,
                     'patterns' => [
                         ["/[A-Z]/", "Password must contain at least one uppercase letter."],
                         ["/[a-z]/", "Password must contain at least one lowercase letter."],
@@ -92,14 +93,28 @@ class AuthController extends Controller {
                         ["/[\W_]/", "Password must contain at least one special character."]
                     ]
                 ],
+                'confirmPassword' => ['required' => true, 'type' => 'string'],
                 'userType' => ['required' => true, 'type' => 'string']
             ];
 
             $validator = $this->validator('Validator'); // Instantiate the Validator class
+            
             if (!$validator->validate($_POST, $rules)) {
-                $data['error'] = 'Please fill in all required fields with valid data.';
-            } elseif (strlen($pass) < 8 || $pass !== ($_POST['confirmPassword'] ?? '')) {
-                $data['error'] = 'Passwords must match and contain at least 8 characters.';
+                $fieldLabels = [
+                    'name' => 'Name',
+                    'email' => 'Email',
+                    'password' => 'Password',
+                    'confirmPassword' => 'Confirm password',
+                    'userType' => 'Account type'
+                ];
+                $messages = [];
+                // display the first error message for each field
+                foreach ($validator->errors() as $field => $message) {
+                    $messages[] = ($fieldLabels[$field] ?? 'Input') . ': ' . $message;
+                }
+                $data['error'] = implode(' ', $messages);
+            } elseif ($pass !== ($_POST['confirmPassword'] ?? '')) {
+                $data['error'] = 'Passwords do not match.';
             } elseif (!in_array($role, ['user', 'court_owner'], true)) {
                 $data['error'] = "Invalid account type selected.";
             } else {

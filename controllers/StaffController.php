@@ -74,32 +74,43 @@ class StaffController Extends Controller {
         $password = $_POST['password'] ?? '';
         $venueID = (int) ($_POST['venueID'] ?? 0);
 
+        // Assisted by VSCode Copilot
         // Define validation rules for the input fields
         $rules = [
             'name' => ['required' => true, 'type' => 'string', 'pattern' => "/^[\p{L} .'-]+$/u"], // pattern allows letters, spaces, periods, apostrophes, and hyphens
             'email' => ['required' => true, 'type' => 'email', 'max' => 254],
             // Password validation rules with custom patterns and messages
             'password' => [
-                'required' => true,
-                'type' => 'string',
-                'minLength' => 8,
-                'patterns' => [
-                    ["/[A-Z]/", "Password must contain at least one uppercase letter."],
-                    ["/[a-z]/", "Password must contain at least one lowercase letter."],
-                    ["/[0-9]/", "Password must contain at least one number."],
-                    ["/[\W_]/", "Password must contain at least one special character."]
-                ]
-            ],
+                    'required' => true,
+                    'type' => 'string',
+                    'min' => 8,
+                    'patterns' => [
+                        ["/[A-Z]/", "Password must contain at least one uppercase letter."],
+                        ["/[a-z]/", "Password must contain at least one lowercase letter."],
+                        ["/[0-9]/", "Password must contain at least one number."],
+                        ["/[\W_]/", "Password must contain at least one special character."]
+                    ]
+                ],
             'venueID' => ['required' => true, 'type' => 'int', 'min' => 1]
         ];
 
-        $validator = new Validator(); // Instantiate the Validator class
+        $validator = $this->validator('Validator'); // Instantiate the Validator class
         if (!$validator->validate($_POST, $rules)) {
-            header('Location: ' . $back . '&error=missing_fields');
-            exit;
+            $fieldLabels = [
+                    'name' => 'Name',
+                    'email' => 'Email',
+                    'password' => 'Password',
+                    'venueID' => 'Venue'
+                ];
+            $messages = [];
+            // display the first error message for each field
+            foreach ($validator->errors() as $field => $message) {
+                $messages[] = ($fieldLabels[$field] ?? 'Input') . ': ' . $message;
+            }
+            $data['error'] = implode(' ', $messages);
         }
 
-        // Previous validation checks for missing fields, email format, and password length have been replaced by the Validator class. The following checks are now redundant and can be removed if wished to do so:
+        /*// Previous validation checks for missing fields, email format, and password length have been replaced by the Validator class. The following checks are now redundant and can be removed if wished to do so:
         // validate input, if any of the required fields are missing, redirect back with an error code
         if ($name === '' || $email === '' || $password === '' || $venueID === 0) {
             header('Location: ' . $back . '&error=missing_fields');
@@ -116,7 +127,7 @@ class StaffController Extends Controller {
         if (strlen($password) < 8) {
             header('Location: ' . $back . '&error=short_password');
             exit;
-        }
+        }*/
 
         // owners can only add staff to their own venues
         $venueModel = $this->model('Venue');
