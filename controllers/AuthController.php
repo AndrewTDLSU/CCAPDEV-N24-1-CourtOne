@@ -80,7 +80,18 @@ class AuthController extends Controller {
             $rules = [
                 'name' => ['required' => true, 'type' => 'string', 'pattern' => "/^[\p{L} .'-]+$/u"], // pattern allows letters, spaces, periods, apostrophes, and hyphens
                 'email' => ['required' => true, 'type' => 'email', 'max' => 254],
-                'password' => ['required' => true, 'type' => 'string', 'minLength' => 8],
+                // Password validation rules with custom patterns and messages
+                'password' => [
+                    'required' => true,
+                    'type' => 'string',
+                    'minLength' => 8,
+                    'patterns' => [
+                        ["/[A-Z]/", "Password must contain at least one uppercase letter."],
+                        ["/[a-z]/", "Password must contain at least one lowercase letter."],
+                        ["/[0-9]/", "Password must contain at least one number."],
+                        ["/[\W_]/", "Password must contain at least one special character."]
+                    ]
+                ],
                 'userType' => ['required' => true, 'type' => 'string']
             ];
 

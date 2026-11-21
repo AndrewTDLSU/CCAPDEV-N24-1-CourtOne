@@ -74,6 +74,16 @@ class Validator
                 continue;
             }
 
+            // 4. Custom patterns with messages (for password complexity, etc.)
+            if (isset($rule['patterns'])) {
+                foreach ($rule['patterns'] as [$regex, $message]) {
+                    if (!preg_match($regex, (string) $value)) {
+                        $this->errors[$field] = $message;
+                        continue 2; // stop at the first failed rule for this field
+                    }
+                }
+            }
+
             $this->clean[$field] = $value;
         }
 
