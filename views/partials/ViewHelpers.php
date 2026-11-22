@@ -48,4 +48,3 @@ $role = $_SESSION['role'] ?? '';
 if (empty($_SESSION['csrfToken'])) {
     $_SESSION['csrfToken'] = bin2hex(random_bytes(32));
 }
-32));
