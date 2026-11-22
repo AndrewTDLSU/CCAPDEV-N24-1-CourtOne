@@ -16,14 +16,11 @@
     <link rel="stylesheet" href="public/css/darkMode.css">
     <script src="public/js/theme.js"></script>
 <link rel="stylesheet" href="public/css/integration.css">
-    <link rel="stylesheet" href="<?= courtEscape(courtUrl('public/css/phase3.css')) ?>">
-    <link rel="icon" type="image/png" href="<?= courtEscape(courtUrl('public/media/icons/courtone-logo.png')) ?>">
 </head>
 
 <body>
  
-    <!-- Navigation -->
-<<<<<<< HEAD
+    <!--- Navigation --->
     <header class="container">
         <nav class="navbar navbar-expand-lg py-3" aria-label="Main navigation">
             <a class="navbar-brand fw-bold" href="index.php?url=home/index">CourtOne</a>
@@ -79,9 +76,6 @@
             </div>
         </nav>
     </header>
-=======
-    <?php require __DIR__ . '/../partials/Nav.php'; ?>
->>>>>>> bf55e45 (Fixed all backend suggestions as per ms' last recommendation)
 
     <main class="container my-4">
 
@@ -103,7 +97,7 @@
                 </div>
 
                 <div class="col-5 col-md-6 text-center">
-                    <img src="public/media/icons/sports.png"
+                    <img src="<?= courtEscape(courtUrl('/public/media/icons/sports.png')) ?>"
                          class="img-fluid"
                          alt="Sports illustration">
                 </div>
