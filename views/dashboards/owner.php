@@ -1,5 +1,4 @@
 <?php require_once __DIR__ . '/../partials/ViewHelpers.php'; ?>
-<!-- Copy paste to comment -->
 
 <!DOCTYPE html>
 <html lang="en">
@@ -12,20 +11,17 @@
         <link rel="stylesheet" href="bootstrap-5.3.8-dist/css/bootstrap.min.css"> <!-- bootstrap css for grid -->
         <!--<script src="[filepath]"></script>  bootstrap js script, Not used yet, remove when unncessary -->
 
-        <!-- Custom CSS -->
+        <!---Custom CSS--->
         <link rel="stylesheet" href="public/css/style.css">
         <link rel="stylesheet" href="public/css/ownerMgmt.css">
 
         <link rel="stylesheet" href="public/css/darkMode.css">
         <script src="public/js/theme.js"></script>
     <link rel="stylesheet" href="public/css/integration.css">
-    <link rel="stylesheet" href="<?= courtEscape(courtUrl('public/css/phase3.css')) ?>">
-    <link rel="icon" type="image/png" href="<?= courtEscape(courtUrl('public/media/icons/courtone-logo.png')) ?>">
 </head>
 
     <body>
         <!-- Navigation -->
-<<<<<<< HEAD
         <header class="container">
             <nav class="navbar navbar-expand-lg py-3" aria-label="Main navigation">
                 <a class="navbar-brand fw-bold" href="index.php?url=home/index">CourtOne</a>
@@ -81,9 +77,6 @@
                 </div>
             </nav>
         </header>
-=======
-        <?php require __DIR__ . '/../partials/Nav.php'; ?>
->>>>>>> bf55e45 (Fixed all backend suggestions as per ms' last recommendation)
 
         <!-- Bootstrap grid container -->
         <main class="container my-4">
@@ -97,7 +90,7 @@
                     </p>
                 </div>
                 <div class="col-5 col-md-6 text-center">
-                    <img src="public/media/icons/sports.png" alt="icon not found..." class="img-fluid" />
+                    <img src="<?= courtEscape(courtUrl('/public/media/icons/sports.png')) ?>" alt="icon not found..." class="img-fluid" />
                 </div>
             </div>
 
@@ -115,7 +108,7 @@
                 <div id="add-venue-card" class="col-6 col-lg-3 ">
                     <a href="index.php?url=venue/venueForm" class="text-decoration-none text-reset card-link">
                         <div class="box-shadow card text-center h-100 hov-card" >
-                            <img src="public/media/icons/add-venue.png" class="card-img-top" alt="icon not found"  >
+                            <img src="<?= courtEscape(courtUrl('/public/media/icons/add-venue.png')) ?>" class="card-img-top" alt="icon not found"  >
                             <p><strong >Add a venue</strong></p>
                         </div>
                     </a>
