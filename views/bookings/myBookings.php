@@ -1,131 +1,65 @@
-<?php require_once __DIR__ . '/../partials/ViewHelpers.php'; ?>
+<?php
+$title = 'My bookings';
+$pageStyles = ['userDashboard.css'];
+$pageScripts = ['integration.js'];
+require __DIR__ . '/../partials/Header.php';
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Dashboard - CourtOne</title>
+$upcoming = [];
+$history = [];
+foreach ($bookings as $booking) {
+    if ($booking['status'] === 'upcoming' && strtotime($booking['bookingDate'] . ' ' . $booking['bookingTime']) > time()) {
+        $upcoming[] = $booking;
+    } else {
+        $history[] = $booking;
+    }
+}
+?>
 
-    <!-- Bootstrap CSS (Local) -->
-    <link rel="stylesheet" href="bootstrap-5.3.8-dist/css/bootstrap.min.css">
-
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="public/css/style.css">
-    <link rel="stylesheet" href="public/css/userDashboard.css">
-    <link rel="stylesheet" href="public/css/darkMode.css">
-    <script src="public/js/theme.js"></script>
-<link rel="stylesheet" href="public/css/integration.css">
-    <link rel="stylesheet" href="<?= courtEscape(courtUrl('public/css/phase3.css')) ?>">
-    <link rel="icon" type="image/png" href="<?= courtEscape(courtUrl('public/media/icons/courtone-logo.png')) ?>">
-</head>
-
-<body>
-
-    <!-- Navigation -->
-<<<<<<< HEAD
-    <header class="container">
-        <nav class="navbar navbar-expand-lg py-3" aria-label="Main navigation">
-            <a class="navbar-brand fw-bold" href="index.php?url=home/index">CourtOne</a>
-
-            <div class="d-flex gap-2 ms-auto order-lg-3">
-
-                <!-- Account navigation -->
-                <div class="dropdown position-relative">
-                    <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                        Dashboard
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                    <?php if ($role): ?>
-                        <li><a class="dropdown-item" href="index.php?url=dashboard/dispatcher">My Dashboard</a></li>
-                    <?php endif; ?>
-                    <?php if ($role === 'user'): ?>
-                        <li><a class="dropdown-item" href="index.php?url=booking/myBookings">My Bookings</a></li>
-                    <?php endif; ?>
-                    <?php if ($role === 'court_owner'): ?>
-                        <li><a class="dropdown-item" href="index.php?url=staff/showAllStaff">Manage Staff</a></li>
-                    <?php endif; ?>
-                    <?php if (!$role): ?>
-                        <li><a class="dropdown-item" href="index.php?url=auth/login">Sign In</a></li>
-                    <?php endif; ?>
-                    </ul> 
-                </div>
-
-                <a href="index.php?url=auth/<?= $role ? 'logout' : 'login' ?>" class="btn btn-primary"><?= $role ? 'Sign Out' : 'Sign In' ?></a>
-
-                <button class="navbar-toggler" type="button"
-                        data-bs-toggle="collapse" data-bs-target="#mainMenu"
-                        aria-controls="mainMenu" aria-expanded="false"
-                        aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-            </div>
-
-            <div class="collapse navbar-collapse order-lg-2" id="mainMenu">
-                <ul class="navbar-nav mx-lg-auto gap-lg-3">
-                    <li class="nav-item">
-                        <a class="nav-link" href="index.php?url=home/index">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="index.php?url=venue/browseVenues">Venues</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="index.php?url=home/index#how-it-works">How It Works</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="index.php?url=chat/index">Chat</a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-    </header>
-=======
-    <?php require __DIR__ . '/../partials/Nav.php'; ?>
->>>>>>> bf55e45 (Fixed all backend suggestions as per ms' last recommendation)
-
-    <main class="container my-4">
+<main id="main-content" class="container my-4">
         <div class="row g-4">
             <aside class="col-12 col-md-3">
                 <div class="card shadow-sm border-0">
                     <div class="card-body">
                         <h5 class="fw-bold">My Account</h5>
                         <hr>
-                        <nav class="nav nav-pills flex-column gap-2">
-                            <a class="nav-link" href="index.php?url=dashboard/userDashboard">Dashboard</a>
-                            <a class="nav-link active" href="index.php?url=booking/myBookings">My Bookings</a>
-                            <a class="nav-link" href="index.php?url=dashboard/userDashboard#profile">Profile</a>
+                        <nav class="nav nav-pills court-section-nav gap-2" aria-label="Customer account sections">
+                            <a class="nav-link" href="<?= courtEscape(courtUrl('index.php')) ?>?url=dashboard/userDashboard">Dashboard</a>
+                            <a class="nav-link active" aria-current="page" href="<?= courtEscape(courtUrl('index.php')) ?>?url=booking/myBookings">My Bookings</a>
+                            <a class="nav-link" href="<?= courtEscape(courtUrl('index.php')) ?>?url=dashboard/userDashboard#profile">Profile</a>
                         </nav>
                     </div>
                 </div>
             </aside>
             <div class="col-12 col-md-9">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h1 class="fw-bold fs-2">My Bookings</h1>
-                    <a href="index.php?url=venue/browseVenues">Browse Venues →</a>
+                <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center mb-3">
+                    <h1 class="court-page-title mb-0">My bookings</h1>
+                    <a href="<?= courtEscape(courtUrl('index.php')) ?>?url=venue/browseVenues">Find venues</a>
                 </div>
                 <?php if(($_GET['notice']??'')==='cancelled'): ?>
                     <div class="alert alert-success" role="status">Your booking has been cancelled.</div>
                 <?php endif; ?>
-                <?php if(!$bookings): ?>
-                    <p>No bookings yet. Browse venues to book your first court.</p>
-                <?php endif; ?>
-                <?php foreach($bookings as $b): $payment=$paymentsByBooking[(int)$b['bookingID']]??null; $canCancel=$b['status']==='upcoming' && strtotime($b['bookingDate'].' '.$b['bookingTime'])>time(); ?>
+                <?php foreach (['Upcoming bookings' => array_reverse($upcoming), 'Booking history' => $history] as $heading => $entries): ?>
+                    <section class="mb-4">
+                    <h2 class="h4"><?= courtEscape($heading) ?></h2>
+                    <?php if (!$entries): ?><p class="court-empty">No <?= strtolower($heading) ?> to display.</p><?php endif; ?>
+                    <?php foreach ($entries as $b): ?>
+                        <?php $payment = $paymentsByBooking[(int) $b['bookingID']] ?? null; ?>
                     <div class="card shadow-sm mb-3">
                         <div class="card-body">
                             <div class="d-flex flex-column flex-sm-row gap-3">
-                                <img src="<?= courtEscape(courtImage($b)) ?>" class="booking-image" alt="<?= courtEscape($b['venueName']) ?>">
+                                <img src="<?= courtEscape(courtImage($b)) ?>" class="booking-image" alt="" data-image-fallback="<?= courtEscape(courtImageFallback()) ?>">
                                 <div class="flex-grow-1">
-                                    <h5 class="fw-bold"><?= courtEscape($b['venueName']) ?></h5>
+                                    <h3 class="h5"><?= courtEscape($b['venueName']) ?></h3>
                                     <p class="text-secondary small mb-2"><?= courtEscape($b['courtName']) ?></p>
-                                    <p class="mb-2"><?= courtEscape($b['bookingDate'].' | '.$b['bookingTime']) ?></p>
-                                    <span class="badge <?= $b['status']==='upcoming'?'bg-success':'bg-secondary' ?>"><?= courtEscape(ucfirst($b['status'])) ?></span>
-                                    <span class="badge bg-primary"><?= courtEscape(ucfirst($payment['status']??'Not charged')) ?></span>
-                                    <?php if($canCancel): ?>
-                                        <div class="d-flex gap-2 mt-3">
+                                    <p class="mb-2"><?= courtDate($b['bookingDate']) ?> · <?= courtTime($b['bookingTime']) ?></p>
+                                    <?= courtStatus($b['status']) ?>
+                                    <?= courtStatus($payment['status'] ?? 'not charged') ?>
+                                    <?php if ($heading === 'Upcoming bookings'): ?>
+                                        <div class="d-flex flex-wrap gap-2 mt-3">
                                             <?php if(($payment['status']??'')==='pending'): ?>
-                                                <a class="btn btn-primary btn-sm" href="index.php?url=booking/payment/<?= (int)$b['bookingID'] ?>">Pay Now</a>
+                                                <a class="btn btn-primary btn-sm" href="<?= courtEscape(courtUrl('index.php')) ?>?url=booking/payment/<?= (int)$b['bookingID'] ?>">Pay Now</a>
                                             <?php endif; ?>
-                                            <form method="post" action="index.php?url=booking/cancelBooking/<?= (int)$b['bookingID'] ?>" onsubmit="return confirm('Cancel this booking?')">
+                                            <form method="post" action="<?= courtEscape(courtUrl('index.php')) ?>?url=booking/cancelBooking/<?= (int)$b['bookingID'] ?>" data-confirm="Cancel this booking?">
                                                 <input type="hidden" name="cancelToken" value="<?= courtEscape($cancelToken) ?>">
                                                 <button class="btn btn-outline-danger btn-sm">Cancel Booking</button>
                                                 <input type="hidden" name="csrfToken" value="<?= courtEscape($_SESSION['csrfToken']) ?>">
@@ -136,20 +70,13 @@
                             </div>
                         </div>
                     </div>
+                    <?php endforeach; ?>
+                    </section>
                 <?php endforeach; ?>
             </div>
         </div>
-    </main>
+</main>
 
-    <!-- Footer -->
-    <footer class="container border-top py-3 mt-5">
-        <p class="text-secondary small">
-            &copy; 2026 CourtOne. All rights reserved.
-        </p>
-    </footer>
-
-    <!-- Bootstrap JS (Local) -->
-    <script src="bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
-
-</body>
-</html>
+<?php
+require __DIR__ . '/../partials/Footer.php';
+?>

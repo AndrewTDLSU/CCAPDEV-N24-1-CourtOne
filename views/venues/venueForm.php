@@ -1,56 +1,28 @@
-<?php require_once __DIR__ . '/../partials/ViewHelpers.php'; ?>
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Venue Form</title>
+<?php
+$title = 'Add a venue';
+$pageStyles = ['ownerMgmt.css'];
+require __DIR__ . '/../partials/Header.php';
+?>
 
-        <!-- bootstrap link -->
-        <link rel="stylesheet" href="bootstrap-5.3.8-dist/css/bootstrap.min.css"> <!-- bootstrap css for grid -->
-        <!--<script src="[filepath]"></script>  bootstrap js script, Not used yet, remove when unncessary -->
-
-        <!-- Custom CSS -->
-        <link rel="stylesheet" href="public/css/style.css">
-        <link rel="stylesheet" href="public/css/ownerMgmt.css">
-
-    <link rel="stylesheet" href="public/css/integration.css">
-<link rel="stylesheet" href="public/css/darkMode.css">
-<script src="public/js/theme.js"></script>
-    <link rel="stylesheet" href="<?= courtEscape(courtUrl('public/css/phase3.css')) ?>">
-    <link rel="icon" type="image/png" href="<?= courtEscape(courtUrl('public/media/icons/courtone-logo.png')) ?>">
-</head>
-
-    <body>
-        <!-- Navigation -->
-        <?php require __DIR__ . '/../partials/Nav.php'; ?>
-
-        <!-- Bootstrap grid container -->
-        <main class="container my-4">
+<main id="main-content" class="container my-4">
 
             <div id="venue-link" class="bg-light rounded px-3 py-2 mb-3 ">
-                <a href="index.php?url=dashboard/ownerDashboard" class="text-decoration-none">← Back to Venues</a>
+                <a href="<?= courtEscape(courtUrl('index.php')) ?>?url=dashboard/ownerDashboard" class="text-decoration-none">Back to owner dashboard</a>
             </div>
 
-            <h1 class="h4 mb-3">Add venue</h1>
+            <h1 class="court-page-title mb-3">Add a venue</h1>
+            <?php if (!empty($error)): ?><p class="alert alert-danger" role="alert"><?= courtEscape($error) ?></p><?php endif; ?>
 
-            <form id="venue-form" action="index.php?url=venue/venueForm" enctype="multipart/form-data" method="POST">
+            <form id="venue-form" action="<?= courtEscape(courtUrl('index.php')) ?>?url=venue/venueForm" enctype="multipart/form-data" method="POST">
 
                 <div class="row g-4">
 
                     <!-- photos -->
                     <div class="col-12 col-md-4">
-                        <label for="photos" class="photo-upload border rounded p-4 text-center mb-2 d-block">
-                            Photo upload
-                            <span class="d-block text-muted small">Click to add photos (up to 5 MB each)</span>
-                        </label>
-                        <input type="file" id="photos" name="photos[]" accept="image/*" multiple class="d-none">
-
-                        <div id="photo-previews" class="row g-2">
-                            <div class="col-4"><div class="thumb border rounded"></div></div>
-                            <div class="col-4"><div class="thumb border rounded"></div></div>
-                            <div class="col-4"><div class="thumb border rounded"></div></div>
-                        </div>
+                        <label for="photos" class="form-label">Venue photos (optional)</label>
+                        <input type="file" id="photos" name="photos[]" accept=".jpg,.jpeg,.png,.webp" multiple class="form-control" aria-describedby="photo-help">
+                        <p id="photo-help" class="form-text">JPG, PNG or WebP, up to 5 MB each.</p>
+                        <div id="photo-previews" class="row g-2" aria-label="Photo previews"></div>
                     </div>
 
                     <!-- details -->
@@ -75,16 +47,12 @@
 
                             <div class="col-12">
                                 <label for="venue-description" class="form-label">Description</label>
-                                <textarea name="description" id="venue-description" class="form-control" rows="3"></textarea>
+                                <textarea name="description" id="venue-description" class="form-control" rows="3" required></textarea>
                             </div>
 
-                            <div class="col-6 col-sm-4">
-                                <label for="venue-court-number" class="form-label">Number of courts</label>
-                                <input type="number" id="venue-court-number" class="form-control" value="0" disabled aria-describedby="court-help">
-                            </div>
-                            <div class="col-6 col-sm-8">
+                            <div class="col-12 col-sm-8">
                                 <label for="price-per-session" class="form-label">Price per hour (PHP)</label>
-                                <input type="number" name="hourlyRate" id="price-per-session" class="form-control" min="0.01" step="0.01" required>
+                                <input type="number" name="hourlyRate" id="price-per-session" class="form-control" min="0" step="0.01" required>
                             </div>
                         </div>
                     </div>
@@ -110,23 +78,13 @@
                 <!-- buttons -->
                 <div class="d-flex flex-wrap gap-2 mt-4">
                     <button type="submit" class="btn btn-primary">Save venue</button>
-                    <a href="index.php?url=dashboard/ownerDashboard" id="cancelBtn" class="btn btn-outline-secondary">Cancel</a>
-                    <button type="button" id="delete-venue" disabled title="Venue deletion is not available" class="btn btn-danger ms-md-auto">Delete venue</button>
+                    <a href="<?= courtEscape(courtUrl('index.php')) ?>?url=dashboard/ownerDashboard" id="cancelBtn" class="btn btn-outline-secondary">Cancel</a>
                 </div>
 
-            <p id="court-help" class="text-secondary small">After saving, add named courts from the venue statistics page.</p><input type="hidden" name="csrfToken" value="<?= courtEscape($_SESSION['csrfToken']) ?>"></form>
-        </main>
+            <p id="court-help" class="text-secondary small">After saving, add named courts from the venue management page.</p><input type="hidden" name="csrfToken" value="<?= courtEscape($_SESSION['csrfToken']) ?>"></form>
+</main>
 
-        <!-- Footer -->
-        <footer class="container border-top py-3 mt-5">
-            <p class="text-secondary small mb-0">
-                &copy; 2026 CourtOne. All rights reserved.
-            </p>
-        </footer>
-
-
-
-    <script src="public/js/integration.js"></script><script src="bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script></body>
-
-
-</html>
+<?php
+$pageScripts = ['integration.js'];
+require __DIR__ . '/../partials/Footer.php';
+?>

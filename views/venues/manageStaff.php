@@ -1,115 +1,33 @@
-<?php require_once __DIR__ . '/../partials/ViewHelpers.php'; ?>
+<?php
+$title = 'Manage staff';
+require __DIR__ . '/../partials/Header.php';
+?>
 
-<!-- Copy paste to comment -->
-
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Manage Staff</title>
-
-        <!-- bootstrap link -->
-        <link rel="stylesheet" href="bootstrap-5.3.8-dist/css/bootstrap.min.css"> <!-- bootstrap css for grid -->
-        <!--<script src="[filepath]"></script>  bootstrap js script, Not used yet, remove when unncessary -->
-
-        <!-- Custom CSS -->
-        <link rel="stylesheet" href="public/css/style.css">
-        <link rel="stylesheet" href="public/css/ownerMgmt.css">
-
-        <link rel="stylesheet" href="public/css/darkMode.css">
-        <script src="public/js/theme.js"></script>
-    <link rel="stylesheet" href="public/css/integration.css">
-    <link rel="stylesheet" href="<?= courtEscape(courtUrl('public/css/phase3.css')) ?>">
-    <link rel="icon" type="image/png" href="<?= courtEscape(courtUrl('public/media/icons/courtone-logo.png')) ?>">
-</head>
-
-    <body>
-        <!-- Navigation -->
-<<<<<<< HEAD
-        <header class="container">
-            <nav class="navbar navbar-expand-lg py-3" aria-label="Main navigation">
-                <a class="navbar-brand fw-bold" href="index.php?url=home/index">CourtOne</a>
-
-                <div class="d-flex gap-2 ms-auto order-lg-3">
-
-                    <!-- Account navigation -->
-                    <div class="dropdown position-relative">
-                    <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                        Dashboard
-                    </button>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <?php if ($role): ?>
-                                <li><a class="dropdown-item" href="index.php?url=dashboard/dispatcher">My Dashboard</a></li>
-                            <?php endif; ?>
-                            <?php if ($role === 'user'): ?>
-                                <li><a class="dropdown-item" href="index.php?url=booking/myBookings">My Bookings</a></li>
-                            <?php endif; ?>
-                            <?php if ($role === 'court_owner'): ?>
-                                <li><a class="dropdown-item" href="index.php?url=staff/showAllStaff">Manage Staff</a></li>
-                            <?php endif; ?>
-                            <?php if (!$role): ?>
-                                <li><a class="dropdown-item" href="index.php?url=auth/login">Sign In</a></li>
-                            <?php endif; ?>
-                        </ul> 
-                    </div>
-
-                    <a href="index.php?url=auth/<?= $role ? 'logout' : 'login' ?>" class="btn btn-primary"><?= $role ? 'Sign Out' : 'Sign In' ?></a>
-
-                    <button class="navbar-toggler" type="button"
-                            data-bs-toggle="collapse" data-bs-target="#mainMenu"
-                            aria-controls="mainMenu" aria-expanded="false"
-                            aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-                </div>
-
-                <div class="collapse navbar-collapse order-lg-2" id="mainMenu">
-                    <ul class="navbar-nav mx-lg-auto gap-lg-3">
-                        <li class="nav-item">
-                            <a class="nav-link" href="index.php?url=home/index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="index.php?url=venue/browseVenues">Venues</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="index.php?url=home/index#how-it-works">How It Works</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="index.php?url=chat/index">Chat</a>
-                        </li>
-                    </ul>
-                </div>
-            </nav>
-        </header>
-=======
-        <?php require __DIR__ . '/../partials/Nav.php'; ?>
->>>>>>> bf55e45 (Fixed all backend suggestions as per ms' last recommendation)
-
-        <!-- Bootstrap grid container -->
-        <main class="container my-4">
+<main id="main-content" class="container my-4">
 
             <div class="bg-light rounded px-3 py-2 mb-3">
-                <a href="index.php?url=dashboard/ownerDashboard" class="text-decoration-none">← Back to Dashboard</a>
+                <a href="<?= courtEscape(courtUrl('index.php')) ?>?url=dashboard/ownerDashboard" class="text-decoration-none">Back to owner dashboard</a>
             </div>
 
             <!-- title and venue filter -->
             <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
-                <h1 class="h4 mb-0">Manage staff</h1>
+                <h1 class="court-page-title mb-0">Manage staff</h1>
                 <?php if($error): ?>
-                    <p class="alert alert-danger"><?= courtEscape($error) ?></p>
+                    <p class="alert alert-danger" role="alert"><?= courtEscape($error) ?></p>
                 <?php endif; ?>
                 <?php if($success): ?>
-                    <p class="alert alert-success">Staff account created.</p>
+                    <p class="alert alert-success" role="status">Staff account created.</p>
                 <?php endif; ?>
-                <form action="index.php" method="get">
+                <form action="<?= courtEscape(courtUrl('index.php')) ?>" method="get" class="d-flex align-items-center flex-wrap gap-2">
                     <input type="hidden" name="url" value="staff/showAllStaff">
-                    <select name="venueID" onchange="this.form.submit()" id="venue-filter" class="form-select w-auto">
+                    <label for="venue-filter" class="visually-hidden">Filter by venue</label>
+                    <select name="venueID" id="venue-filter" class="form-select w-auto mw-100">
                         <option value="0">All venues</option>
                         <?php foreach($venues as $v): ?>
                             <option value="<?= (int)$v['venueID'] ?>" <?= (int)$venueID===(int)$v['venueID']?'selected':'' ?>><?= courtEscape($v['venueName']) ?></option>
                         <?php endforeach; ?>
                     </select>
+                    <button class="btn btn-outline-secondary" type="submit">Filter</button>
                 </form>
             </div>
 
@@ -117,18 +35,18 @@
 
                 <!-- staff table -->
                 <div class="col-12 col-md-7">
-                    <div class="bg-light rounded p-3">
-                        <div class="table-responsive">
+                    <div class="card p-3">
+                        <div class="table-responsive" role="region" aria-label="Staff accounts" tabindex="0">
                             <table class="table table-condensed table-striped align-middle mb-0">
                                 <thead>
                                     <tr>
                                         <th>Name</th>
                                         <th>Email</th>
                                         <th>Venue</th>
-                                        <th></th>
+
                                     </tr>
                                 </thead>
-                                <tbody id="staff-list"><?php foreach($staffList as $staff): ?><tr><td><?= courtEscape($staff['name']) ?></td><td><?= courtEscape($staff['email']) ?></td><td><?= courtEscape($staff['venueName']) ?></td><td class="text-end"><button type="button" class="btn btn-sm btn-outline-danger" disabled title="Staff deletion is not available">Delete</button></td></tr><?php endforeach; ?><?php if(!$staffList): ?><tr><td colspan="4">No staff accounts for this selection.</td></tr><?php endif; ?></tbody>
+                                <tbody id="staff-list"><?php foreach($staffList as $staff): ?><tr><td><?= courtEscape($staff['name']) ?></td><td><?= courtEscape($staff['email']) ?></td><td><?= courtEscape($staff['venueName']) ?></td></tr><?php endforeach; ?><?php if(!$staffList): ?><tr><td colspan="3">No staff accounts for this selection.</td></tr><?php endif; ?></tbody>
                             </table>
                         </div>
 
@@ -138,24 +56,25 @@
 
                 <!-- add staff form -->
                 <div class="col-12 col-md-5">
-                    <form id="staff-form" action="index.php?url=staff/createStaff" method="post" class="border rounded p-3">
+                    <form id="staff-form" action="<?= courtEscape(courtUrl('index.php')) ?>?url=staff/createStaff" method="post" class="card p-3">
                         <h2 class="h6 mb-3">Add staff account</h2>
 
                         <div>
                             <div class="row g-3">
                                 <div class="col-12">
                                     <label for="staff-name" class="form-label">Name</label>
-                                    <input type="text" name="name" id="staff-name" class="form-control" required>
+                                    <input type="text" name="name" id="staff-name" autocomplete="name" class="form-control" required>
                                 </div>
 
                                 <div class="col-12">
                                     <label for="staff-email" class="form-label">Email</label>
-                                    <input type="email" name="email" id="staff-email" class="form-control" required>
+                                    <input type="email" name="email" id="staff-email" autocomplete="email" maxlength="254" class="form-control" required>
                                 </div>
 
                                 <div class="col-12">
                                     <label for="staff-password" class="form-label">Password</label>
-                                    <input type="password" name="password" id="staff-password" minlength="8" class="form-control" required>
+                                    <input type="password" name="password" id="staff-password" minlength="8" autocomplete="new-password" aria-describedby="staff-password-rules" class="form-control" required>
+                                    <p class="form-text mb-0" id="staff-password-rules">Use at least 8 characters, including uppercase and lowercase letters, a number and a special character.</p>
                                 </div>
 
                                 <div class="col-12">
@@ -173,18 +92,8 @@
                 </div>
 
             </div>
+</main>
 
-        </main>
-
-        <!-- Footer -->
-        <footer class="container border-top py-3 mt-5">
-            <p class="text-secondary small mb-0">
-                &copy; 2026 CourtOne. All rights reserved.
-            </p>
-        </footer>
-
-        <script src="bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
-</body>
-
-
-</html>
+<?php
+require __DIR__ . '/../partials/Footer.php';
+?>

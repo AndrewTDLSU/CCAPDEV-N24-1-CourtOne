@@ -1,28 +1,28 @@
-
-/* CourtOne User Dashboard */
-
-body {
-    background-color: #f8fbff;
-}
-
-.card {
-    border-radius: 10px;
-}
-
 .booking-image {
-    width: 130px;
-    height: 100px;
+    width: 9rem;
+    height: 6.5rem;
     object-fit: cover;
-    border-radius: 8px;
+    border-radius: 7px;
+    background: var(--court-soft);
 }
 
-.nav-pills .nav-link:not(.active) {
-    color: #2563eb;
+.court-section-nav .nav-link {
+    color: var(--court-accent);
+    border-radius: 7px;
+}
+.court-section-nav .nav-link:hover { background: var(--court-soft); }
+.court-section-nav .nav-link.active { background: var(--court-blue); color: white; }
+
+@media (min-width: 768px) {
+    .court-section-nav { flex-direction: column; }
 }
 
-@media (max-width: 576px) {
+@media (max-width: 575.98px) {
     .booking-image {
         width: 100%;
-        height: 150px;
+        height: auto;
+        aspect-ratio: 16 / 9;
     }
 }
+
+.table .form-select { min-width: 7.5rem; }

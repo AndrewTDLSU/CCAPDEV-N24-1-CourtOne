@@ -1,7 +1,7 @@
 <?php
 error_reporting(E_ALL);
 set_error_handler(function($n,$s){throw new Exception($s);});
-$_SESSION=['role'=>'user','userID'=>4,'venueID'=>1]; $_SERVER['SCRIPT_NAME']='/index.php';
+$_SESSION=['role'=>'user','userID'=>4,'venueID'=>1,'displayName'=>'Juan Dela Cruz']; $_SERVER['SCRIPT_NAME']='/index.php';
 $profile=['name'=>'Juan Dela Cruz','email'=>'juan@example.com'];
 $venue=['venueID'=>1,'venueName'=>'Pasay Sports Complex','address'=>'Pasay City','description'=>'A sports venue for your next game.','sportsType'=>'Basketball','openHour'=>'08:00:00','closeHour'=>'22:00:00','hourlyRate'=>200,'imageFilePath'=>'/public/media/venues/pasay-sports-complex.jpg'];
 $venues=[$venue]; $users=[['userID'=>4,'name'=>'Juan Dela Cruz','email'=>'juan@example.com','userType'=>'user'],['userID'=>2,'name'=>'Alex Owner','email'=>'owner@example.com','userType'=>'court_owner']];
@@ -12,3 +12,8 @@ $search='';$sport='all';$error='';$success=false;$venueID=1;$senderID=4;$receive
 $targetDate=$booking['bookingDate'];$courts=[['courtID'=>1,'courtName'=>'Court 1'],['courtID'=>2,'courtName'=>'Court 2']];$images=[['imageFilePath'=>$venue['imageFilePath']]];$grid=['09:00:00'=>[1=>true]];
 $stats=['totalBookings'=>10,'totalRevenue'=>2000,'totalStaff'=>1];$year=2026;$month=0;$years=[2025,2026];$monthlyRevenue=[];$monthlyBookings=[];for($i=1;$i<=12;$i++){ $monthlyRevenue[]=['month'=>$i,'revenue'=>$i*100];$monthlyBookings[]=['month'=>$i,'bookings'=>$i]; } $courtUsage=[['courtName'=>'Court 1','completedBookings'=>6],['courtName'=>'Court 2','completedBookings'=>4]];
 if(!empty($_GET['empty'])){$venues=$users=$upcomingBookings=$bookingHistory=$recentBookings=$bookings=$staffList=$messages=$paymentsByBooking=$courts=$images=$grid=$courtUsage=[];}
+
+$recipient = $receiverID ? ['userID' => $receiverID, 'name' => 'Alex Owner'] : null;
+$conversations = $messages ? [['userID' => $receiverID, 'name' => 'Alex Owner', 'lastMessage' => 'Hello!']] : [];
+$staffDirectory = [['userID' => 3, 'name' => 'Sam Staff', 'venueName' => $venue['venueName']]];
+$staffContacts = $staffDirectory;

@@ -19,6 +19,12 @@ class Controller {
 
     // Maps database arrays straight into HTML component views templates
     protected function view($view, $data = []) {
+        // Populate the greeting for sessions started before displayName was stored.
+        if (isset($_SESSION['userID']) && !isset($_SESSION['displayName'])) {
+            $account = $this->model('User')->getUserByID($_SESSION['userID']);
+            $_SESSION['displayName'] = $account['name'] ?? '';
+        }
+
         // Unpacks incoming array strings directly into simple local variable slots
         extract($data);
         

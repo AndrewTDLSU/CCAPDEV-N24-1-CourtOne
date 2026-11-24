@@ -1,8 +1,0 @@
-/* Only integration fixes; original page styles remain authoritative. */
-input[type="radio"], input[type="checkbox"] { appearance: auto; }
-.conversation-link { display:block; padding:15px; margin-bottom:10px; background:#e9e9ed; color:inherit; text-decoration:none; }
-.conversation-link[aria-current="true"] { background:#dce9ff; }
-.messages p { overflow-wrap:anywhere; }
-.messages small { font-size:.7rem; opacity:.75; }
-.reservation-actions input[type="hidden"] { display:none; }
-.card-img-top { object-fit:cover; }

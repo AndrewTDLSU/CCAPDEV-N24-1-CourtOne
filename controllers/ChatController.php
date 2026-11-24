@@ -15,24 +15,24 @@ class ChatController extends Controller {
         $chatModel = $this->model('Chat');
         $userModel = $this->model('User');
 
-        $validReceiver = $receiverID > 0 &&
-                         $receiverID !== $senderID &&
-                         $userModel->getUserByID($receiverID);
+        $recipient = $receiverID > 0 && $receiverID !== $senderID
+            ? $userModel->getUserByID($receiverID)
+            : null;
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $message = trim($_POST['message'] ?? '');
 
-            if (!$validReceiver || $message === '' || strlen($message) > 500) {
+            if (!$recipient || $message === '' || strlen($message) > 500) {
                 http_response_code(400);
                 die('Please choose a valid receiver and enter a message.');
             }
 
             $chatModel->sendMessage($senderID, $receiverID, $message);
-            header('Location: ' . courtUrl('/index.php?url=chat/index&receiverID=') . $receiverID);
+            header('Location: ' . courtUrl('/index.php?url=chat/index&receiverID=' . $receiverID . '#message-thread'));
             exit;
         }
 
-        if (!$validReceiver) {
+        if (!$recipient) {
             $receiverID = 0;
         }
 
@@ -41,10 +41,12 @@ class ChatController extends Controller {
             : [];
 
         $this->view('chats/chat', [
-            'pageTitle'  => 'Chat',
+            'pageTitle'  => 'Messages',
             'senderID'   => $senderID,
             'receiverID' => $receiverID,
-            'users'      => $userModel->getAllUsers(),
+            'recipient' => $recipient,
+            'conversations' => $chatModel->getConversationsForUser($senderID),
+            'staffDirectory' => $chatModel->getStaffDirectory($senderID),
             'messages'   => $messages
         ]);
     }

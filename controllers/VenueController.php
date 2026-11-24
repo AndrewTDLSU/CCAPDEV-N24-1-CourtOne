@@ -63,6 +63,7 @@ public function browseVenues() {
             'venue' => $venue,
             'courts' => $courtModel->fetchCourtByVenue($venueID),
             'images' => $imageModel->fetchImageByVenue($venueID),
+            'staffContacts' => $this->model('Staff')->getStaffByVenue($venueID),
             'grid' => $bookingModel->fetchOccupiedGridCells($venueID, $targetDate),
             'targetDate' => $targetDate
         ]);
@@ -91,7 +92,9 @@ public function browseVenues() {
             // Use the Validator class to validate the input data
             $validator = $this->validator('Validator');
             if (!$validator->validate($_POST, $rules)) {
-                die('Invalid input. Please check your entries.');
+                http_response_code(422);
+                $this->view('venues/venueForm', ['error' => 'Check the venue details, rate and operating hours.']);
+                return;
             }
 
             $venueModel = $this->model('Venue');
@@ -167,29 +170,27 @@ public function browseVenues() {
             exit;
         }
 
-        $courtName = trim($_POST['courtName'] ?? '');
-
         $rules = [
-            'courtName' => ['required' => true, 'type' => 'string', 'pattern' => '/^[A-Za-z0-9_]+$/'] // pattern allows letters, numbers, spaces, periods, apostrophes, and hyphens
+            'courtName' => ['required' => true, 'type' => 'string', 'pattern' => '/^[A-Za-z0-9_]+$/']
         ];
 
         $validator = $this->validator('Validator');
         if (!$validator->validate($_POST, $rules)) {
-            die('Invalid court name.');
-        }
-
-        if ($courtName === '') {
-            die('Court name is required.');
+            $_SESSION['courtMessage'] = ['type' => 'danger', 'text' => 'Enter a court name using letters, numbers and underscores.'];
+            header('Location: ' . courtUrl('/index.php?url=venue/venueStatistics/' . $venueID . '#add-court'));
+            exit;
         }
 
         $courtModel = $this->model('Court');
-        $result = $courtModel->createCourt($courtName, $venueID);
+        $result = $courtModel->createCourt($validator->clean()['courtName'], $venueID);
 
         if (!$result) {
-            die('A court with that name already exists.');
+            $_SESSION['courtMessage'] = ['type' => 'danger', 'text' => 'A court with that name already exists.'];
+        } else {
+            $_SESSION['courtMessage'] = ['type' => 'success', 'text' => 'Court added.'];
         }
 
-        header('Location: ' . courtUrl('/index.php?url=dashboard/ownerDashboard'));
+        header('Location: ' . courtUrl('/index.php?url=venue/venueStatistics/' . $venueID . '#add-court'));
         exit;
     }
 
