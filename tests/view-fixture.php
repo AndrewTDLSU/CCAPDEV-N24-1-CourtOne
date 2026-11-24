@@ -7,11 +7,11 @@ $venue=['venueID'=>1,'venueName'=>'Pasay Sports Complex','address'=>'Pasay City'
 $venues=[$venue]; $users=[['userID'=>4,'name'=>'Juan Dela Cruz','email'=>'juan@example.com','userType'=>'user'],['userID'=>2,'name'=>'Alex Owner','email'=>'owner@example.com','userType'=>'court_owner']];
 $booking=['bookingID'=>1,'venueName'=>$venue['venueName'],'courtName'=>'Court 1','bookingDate'=>date('Y-m-d',strtotime('+1 day')),'bookingTime'=>'14:00:00','amount'=>200,'paymentStatus'=>'paid','status'=>'upcoming','userName'=>'Juan Dela Cruz','userEmail'=>'juan@example.com','imageFilePath'=>$venue['imageFilePath']];
 $upcomingBookings=[$booking];$bookingHistory=[];$recentBookings=[$booking];$bookings=[$booking];$staffList=[['name'=>'Sam Staff','email'=>'staff@example.com','venueName'=>$venue['venueName']]];
-$messages=[['senderID'=>4,'body'=>'Hello!','createdAt'=>'2026-11-12 10:00:00']];$paymentsByBooking=[1=>['status'=>'paid']];
+$messages=[['senderID'=>4,'body'=>'Hello!','createdAt'=>'2026-11-12 10:00:00']];$paymentStatuses=[1=>'pending'];
 $search='';$sport='all';$error='';$success=false;$venueID=1;$senderID=4;$receiverID=2;$cancelToken='test';
 $targetDate=$booking['bookingDate'];$courts=[['courtID'=>1,'courtName'=>'Court 1'],['courtID'=>2,'courtName'=>'Court 2']];$images=[['imageFilePath'=>$venue['imageFilePath']]];$grid=['09:00:00'=>[1=>true]];
 $stats=['totalBookings'=>10,'totalRevenue'=>2000,'totalStaff'=>1];$year=2026;$month=0;$years=[2025,2026];$monthlyRevenue=[];$monthlyBookings=[];for($i=1;$i<=12;$i++){ $monthlyRevenue[]=['month'=>$i,'revenue'=>$i*100];$monthlyBookings[]=['month'=>$i,'bookings'=>$i]; } $courtUsage=[['courtName'=>'Court 1','completedBookings'=>6],['courtName'=>'Court 2','completedBookings'=>4]];
-if(!empty($_GET['empty'])){$venues=$users=$upcomingBookings=$bookingHistory=$recentBookings=$bookings=$staffList=$messages=$paymentsByBooking=$courts=$images=$grid=$courtUsage=[];}
+if(!empty($_GET['empty'])){$venues=$users=$upcomingBookings=$bookingHistory=$recentBookings=$bookings=$staffList=$messages=$paymentStatuses=$courts=$images=$grid=$courtUsage=[];}
 
 $recipient = $receiverID ? ['userID' => $receiverID, 'name' => 'Alex Owner'] : null;
 $conversations = $messages ? [['userID' => $receiverID, 'name' => 'Alex Owner', 'lastMessage' => 'Hello!']] : [];

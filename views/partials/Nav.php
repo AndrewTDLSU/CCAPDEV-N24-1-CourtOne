@@ -16,7 +16,7 @@ $navLoggedIn = !empty($_SESSION['userID']);
     <div class="d-flex align-items-center gap-2 ms-auto order-lg-3">
       <?php if ($navLoggedIn): ?>
         <?php if ($navName !== ''): ?><span class="court-welcome d-none d-lg-inline" title="<?= courtEscape($navName) ?>">Hi, <?= courtEscape($navName) ?></span><?php endif; ?>
-        <a class="btn court-nav-account <?= $navPage === 'dashboard' ? 'court-current' : '' ?>" <?= $navPage === 'dashboard' ? 'aria-current="page"' : '' ?> href="<?= courtEscape(courtUrl('index.php?url=dashboard/dispatcher')) ?>">Dashboard</a>
+        <a class="btn court-nav-account <?= $navPage === 'dashboard' ? 'court-current' : '' ?>" <?= $navPage === 'dashboard' ? 'aria-current="page"' : '' ?> data-dashboard-link href="<?= courtEscape(courtUrl('index.php?url=dashboard/dispatcher')) ?>">Dashboard</a>
       <?php else: ?>
         <a class="btn court-nav-account" <?= $navPage === 'auth' ? 'aria-current="page"' : '' ?> href="<?= courtEscape(courtUrl('index.php?url=auth/login')) ?>">Sign in</a>
       <?php endif; ?>
@@ -31,7 +31,7 @@ $navLoggedIn = !empty($_SESSION['userID']);
         <li class="nav-item"><a class="nav-link <?= $navPage === 'venue' ? 'court-current' : '' ?>" <?= $navPage === 'venue' ? 'aria-current="page"' : '' ?> href="<?= courtEscape(courtUrl('index.php?url=venue/browseVenues')) ?>">Find venues</a></li>
         <li class="nav-item"><a class="nav-link" href="<?= courtEscape(courtUrl('index.php?url=home/index#how-it-works')) ?>">How it works</a></li>
         <?php if ($navLoggedIn): ?>
-          <?php if ($role === 'user'): ?><li class="nav-item"><a class="nav-link <?= $navPage === 'booking' ? 'court-current' : '' ?>" <?= $navPage === 'booking' ? 'aria-current="page"' : '' ?> href="<?= courtEscape(courtUrl('index.php?url=booking/myBookings')) ?>">My bookings</a></li><?php endif; ?>
+          <?php if ($role === 'user'): ?><li class="nav-item"><a class="nav-link" data-bookings-link href="<?= courtEscape(courtUrl('index.php?url=dashboard/userDashboard#bookings')) ?>">My bookings</a></li><?php endif; ?>
           <li class="nav-item"><a class="nav-link <?= $navPage === 'chat' ? 'court-current' : '' ?>" <?= $navPage === 'chat' ? 'aria-current="page"' : '' ?> href="<?= courtEscape(courtUrl('index.php?url=chat/index')) ?>">Messages</a></li>
           <?php if ($role === 'court_owner'): ?><li class="nav-item"><a class="nav-link <?= $navPage === 'staff' ? 'court-current' : '' ?>" <?= $navPage === 'staff' ? 'aria-current="page"' : '' ?> href="<?= courtEscape(courtUrl('index.php?url=staff/showAllStaff')) ?>">Staff</a></li><?php endif; ?>
           <?php if ($navName !== ''): ?><li class="nav-item d-lg-none"><span class="court-mobile-greeting">Hi, <?= courtEscape($navName) ?></span></li><?php endif; ?>

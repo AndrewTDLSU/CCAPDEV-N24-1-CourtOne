@@ -61,15 +61,31 @@ class DashboardController extends Controller {
         $this->restrictToRoles(['user']);
 
         $userID = $_SESSION['userID'];
+        if (empty($_SESSION['bookingCancelToken'])) {
+            $_SESSION['bookingCancelToken'] = bin2hex(random_bytes(32));
+        }
 
-        $bookingModel = $this->model('Booking');
-        $userModel = $this->model('User');
+        $upcomingBookings = [];
+        $bookingHistory = [];
+        $now = time();
+        foreach ($this->model('Booking')->getBookingByUserID($userID) as $booking) {
+            $startsAt = strtotime($booking['bookingDate'] . ' ' . $booking['bookingTime']);
+            if ($booking['status'] === 'upcoming' && $startsAt > $now) {
+                $upcomingBookings[] = $booking;
+            } else {
+                $bookingHistory[] = $booking;
+            }
+        }
+
+        $paymentStatuses = array_column($this->model('Payment')->fetchAllPaymentsByUser($userID), 'status', 'bookingID');
 
         $this->view('dashboards/user', [
             'pageTitle' => 'User Dashboard',
-            'upcomingBookings' => $bookingModel->getBookingByUserID($userID, 'upcoming'),
-            'bookingHistory' => $bookingModel->getBookingByUserID($userID, 'completed'),
-            'profile' => $userModel->getUserByID($userID) // my profile section
+            'upcomingBookings' => array_reverse($upcomingBookings),
+            'bookingHistory' => $bookingHistory,
+            'paymentStatuses' => $paymentStatuses,
+            'cancelToken' => $_SESSION['bookingCancelToken'],
+            'profile' => $this->model('User')->getUserByID($userID)
         ]);
     }
 

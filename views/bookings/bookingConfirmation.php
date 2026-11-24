@@ -23,7 +23,7 @@ require __DIR__ . '/../partials/Header.php';
     </div>
   </section>
   <div class="d-flex flex-wrap gap-2 mt-3">
-    <a class="btn btn-primary" href="<?= courtEscape(courtUrl('index.php?url=booking/myBookings')) ?>">View my bookings</a>
+    <a class="btn btn-primary" href="<?= courtEscape(courtUrl('index.php?url=dashboard/userDashboard#bookings')) ?>">View my bookings</a>
     <a class="btn btn-outline-secondary" href="<?= courtEscape(courtUrl('index.php?url=venue/browseVenues')) ?>">Find venues</a>
   </div>
 </main>
