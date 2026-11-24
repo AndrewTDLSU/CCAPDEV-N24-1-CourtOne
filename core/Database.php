@@ -4,6 +4,15 @@ class Database {
     private $pdo;
 
     private function __construct() {
+        $localConfig = __DIR__ . '/../.env.local.php';
+        if (in_array(PHP_SAPI, ['cli', 'cli-server'], true) && is_file($localConfig)) {
+            foreach (require $localConfig as $name => $value) {
+                if (getenv($name) === false) {
+                    putenv($name . '=' . $value);
+                }
+            }
+        }
+
         $host = getenv("COURTONE_DB_HOST") ?: "localhost";
         $port = getenv("COURTONE_DB_PORT") ?: "3306";
         $dbname = getenv("COURTONE_DB_NAME") ?: "courtbooking";
