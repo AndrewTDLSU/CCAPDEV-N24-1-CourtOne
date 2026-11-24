@@ -3,7 +3,7 @@ from pathlib import Path
 import os, subprocess, tempfile, re
 from html import unescape
 root = Path(__file__).resolve().parents[1]
-views = ["auth/index", "auth/login", "auth/signup", "dashboards/user", "dashboards/owner", "dashboards/staff", "dashboards/admin", "venues/browseVenues", "venues/viewVenue", "venues/venueForm", "venues/manageStaff", "venues/manageVenue", "venues/manageVenues", "dashboards/venue", "bookings/payment", "bookings/bookingConfirmation", "bookings/myBookings", "chats/chat"]
+views = ["auth/index", "auth/login", "auth/signup", "dashboards/user", "dashboards/owner", "dashboards/staff", "dashboards/admin", "venues/browseVenues", "venues/viewVenue", "venues/venueForm", "venues/manageStaff", "venues/manageVenue", "venues/manageVenues", "dashboards/venue", "bookings/payment", "bookings/bookingConfirmation", "chats/chat"]
 env = os.environ.copy()
 env.pop("COURTONE_BASE_PATH", None)
 env.pop("COURTONE_MEDIA_BASE_URL", None)
@@ -27,6 +27,12 @@ for script_name, prefix in [('/index.php', ''), ('/CourtOne/index.php', '/CourtO
             assert html.count('id="darkModeBtn"') == 1, view
             ids = re.findall(r'\sid="([^"]+)"', html)
             assert len(set(ids)) == len(ids), view
+            if view == "dashboards/user":
+                assert f'{prefix}/index.php?url=dashboard/userDashboard#bookings' in html
+                for section in ("dashboard", "bookings", "profile"):
+                    assert section in ids and f'href="#{section}"' in html
+                assert ("?url=booking/payment/1" in html) == (not empty)
+                assert ("?url=booking/cancelBooking/1" in html) == (not empty)
             for url in re.findall(r'(?:src|href|action)="(/[^"<>]*)"', html):
                 url = unescape(url)
                 assert url.startswith(prefix + '/'), (view, script_name, url)
@@ -34,4 +40,4 @@ for script_name, prefix in [('/index.php', ''), ('/CourtOne/index.php', '/CourtO
                 if local.startswith(('/public/', '/bootstrap-5.3.8-dist/')):
                     assert (root / local.lstrip('/')).is_file(), (view, url)
             assert not re.search(r'(?:href|action)="[^"<>]*\.html', html), view
-print("PASS: PHP lint, 108 view renders at root/nested/public entry points, assets, forms, and MVC links")
+print(f"PASS: PHP lint, {len(views) * 6} view renders at root/nested/public entry points, assets, forms, and MVC links")

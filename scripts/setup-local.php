@@ -10,5 +10,7 @@ if (!$exists) {
     echo "Created and seeded courtone_local_demo.\n";
 } else {
     $db->query('SELECT COUNT(*) FROM courtone_local_demo.users')->fetchColumn();
+    $db->exec('USE courtone_local_demo');
+    $db->exec(file_get_contents(__DIR__ . '/../database/migrations/login-rate-limits.sql'));
     echo "Using existing courtone_local_demo; saved records preserved.\n";
 }

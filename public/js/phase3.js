@@ -36,6 +36,9 @@ if (conversationSearch) {
 const thread = document.querySelector('[data-court-messages]');
 if (thread) thread.scrollTop = thread.scrollHeight;
 
+const topBookingsLink = document.querySelector('[data-bookings-link]');
+const topDashboardLink = document.querySelector('[data-dashboard-link]');
+
 function updateSectionLinks() {
   document.querySelectorAll('[data-section-nav]').forEach(nav => {
     const links = Array.from(nav.querySelectorAll('a[href^="#"]'));
@@ -45,7 +48,31 @@ function updateSectionLinks() {
       if (link === active) link.setAttribute('aria-current', 'location');
       else link.removeAttribute('aria-current');
     });
+
+    if (nav.dataset.sectionNav === 'customer' && topBookingsLink && topDashboardLink) {
+      if (location.hash === '#bookings') {
+        topBookingsLink.setAttribute('aria-current', 'location');
+        topDashboardLink.removeAttribute('aria-current');
+      } else {
+        topBookingsLink.removeAttribute('aria-current');
+        topDashboardLink.setAttribute('aria-current', 'page');
+      }
+    }
   });
 }
 updateSectionLinks();
 window.addEventListener('hashchange', updateSectionLinks);
+
+topBookingsLink?.addEventListener('click', event => {
+  if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey ||
+      topBookingsLink.pathname !== location.pathname || topBookingsLink.search !== location.search) return;
+
+  const menu = document.getElementById('courtMainMenu');
+  if (!menu?.classList.contains('show')) return;
+
+  // Re-align the booking section after the mobile menu stops taking up space.
+  menu.addEventListener('hidden.bs.collapse', () => {
+    if (location.hash === '#bookings') document.getElementById('bookings')?.scrollIntoView();
+  }, { once: true });
+  bootstrap.Collapse.getOrCreateInstance(menu, { toggle: false }).hide();
+});

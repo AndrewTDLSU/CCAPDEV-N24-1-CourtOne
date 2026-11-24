@@ -1,6 +1,7 @@
 <?php
 $title = 'Customer dashboard';
 $pageStyles = ['userDashboard.css'];
+$pageScripts = ['integration.js'];
 require __DIR__ . '/../partials/Header.php';
 ?>
 
@@ -17,8 +18,8 @@ require __DIR__ . '/../partials/Header.php';
                         <p class="text-secondary small"><?= courtEscape($profile['email']) ?></p>
                         <hr>
 
-                        <nav class="nav nav-pills court-section-nav gap-2" aria-label="Customer account sections" data-section-nav>
-                            <a href="#dashboard" class="nav-link active">
+                        <nav class="nav nav-pills court-section-nav gap-2" aria-label="Customer account sections" data-section-nav="customer">
+                            <a href="#dashboard" class="nav-link active" aria-current="location">
                                 Dashboard
                             </a>
 
@@ -70,60 +71,63 @@ require __DIR__ . '/../partials/Header.php';
                     </div>
                 </section>
 
-                <!-- Upcoming Bookings -->
                 <section id="bookings" class="mb-4">
+                    <?php if (($_GET['notice'] ?? '') === 'cancelled'): ?>
+                        <div class="alert alert-success" role="status">Your booking has been cancelled.</div>
+                    <?php endif; ?>
 
-                    <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center mb-3">
-                        <h2 class="h4 fw-bold mb-0">Upcoming Bookings</h2>
-                        <a href="<?= courtEscape(courtUrl('index.php')) ?>?url=venue/browseVenues" class="small">
-                            Find venues
-                        </a>
-                    </div>
+                    <?php foreach (['Upcoming Bookings' => $upcomingBookings, 'Booking History' => $bookingHistory] as $heading => $rows): ?>
+                        <?php $isUpcoming = $heading === 'Upcoming Bookings'; ?>
+                        <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center mb-3 <?= $isUpcoming ? '' : 'mt-4' ?>">
+                            <h2 class="h4 fw-bold mb-0"><?= courtEscape($heading) ?></h2>
+                            <?php if ($isUpcoming): ?>
+                                <a class="small" href="<?= courtEscape(courtUrl('index.php?url=venue/browseVenues')) ?>">Find venues</a>
+                            <?php endif; ?>
+                        </div>
 
-                    <?php $rows=$upcomingBookings; ?>
-                    <?php foreach ($rows as $b): ?>
-                        <div class="card shadow-sm mb-3">
-                            <div class="card-body">
-                                <div class="d-flex flex-column flex-sm-row gap-3">
-                                    <img src="<?= courtEscape(courtImage($b)) ?>" class="booking-image" alt="" data-image-fallback="<?= courtEscape(courtImageFallback()) ?>">
-                                    <div class="flex-grow-1">
-                                        <h3 class="h5"><?= courtEscape($b['venueName']) ?></h3>
-                                        <p class="text-secondary small mb-2"><?= courtEscape($b['courtName']) ?></p>
-                                        <p class="mb-2"><?= courtDate($b['bookingDate']) ?> · <?= courtTime($b['bookingTime']) ?></p>
-                                        <?= courtStatus($b['status']) ?>
-                                        <a class="small" href="<?= courtEscape(courtUrl('index.php')) ?>?url=booking/myBookings">Manage booking</a>
+                        <?php if (!$rows): ?>
+                            <p class="court-empty">
+                                <?php if ($isUpcoming): ?>
+                                    No upcoming bookings. <a href="<?= courtEscape(courtUrl('index.php?url=venue/browseVenues')) ?>">Find venues</a>.
+                                <?php else: ?>
+                                    No booking history to display.
+                                <?php endif; ?>
+                            </p>
+                        <?php endif; ?>
+
+                        <?php foreach ($rows as $booking): ?>
+                            <?php
+                            $bookingID = (int) $booking['bookingID'];
+                            $paymentStatus = $paymentStatuses[$bookingID] ?? 'not charged';
+                            ?>
+                            <div class="card shadow-sm mb-3">
+                                <div class="card-body">
+                                    <div class="d-flex flex-column flex-sm-row gap-3">
+                                        <img src="<?= courtEscape(courtImage($booking)) ?>" class="booking-image" alt="" data-image-fallback="<?= courtEscape(courtImageFallback()) ?>">
+                                        <div class="flex-grow-1">
+                                            <h3 class="h5"><?= courtEscape($booking['venueName']) ?></h3>
+                                            <p class="text-secondary small mb-2"><?= courtEscape($booking['courtName']) ?></p>
+                                            <p class="mb-2"><?= courtDate($booking['bookingDate']) ?> · <?= courtTime($booking['bookingTime']) ?></p>
+                                            <?= courtStatus($booking['status']) ?>
+                                            <?= courtStatus($paymentStatus) ?>
+                                            <?php if ($isUpcoming): ?>
+                                                <div class="d-flex flex-wrap gap-2 mt-3">
+                                                    <?php if ($paymentStatus === 'pending'): ?>
+                                                        <a class="btn btn-primary btn-sm" href="<?= courtEscape(courtUrl('index.php?url=booking/payment/' . $bookingID)) ?>">Pay Now</a>
+                                                    <?php endif; ?>
+                                                    <form method="post" action="<?= courtEscape(courtUrl('index.php?url=booking/cancelBooking/' . $bookingID)) ?>" data-confirm="Cancel this booking?">
+                                                        <input type="hidden" name="cancelToken" value="<?= courtEscape($cancelToken) ?>">
+                                                        <input type="hidden" name="csrfToken" value="<?= courtEscape($_SESSION['csrfToken']) ?>">
+                                                        <button type="submit" class="btn btn-outline-danger btn-sm">Cancel Booking</button>
+                                                    </form>
+                                                </div>
+                                            <?php endif; ?>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        <?php endforeach; ?>
                     <?php endforeach; ?>
-                    <?php if (!$rows): ?>
-                        <p class="court-empty">No upcoming bookings. <a href="<?= courtEscape(courtUrl('index.php?url=venue/browseVenues')) ?>">Find venues</a>.</p>
-                    <?php endif; ?>
-
-                    <!-- Booking History -->
-                    <h2 class="h4 fw-bold mt-4 mb-3">Booking History</h2>
-
-                    <?php $rows=$bookingHistory; ?>
-                    <?php foreach ($rows as $b): ?>
-                        <div class="card shadow-sm mb-3">
-                            <div class="card-body">
-                                <div class="d-flex flex-column flex-sm-row gap-3">
-                                    <img src="<?= courtEscape(courtImage($b)) ?>" class="booking-image" alt="" data-image-fallback="<?= courtEscape(courtImageFallback()) ?>">
-                                    <div class="flex-grow-1">
-                                        <h3 class="h5"><?= courtEscape($b['venueName']) ?></h3>
-                                        <p class="text-secondary small mb-2"><?= courtEscape($b['courtName']) ?></p>
-                                        <p class="mb-2"><?= courtDate($b['bookingDate']) ?> · <?= courtTime($b['bookingTime']) ?></p>
-                                        <?= courtStatus($b['status']) ?>
-                                        <a class="small" href="<?= courtEscape(courtUrl('index.php')) ?>?url=booking/myBookings">Manage booking</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    <?php endforeach; ?>
-                    <?php if (!$rows): ?>
-                        <p class="court-empty">Completed bookings will appear here.</p>
-                    <?php endif; ?>
                 </section>
 
                 <!-- My Profile -->

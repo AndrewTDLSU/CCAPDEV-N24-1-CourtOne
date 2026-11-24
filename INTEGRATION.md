@@ -23,6 +23,21 @@ Import the SQL seed only into a new/disposable database: it drops existing table
 See `DEMO_CREDENTIALS.md` for seeded logins. Choose **Staff** for staff accounts,
 or **Customer / Owner / Admin** for the other accounts.
 
+## Login rate limiting
+
+Both portals share a 15-minute window per client IP, starting with its first
+failed sign-in. Further sign-ins receive HTTP 429 and a `Retry-After` header
+after five failures for the same email from that IP or 30 failures across emails
+from that IP. A successful sign-in clears the email's failures for that IP.
+The app uses the web server's `REMOTE_ADDR` for the client IP.
+
+For an existing database, apply the additive migration before deploying the PHP
+changes. `Start-CourtOne.cmd` applies it automatically to the local demo database.
+
+```sh
+mariadb -u root -p courtbooking < database/migrations/login-rate-limits.sql
+```
+
 ## Connected flows
 
 | Page | Controller route / behavior |
@@ -31,7 +46,7 @@ or **Customer / Owner / Admin** for the other accounts.
 | Login and signup | `auth/login`, `auth/signup`; validated credentials, sessions and role navigation |
 | Venue details | `venue/viewVenue/{id}`; date navigation and database court availability |
 | Booking | `booking/reserve`, `booking/payment/{id}`, `booking/bookingConfirmation/{id}` |
-| Customer dashboard | `dashboard/userDashboard`, `booking/myBookings`; profile and booking history |
+| Customer dashboard | `dashboard/userDashboard` with bookings and profile jump links, payment and cancellation controls |
 | Owner dashboard | `dashboard/ownerDashboard`; owner's venues and statistics links |
 | Venue registration | `venue/venueForm`; details, pricing and optional image uploads |
 | Venue statistics | `venue/venueStatistics/{id}`; revenue, bookings, court usage, year/month filters and court creation |

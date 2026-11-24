@@ -118,11 +118,7 @@ class BookingController extends Controller {
         $booking = $bookingModel->fetchBookingExtendedDetails($bookingID);
         $payment = $paymentModel->fetchPaymentByBooking($bookingID);
 
-        if (!$booking || !$payment ||
-            (int) $booking['userID'] !== (int) $_SESSION['userID']) {
-            die('Booking not found or access denied.');
-        }
-
+        //includes checks for booking and payment existence, as well as user ownership of the booking.
         if (!$booking || !$payment ||
             (int) $booking['userID'] !== (int) $_SESSION['userID']) {
             die('Booking not found or access denied.');
@@ -130,7 +126,7 @@ class BookingController extends Controller {
 
         // Cancelled bookings cannot be paid, even by visiting checkout directly.
         if ($booking['status'] === 'cancelled') {
-            header('Location: ' . courtUrl('/index.php?url=booking/myBookings'));
+            header('Location: ' . courtUrl('/index.php?url=dashboard/userDashboard#bookings'));
             exit;
         }
 
@@ -201,7 +197,7 @@ class BookingController extends Controller {
         }
 
         if ($booking['status'] === 'cancelled') {
-            header('Location: ' . courtUrl('/index.php?url=booking/myBookings'));
+            header('Location: ' . courtUrl('/index.php?url=dashboard/userDashboard#bookings'));
             exit;
         }
 
@@ -218,7 +214,7 @@ class BookingController extends Controller {
 
     // GET: list only the logged-in customer's bookings.
     public function myBookings() {
-        // session role protection: only logged-in users with the 'user' role can reserve a court.
+        // Keep saved links working for customers.
         if (!isset($_SESSION['userID']) || ($_SESSION['role'] ?? '') !== 'user') {
             header('Location: ' . courtUrl('/index.php?url=auth/login'));
             exit;
@@ -228,25 +224,9 @@ class BookingController extends Controller {
             die('Method not allowed.');
         }
 
-        if (empty($_SESSION['bookingCancelToken'])) {
-            $_SESSION['bookingCancelToken'] = bin2hex(random_bytes(32));
-        }
-
-        $userID = (int) $_SESSION['userID'];
-        $bookings = $this->model('Booking')->getBookingByUserID($userID);
-        $payments = $this->model('Payment')->fetchAllPaymentsByUser($userID);
-
-        $paymentsByBooking = [];
-        foreach ($payments as $payment) {
-            $paymentsByBooking[(int) $payment['bookingID']] = $payment;
-        }
-
-        $this->view('bookings/myBookings', [
-            'pageTitle' => 'My Bookings',
-            'bookings' => $bookings,
-            'paymentsByBooking' => $paymentsByBooking,
-            'cancelToken' => $_SESSION['bookingCancelToken']
-        ]);
+        $notice = ($_GET['notice'] ?? '') === 'cancelled' ? '&notice=cancelled' : '';
+        header('Location: ' . courtUrl('/index.php?url=dashboard/userDashboard' . $notice . '#bookings'));
+        exit;
     }
 
     // POST: cancel a customer's own future booking, preserving the booking record.
@@ -315,7 +295,7 @@ class BookingController extends Controller {
             die(htmlspecialchars($e->getMessage(), ENT_QUOTES, 'UTF-8'));
         }
 
-        header('Location: ' . courtUrl('/index.php?url=booking/myBookings&notice=cancelled'));
+        header('Location: ' . courtUrl('/index.php?url=dashboard/userDashboard&notice=cancelled#bookings'));
         exit;
     }
 

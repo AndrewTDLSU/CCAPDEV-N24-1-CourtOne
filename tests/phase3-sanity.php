@@ -35,7 +35,7 @@ foreach (['guest', 'user', 'court_owner', 'staff', 'admin'] as $roleName) {
     courtAssert(str_contains($nav, '?url=dashboard/dispatcher') === ($roleName !== 'guest'), 'dashboard link differs from sign-in state');
     courtAssert(str_contains($nav, '?url=auth/logout') === ($roleName !== 'guest'), 'sign-out link differs from sign-in state');
     courtAssert(str_contains($nav, '?url=chat/index') === ($roleName !== 'guest'), 'chat link differs from sign-in state');
-    courtAssert(str_contains($nav, '?url=booking/myBookings') === ($roleName === 'user'), 'customer navigation role mismatch');
+    courtAssert(str_contains($nav, '?url=dashboard/userDashboard#bookings') === ($roleName === 'user'), 'customer bookings jump link mismatch');
     courtAssert(str_contains($nav, '?url=staff/showAllStaff') === ($roleName === 'court_owner'), 'owner navigation role mismatch');
     courtAssert(str_contains($nav, '/CourtOne/public/media/icons/courtone-logo.png'), 'CourtOne logo missing');
 }

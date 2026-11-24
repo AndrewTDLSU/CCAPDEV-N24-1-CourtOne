@@ -2,73 +2,88 @@
 class AuthController extends Controller {
 
     public function login() {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            // Define validation rules for the input fields
-            $rules = [
-                'email' => ['required' => true, 'type' => 'email'],
-                'password' => ['required' => true, 'type' => 'string']
-            ];
-
-            // Instantiate the Validator class and validate the input
-            $validator = $this->validator('Validator');
-            if (!$validator->validate($_POST, $rules)) {
-                $this->view('auth/login', ['error' => 'Please enter a valid email address and password.']);
-                return;
-            }
-
-            $email = $validator->clean()['email'];
-            $password = $_POST['password'];
-            $loginTarget = $_POST['loginType'] ?? '';
-            $userModel = $this->model('User');
-
-            if ($loginTarget === 'staff_app') {
-
-            // Authenticate using the shared users table
-            $user = $userModel->authenticateUser($email, $password);
-
-            // Only allow accounts with the staff role
-            if ($user && $user['userType'] === 'staff') {
-
-                // Retrieve the venue assigned to this staff member
-                $staffModel = $this->model('Staff');
-                $venue = $staffModel->getVenueByStaff($user['userID']);
-
-                if ($venue) {
-                    session_regenerate_id(true);
-
-                    $_SESSION['userID'] = $user['userID'];
-                    $_SESSION['displayName'] = $user['name'];
-                    $_SESSION['staffID'] = $user['userID'];
-                    $_SESSION['venueID'] = $venue['venueID'];
-                    $_SESSION['role'] = 'staff'; // store 'staff' role into the session
-
-                    header('Location: ' . courtUrl('/index.php?url=dashboard/staffDashboard'));
-                    exit;
-                }
-            }
-            } elseif ($loginTarget === 'customer_portal') {  // Authenticate using the other roles if user is not a staff member
-
-                $user = $userModel->authenticateUser($email, $password);
-
-                // user is not a staff member
-                if ($user && in_array($user['userType'], ['user', 'court_owner', 'admin'], true)) {
-
-                    session_regenerate_id(true); // create a new session ID to prevent session fixation attacks
-
-                    $_SESSION['userID'] = $user['userID'];
-                    $_SESSION['displayName'] = $user['name'];
-                    $_SESSION['role'] = $user['userType']; // store their role to the session
-
-                    unset($_SESSION['staffID'], $_SESSION['venueID']);
-
-                    header('Location: ' . courtUrl('/index.php?url=dashboard/dispatcher'));
-                    exit;
-                }
-            }
-        $data['error'] = "Authentication mismatch. Invalid credentials provided.";
+        $data = ['pageTitle' => 'Login Gateway'];
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->view('auth/login', $data);
+            return;
         }
-        $data['pageTitle'] = 'Login Gateway';
+
+        $validator = $this->validator('Validator');
+        $rules = [
+            'email' => ['required' => true, 'type' => 'email'],
+            'password' => ['required' => true, 'type' => 'string']
+        ];
+        if (!$validator->validate($_POST, $rules)) {
+            $data['error'] = 'Please enter a valid email address and password.';
+            $this->view('auth/login', $data);
+            return;
+        }
+
+        $email = $validator->clean()['email'];
+        $password = $_POST['password'];
+        $loginTarget = $_POST['loginType'] ?? '';
+        $limiter = $this->model('LoginRateLimiter');
+        $attempt = $limiter->attempt(
+            $email,
+            $_SERVER['REMOTE_ADDR'] ?? '',
+            fn () => $this->authenticateForPortal($email, $password, $loginTarget)
+        );
+
+        $user = $attempt['user'];
+        if ($user !== null) {
+            session_regenerate_id(true);
+            $_SESSION['userID'] = $user['userID'];
+            $_SESSION['displayName'] = $user['name'];
+            $_SESSION['role'] = $user['userType'];
+
+            if ($user['userType'] === 'staff') {
+                $_SESSION['staffID'] = $user['userID'];
+                $_SESSION['venueID'] = $user['venueID'];
+                header('Location: ' . courtUrl('/index.php?url=dashboard/staffDashboard'));
+                exit;
+            }
+
+            unset($_SESSION['staffID'], $_SESSION['venueID']);
+            header('Location: ' . courtUrl('/index.php?url=dashboard/dispatcher'));
+            exit;
+        }
+
+        $retryAfter = $attempt['retryAfter'];
+        if ($retryAfter > 0) {
+            http_response_code(429);
+            header('Retry-After: ' . $retryAfter);
+            $wait = $retryAfter <= 60 ? 'a minute' : ceil($retryAfter / 60) . ' minutes';
+            $data['error'] = "Too many sign-in attempts. Try again in $wait.";
+        } else {
+            $data['error'] = 'Authentication mismatch. Invalid credentials provided.';
+        }
         $this->view('auth/login', $data);
+    }
+
+    private function authenticateForPortal(string $email, string $password, $loginTarget): ?array {
+        if (!in_array($loginTarget, ['customer_portal', 'staff_app'], true)) {
+            return null;
+        }
+
+        $user = $this->model('User')->authenticateUser($email, $password);
+        if (!$user) {
+            return null;
+        }
+
+        if ($loginTarget === 'customer_portal') {
+            return in_array($user['userType'], ['user', 'court_owner', 'admin'], true) ? $user : null;
+        }
+        if ($user['userType'] !== 'staff') {
+            return null;
+        }
+
+        $venue = $this->model('Staff')->getVenueByStaff($user['userID']);
+        if (!$venue) {
+            return null;
+        }
+
+        $user['venueID'] = $venue['venueID'];
+        return $user;
     }
 
     public function signup() {
