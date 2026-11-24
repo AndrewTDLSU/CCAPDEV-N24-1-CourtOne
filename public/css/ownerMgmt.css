@@ -1,33 +1,12 @@
-
 .chart-container {
-    position: relative;
-    height: 30vh;
+    min-width: 0;
     width: 100%;
+    height: 210px;
 }
 
-.box-shadow {
-    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.15);
-}
-
-a { 
-    color: blue; 
-}
-
-a:hover { 
-    color: indigo; 
-}
-
-/* Hover effect for add venue card in ownerDashboard.html */
-.hov-card {
-    transition: filter 0.2s ease;
-}
-
-@media (hover: hover) {
-    .card-link:hover .hov-card {
-        filter: brightness(0.9);
-    }
-}
-
-.card-link:focus-visible .venue-card {
-    filter: brightness(0.9);
+.thumb {
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
 }

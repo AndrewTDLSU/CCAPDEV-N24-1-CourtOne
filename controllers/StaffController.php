@@ -35,6 +35,9 @@ class StaffController Extends Controller {
         $code = $_GET['error'] ?? ''; // get error code from URL parameter and map to message, default to empty string if not provided
         $error = is_string($code) ? ($messages[$code] ?? '') : ''; // map error code to message, default to empty string if not provided
 
+        $error = $_SESSION['staffFormError'] ?? $error;
+        unset($_SESSION['staffFormError']);
+
         // load the models for venues and staff
         $venueModel = $this->model('Venue');
         $staffModel = $this->model('Staff');
@@ -107,7 +110,9 @@ class StaffController Extends Controller {
             foreach ($validator->errors() as $field => $message) {
                 $messages[] = ($fieldLabels[$field] ?? 'Input') . ': ' . $message;
             }
-            $data['error'] = implode(' ', $messages);
+            $_SESSION['staffFormError'] = implode(' ', $messages);
+            header('Location: ' . $back . '&venueID=' . $venueID);
+            exit;
         }
 
         /*// Previous validation checks for missing fields, email format, and password length have been replaced by the Validator class. The following checks are now redundant and can be removed if wished to do so:

@@ -25,22 +25,15 @@
     setTheme(savedTheme === "dark" ? "dark" : "light");
 
     document.addEventListener("DOMContentLoaded", function () {
-        let button = document.getElementById("darkModeBtn");
-
-        // Add a floating toggle when the page has no button yet.
-        if (!button) {
-            button = document.createElement("button");
-            button.id = "darkModeBtn";
-            button.type = "button";
-            button.className = "courtone-theme-toggle";
-            document.body.appendChild(button);
-        }
+        const button = document.getElementById("darkModeBtn");
+        if (!button) return;
 
         setTheme(root.getAttribute("data-bs-theme"));
 
         button.addEventListener("click", function () {
             const nextTheme = root.getAttribute("data-bs-theme") === "dark" ? "light" : "dark";
             setTheme(nextTheme);
+            document.dispatchEvent(new Event('court:theme-change'));
 
             try {
                 localStorage.setItem(storageKey, nextTheme);

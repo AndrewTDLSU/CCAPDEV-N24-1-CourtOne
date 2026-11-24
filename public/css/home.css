@@ -1,25 +1,26 @@
-@media (max-width: 400px) {
+/* Homepage hero and search. Venue cards use the shared styles. */
+.court-home-page .hero {
+    padding: clamp(1rem, 4vw, 2.5rem);
+    background: var(--court-soft);
+    border: 1px solid var(--court-border);
+    border-radius: 12px;
+}
 
-    .hero h1 {
-        font-size: 1.3rem;
-    }
+.court-home-page .hero h1 {
+    font-size: clamp(1.75rem, 4vw, 2.65rem);
+    max-width: 18ch;
+}
 
-    .hero-search .form-control {
-        min-width: 0;
-        font-size: 0.75rem;
-    }
+.court-home-page .hero p {
+    max-width: 38ch;
+    margin-bottom: 0;
+}
 
-    .hero-search .btn {
-        font-size: 0.75rem;
-        padding: 0.5rem;
-    }
+.court-hero-image {
+    max-height: 150px;
+    object-fit: contain;
+}
 
-    .venue-card .card-title {
-        font-size: 0.8rem;
-    }
-
-    .venue-card .btn {
-        font-size: 0.65rem;
-        white-space: normal;
-    }
+.hero-search {
+    max-width: 42rem;
 }

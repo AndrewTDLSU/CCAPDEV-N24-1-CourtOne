@@ -320,50 +320,8 @@ class BookingController extends Controller {
     }
 
     public function chat() {
-        // A user must be logged in to send or read messages.
-        if (!isset($_SESSION['userID'])) {
-            header('Location: ' . courtUrl('/index.php?url=auth/login'));
-            exit;
-        }
-
-        $senderID = (int) $_SESSION['userID'];
-        $receiverID = (int) ($_POST['receiverID'] ?? $_GET['receiverID'] ?? 0);
-
-        $chatModel = $this->model('Chat');
-        $userModel = $this->model('User');
-
-        $validReceiver = $receiverID > 0 &&
-                         $receiverID !== $senderID &&
-                         $userModel->getUserByID($receiverID);
-
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $message = trim($_POST['message'] ?? '');
-
-            if (!$validReceiver || $message === '' || strlen($message) > 500) {
-                http_response_code(400);
-                die('Please choose a valid receiver and enter a message.');
-            }
-
-            $chatModel->sendMessage($senderID, $receiverID, $message);
-            header('Location: ' . courtUrl('/index.php?url=booking/chat&receiverID=') . $receiverID);
-            exit;
-        }
-
-        if (!$validReceiver) {
-            $receiverID = 0;
-        }
-
-        $messages = $receiverID > 0
-            ? $chatModel->getMessages($senderID, $receiverID)
-            : [];
-
-        $this->view('chats/chat', [
-            'pageTitle' => 'Chat',
-            'senderID' => $senderID,
-            'receiverID' => $receiverID,
-            'users' => $userModel->getAllUsers(),
-            'messages' => $messages
-        ]);
+        // Keep legacy booking chat links and form submissions on the shared conversation flow.
+        require_once __DIR__ . '/ChatController.php';
+        (new ChatController())->index();
     }
-
 }

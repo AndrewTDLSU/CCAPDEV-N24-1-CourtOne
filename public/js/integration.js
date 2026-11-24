@@ -1,29 +1,41 @@
 // Presentation only. All saved records and authentication use PHP forms.
-document.querySelectorAll('input[name="paymentMethod"]').forEach(input => {
-  input.addEventListener('change', () => {
-    document.getElementById('cardFields').hidden = input.value !== 'Card';
-  });
-});
-document.querySelectorAll('[data-court]').forEach(button => {
-  button.addEventListener('click', () => {
-    document.querySelectorAll('[data-court]').forEach(other => {
-      const selected = other.dataset.court === button.dataset.court && other.dataset.time === button.dataset.time;
-      other.classList.toggle('selected', selected);
-      other.setAttribute('aria-pressed', String(selected));
+const reserveButton = document.getElementById('reserve-button');
+const bookingSummary = document.getElementById('booking-summary');
+if (bookingSummary) {
+  const slots = document.querySelectorAll('[data-court]:not(:disabled)');
+  slots.forEach(slot => {
+    slot.addEventListener('click', () => {
+      slots.forEach(other => {
+        const selected = other.dataset.court === slot.dataset.court && other.dataset.time === slot.dataset.time;
+        other.classList.toggle('selected', selected);
+        other.setAttribute('aria-pressed', String(selected));
+        other.querySelector('.slot-state').textContent = selected ? 'Selected' : 'Available';
+      });
+      bookingSummary.textContent = slot.dataset.label;
+      if (reserveButton) {
+        document.getElementById('selected-court').value = slot.dataset.court;
+        document.getElementById('selected-time').value = slot.dataset.time;
+        reserveButton.disabled = false;
+      }
     });
-    document.getElementById('selected-court').value = button.dataset.court;
-    document.getElementById('selected-time').value = button.dataset.time;
-    const summary = document.getElementById('booking-summary');
-    summary.textContent = button.dataset.label;
-    summary.hidden = false;
-    document.getElementById('reserve-button').disabled = false;
   });
-});
+}
 const signup = document.getElementById('signup-form');
 if (signup) {
   const password = document.getElementById('password');
   const confirm = document.getElementById('confirm-password');
-  const validate = () => confirm.setCustomValidity(password.value === confirm.value ? '' : 'Passwords must match.');
+  const feedback = document.getElementById('password-match');
+  const validate = () => {
+    // Match PHP trim and the four ASCII character classes in the server rules.
+    const value = password.value.replace(/^[ \t\r\n\x00\x0B]+|[ \t\r\n\x00\x0B]+$/g, '');
+    const valid = Array.from(value).length >= 8 && /[A-Z]/.test(value)
+      && /[a-z]/.test(value) && /[0-9]/.test(value) && /[\W_]/.test(value);
+    password.setCustomValidity(password.value && !valid ? 'Use the password format shown below the field.' : '');
+
+    const mismatch = confirm.value && confirm.value !== password.value;
+    feedback.textContent = mismatch ? 'Passwords do not match.' : '';
+    confirm.setCustomValidity(feedback.textContent);
+  };
   password.addEventListener('input', validate);
   confirm.addEventListener('input', validate);
 }
