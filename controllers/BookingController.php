@@ -118,11 +118,7 @@ class BookingController extends Controller {
         $booking = $bookingModel->fetchBookingExtendedDetails($bookingID);
         $payment = $paymentModel->fetchPaymentByBooking($bookingID);
 
-        if (!$booking || !$payment ||
-            (int) $booking['userID'] !== (int) $_SESSION['userID']) {
-            die('Booking not found or access denied.');
-        }
-
+        //includes checks for booking and payment existence, as well as user ownership of the booking.
         if (!$booking || !$payment ||
             (int) $booking['userID'] !== (int) $_SESSION['userID']) {
             die('Booking not found or access denied.');
