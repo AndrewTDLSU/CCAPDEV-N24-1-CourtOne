@@ -1,9 +1,43 @@
-/* Homepage hero and search. Venue cards use the shared styles. */
+/* Homepage hero, animated sports scene, and search. Venue cards use the shared styles. */
 .court-home-page .hero {
+    --hero-ink: #14234b;
+    --hero-racket-ink: #14234b;
+    --hero-grip-tape: rgba(255, 255, 255, 0.34);
+    --hero-cloud: #d8e8fe;
+    --hero-spark: #2563eb;
+    --hero-strings: #6e819c;
+    --hero-racket-face: rgba(255, 255, 255, 0.52);
+    --hero-shadow: rgba(20, 35, 75, 0.16);
+    --hero-orb-1: rgba(37, 99, 235, 0.12);
+    --hero-orb-2: rgba(242, 123, 33, 0.11);
+    --hero-line-color: rgba(18, 87, 203, 0.16);
+    --hero-particle: rgba(18, 87, 203, 0.22);
+    position: relative;
+    overflow: hidden;
     padding: clamp(1rem, 4vw, 2.5rem);
     background: var(--court-soft);
     border: 1px solid var(--court-border);
     border-radius: 12px;
+}
+
+[data-bs-theme="dark"] .court-home-page .hero {
+    --hero-ink: #0f1c38;
+    --hero-racket-ink: #d7e7ff;
+    --hero-grip-tape: rgba(15, 28, 56, 0.45);
+    --hero-cloud: rgba(159, 197, 255, 0.15);
+    --hero-spark: #60a5fa;
+    --hero-strings: #9bb1cc;
+    --hero-racket-face: rgba(255, 255, 255, 0.14);
+    --hero-shadow: rgba(5, 11, 24, 0.45);
+    --hero-orb-1: rgba(96, 165, 250, 0.14);
+    --hero-orb-2: rgba(242, 123, 33, 0.14);
+    --hero-line-color: rgba(159, 197, 255, 0.14);
+    --hero-particle: rgba(159, 197, 255, 0.22);
+}
+
+.court-home-page .hero-content {
+    position: relative;
+    z-index: 1;
 }
 
 .court-home-page .hero h1 {
@@ -16,11 +50,316 @@
     margin-bottom: 0;
 }
 
-.court-hero-image {
-    max-height: 150px;
-    object-fit: contain;
-}
-
 .hero-search {
     max-width: 42rem;
+}
+
+/* Ambient moving background inside hero */
+.hero-motion-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.hero-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(28px);
+    will-change: transform;
+}
+
+.hero-orb--one {
+    width: 240px;
+    height: 240px;
+    top: -90px;
+    left: -50px;
+    background: var(--hero-orb-1);
+    animation: heroOrbFloatOne 11s ease-in-out infinite;
+}
+
+.hero-orb--two {
+    width: 220px;
+    height: 220px;
+    right: 6%;
+    bottom: -95px;
+    background: var(--hero-orb-2);
+    animation: heroOrbFloatTwo 13s ease-in-out infinite;
+}
+
+.hero-court-lines {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    color: var(--hero-line-color);
+}
+
+.hero-court-ring {
+    transform-box: view-box;
+    transform-origin: 70px 48px;
+    animation: heroSlowSpin 28s linear infinite;
+}
+
+.hero-court-arc {
+    transform-box: view-box;
+    transform-origin: 550px 120px;
+    animation: heroArcBreath 9s ease-in-out infinite;
+}
+
+.hero-court-dot {
+    transform-box: view-box;
+    transform-origin: 465px 242px;
+    animation: heroDotDrift 7s ease-in-out infinite;
+}
+
+.hero-particle {
+    position: absolute;
+    border-radius: 50%;
+    border: 2px solid var(--hero-particle);
+    will-change: transform, opacity;
+}
+
+.hero-particle--one {
+    width: 12px;
+    height: 12px;
+    top: 18%;
+    left: 46%;
+    animation: heroParticleFloat 6.5s ease-in-out infinite;
+}
+
+.hero-particle--two {
+    width: 8px;
+    height: 8px;
+    bottom: 22%;
+    left: 55%;
+    background: var(--hero-particle);
+    border: 0;
+    animation: heroParticleFloat 8s ease-in-out -2.4s infinite;
+}
+
+.hero-particle--three {
+    width: 16px;
+    height: 16px;
+    top: 14%;
+    right: 34%;
+    animation: heroParticleFloat 7.5s ease-in-out -4s infinite;
+}
+
+/* Animated sports SVG illustration */
+.hero-sports-scene {
+    width: 100%;
+    max-width: 260px;
+    transition: transform 0.35s ease;
+}
+
+.hero-sports-scene:hover {
+    transform: translateY(-3px) scale(1.02);
+}
+
+.hero-sports-svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+}
+
+.hero-cloud {
+    fill: var(--hero-cloud);
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: heroCloudDrift 7.5s ease-in-out infinite;
+}
+
+.hero-ink-stroke {
+    stroke: var(--hero-ink);
+}
+
+.hero-ink-fill {
+    fill: var(--hero-ink);
+}
+
+.hero-racket-stroke {
+    stroke: var(--hero-racket-ink);
+}
+
+.hero-racket-fill {
+    fill: var(--hero-racket-ink);
+}
+
+.hero-grip-tape {
+    stroke: var(--hero-grip-tape);
+}
+
+.hero-racket-face {
+    fill: var(--hero-racket-face);
+}
+
+.hero-racket-strings {
+    stroke: var(--hero-strings);
+}
+
+.hero-pickleball-fill {
+    fill: #cbe83a;
+}
+
+.hero-pickleball {
+    transform-box: view-box;
+    transform-origin: 62px 64px;
+    animation: heroPickleFloat 4s ease-in-out infinite;
+}
+
+.hero-ball-shadow {
+    fill: var(--hero-shadow);
+    transform-box: view-box;
+    transform-origin: 118px 212px;
+    animation: heroBallShadow 2.2s cubic-bezier(0.36, 0, 0.66, 1) infinite;
+}
+
+.hero-ball {
+    transform-box: view-box;
+    transform-origin: 118px 198px;
+    animation: heroBallBounce 2.2s cubic-bezier(0.36, 0, 0.66, 1) infinite;
+}
+
+.hero-spark {
+    stroke: var(--hero-spark);
+    transform-box: fill-box;
+    transform-origin: bottom left;
+    animation: heroSparkPop 2.2s ease-in-out infinite;
+}
+
+.hero-spark--1 { animation-delay: 0s; }
+.hero-spark--2 { animation-delay: 0.14s; }
+.hero-spark--3 { animation-delay: 0.28s; }
+
+.hero-spark-band {
+    stroke: var(--hero-spark);
+}
+
+.hero-racket {
+    transform-box: view-box;
+    transform-origin: 202px 222px;
+    animation: heroRacketSwing 3.2s ease-in-out infinite;
+}
+
+.hero-shuttlecock {
+    transform-box: view-box;
+    transform-origin: 288px 184px;
+    animation: heroShuttleFlight 3.2s ease-in-out infinite;
+}
+
+@keyframes heroOrbFloatOne {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(34px, 22px) scale(1.08); }
+}
+
+@keyframes heroOrbFloatTwo {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(-38px, -24px) scale(1.1); }
+}
+
+@keyframes heroSlowSpin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes heroArcBreath {
+    0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.85; }
+    50% { transform: translate(-12px, 8px) scale(1.03); opacity: 1; }
+}
+
+@keyframes heroDotDrift {
+    0%, 100% { transform: translate(0, 0); }
+    50% { transform: translate(12px, -10px); }
+}
+
+@keyframes heroParticleFloat {
+    0%, 100% { transform: translateY(0) scale(1); opacity: 0.45; }
+    50% { transform: translateY(-14px) scale(1.15); opacity: 0.9; }
+}
+
+@keyframes heroCloudDrift {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(5px, -4px) scale(1.02); }
+}
+
+@keyframes heroBallBounce {
+    0%, 100% {
+        transform: translateY(0) scale(1.05, 0.93) rotate(-4deg);
+    }
+    12% {
+        transform: translateY(-6px) scale(0.97, 1.04) rotate(-1deg);
+    }
+    48% {
+        transform: translateY(-28px) scale(1, 1) rotate(8deg);
+    }
+    88% {
+        transform: translateY(-4px) scale(0.98, 1.03) rotate(-2deg);
+    }
+}
+
+@keyframes heroBallShadow {
+    0%, 100% {
+        transform: scaleX(1.06);
+        opacity: 0.85;
+    }
+    48% {
+        transform: scaleX(0.66);
+        opacity: 0.35;
+    }
+}
+
+@keyframes heroSparkPop {
+    0%, 18%, 100% {
+        opacity: 0.25;
+        transform: scale(0.72) translate(0, 0);
+    }
+    45% {
+        opacity: 1;
+        transform: scale(1.12) translate(4px, -4px);
+    }
+    70% {
+        opacity: 0.7;
+        transform: scale(1) translate(2px, -2px);
+    }
+}
+
+@keyframes heroRacketSwing {
+    0%, 100% { transform: rotate(-6deg); }
+    35% { transform: rotate(6.5deg); }
+    68% { transform: rotate(-2deg); }
+}
+
+@keyframes heroShuttleFlight {
+    0%, 24%, 100% { transform: translate(0, 0) rotate(-4deg); }
+    54% { transform: translate(14px, -20px) rotate(14deg); }
+    80% { transform: translate(5px, -6px) rotate(3deg); }
+}
+
+@keyframes heroPickleFloat {
+    0%, 100% { transform: translate(0, 0) rotate(0deg); }
+    50% { transform: translate(4px, -12px) rotate(18deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .hero-orb,
+    .hero-court-ring,
+    .hero-court-arc,
+    .hero-court-dot,
+    .hero-particle,
+    .hero-cloud,
+    .hero-pickleball,
+    .hero-ball,
+    .hero-ball-shadow,
+    .hero-spark,
+    .hero-racket,
+    .hero-shuttlecock {
+        animation: none !important;
+    }
+
+    .hero-sports-scene {
+        transition: none;
+    }
 }
