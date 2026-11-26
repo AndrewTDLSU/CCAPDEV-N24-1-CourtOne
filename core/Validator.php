@@ -9,21 +9,38 @@ Universal validation rules for various data types and formats
 // app/core/Validator.php
 class Validator
 {
+    public const ID_RULE = ['required' => true, 'type' => 'int', 'min' => 1, 'max' => 2147483647];
+
     private array $errors = [];
     private array $clean  = [];
 
     public function validate(array $input, array $rules): bool
     {
+        $this->errors = [];
+        $this->clean = [];
+
         foreach ($rules as $field => $rule) {
             $value = $input[$field] ?? null;
-
-            // Reject arrays/objects (e.g. ?name[]=x) – only scalars allowed
-            if ($value !== null && !is_scalar($value)) {
+            $type = $rule['type'] ?? 'string';
+            if ($value !== null && !is_string($value) &&
+                !(is_int($value) && in_array($type, ['int', 'float'], true)) &&
+                !(is_float($value) && $type === 'float')) {
                 $this->errors[$field] = 'Invalid input.';
                 continue;
             }
 
-            $value = is_string($value) ? trim($value) : $value;
+            if (is_string($value)) {
+                if (str_contains($value, "\0") || preg_match('//u', $value) !== 1) {
+                    $this->errors[$field] = 'Contains invalid characters.';
+                    continue;
+                }
+                if ($rule['trim'] ?? true) {
+                    $value = preg_replace('/\A\s++|(?<!\s)\s++\z/u', '', $value);
+                }
+                if (!empty($rule['multiline'])) {
+                    $value = str_replace(["\r\n", "\r"], "\n", $value);
+                }
+            }
 
             // Required / optional
             if ($value === null || $value === '') {
@@ -34,16 +51,37 @@ class Validator
             }
 
             // 1. Data type
-            switch ($rule['type'] ?? 'string') {
+            switch ($type) {
                 case 'int':
                     $value = filter_var($value, FILTER_VALIDATE_INT);
                     if ($value === false) {
                         $this->errors[$field] = 'Must be a whole number.';
                         continue 2;
                     }
-                    if ((isset($rule['min']) && $value < $rule['min']) ||
-                        (isset($rule['max']) && $value > $rule['max'])) {
-                        $this->errors[$field] = 'Number out of range.';
+                    break;
+
+                case 'float':
+                    if (is_float($value) && !is_finite($value)) {
+                        $this->errors[$field] = 'Enter a valid number.';
+                        continue 2;
+                    }
+                    if (isset($rule['decimals']) &&
+                        (!preg_match('/\A-?(?:[0-9]+(?:\.([0-9]+))?|\.([0-9]+))\z/', (string) $value, $parts) ||
+                            strlen($parts[2] ?? $parts[1] ?? '') > $rule['decimals'])) {
+                        $this->errors[$field] = "Enter a number with up to {$rule['decimals']} decimal places.";
+                        continue 2;
+                    }
+                    $value = filter_var($value, FILTER_VALIDATE_FLOAT);
+                    if ($value === false || !is_finite($value)) {
+                        $this->errors[$field] = 'Enter a valid number.';
+                        continue 2;
+                    }
+                    break;
+
+                case 'date':
+                    if (!preg_match('/\A([1-9][0-9]{3})-([0-9]{2})-([0-9]{2})\z/', $value, $parts) ||
+                        !checkdate((int) $parts[2], (int) $parts[3], (int) $parts[1])) {
+                        $this->errors[$field] = 'Enter a valid date in YYYY-MM-DD format.';
                         continue 2;
                     }
                     break;
@@ -55,14 +93,28 @@ class Validator
                     }
                     break;
 
-                default: // string
-                    $value = (string) $value;
+            }
+
+            if (is_int($value) || is_float($value)) {
+                if ((isset($rule['min']) && $value < $rule['min']) ||
+                    (isset($rule['max']) && $value > $rule['max'])) {
+                    $this->errors[$field] = $rule['rangeMessage'] ?? 'Number out of range.';
+                    continue;
+                }
+            }
+
+            if (isset($rule['allowed']) && !in_array($value, $rule['allowed'], true)) {
+                $this->errors[$field] = 'Choose a valid option.';
+                continue;
             }
 
             // 2. Length (for strings/emails)
-            // Assisted by VSCode Copilot
-            if (is_string($value)) {
-                $len = mb_strlen($value, 'UTF-8');
+            if (is_string($value) && isset($rule['maxBytes']) && strlen($value) > $rule['maxBytes']) {
+                $this->errors[$field] = "Must be no more than {$rule['maxBytes']} bytes. Some characters use more than one byte.";
+                continue;
+            }
+            if (is_string($value) && (isset($rule['min']) || isset($rule['max']))) {
+                $len = preg_match_all('/./us', $value);
                 if ((isset($rule['min']) && $len < $rule['min']) ||
                     (isset($rule['max']) && $len > $rule['max'])) {
                     if (isset($rule['min'], $rule['max'])) {
@@ -100,4 +152,13 @@ class Validator
 
     public function errors(): array { return $this->errors; }
     public function clean(): array  { return $this->clean; }
+
+    public function errorMessage(array $labels): string
+    {
+        $messages = [];
+        foreach ($this->errors as $field => $message) {
+            $messages[] = ($labels[$field] ?? 'Input') . ': ' . $message;
+        }
+        return implode(' ', $messages);
+    }
 }

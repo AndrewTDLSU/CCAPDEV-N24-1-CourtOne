@@ -7,12 +7,15 @@ require __DIR__ . '/../partials/Header.php';
 $slots = [];
 $start = strtotime($venue['openHour']);
 $end = strtotime($venue['closeHour']);
-if ($end <= $start) {
+if ($end === false || $end <= $start) {
     $end = strtotime('24:00:00');
 }
-for ($time = $start; $time + 3600 <= $end; $time += 3600) {
-    $slots[] = date('H:i:s', $time);
+if ($start !== false) {
+    for ($time = $start; $time + 3600 <= $end; $time += 3600) {
+        $slots[] = date('H:i:s', $time);
+    }
 }
+$scheduleDate = new DateTimeImmutable($targetDate);
 $venueRoute = 'index.php?url=venue/viewVenue/' . (int) $venue['venueID'];
 $canReserve = ($_SESSION['role'] ?? '') === 'user';
 $staffContacts = array_filter($staffContacts ?? [], fn($member) => (int) $member['userID'] !== (int) ($_SESSION['userID'] ?? 0));
@@ -46,22 +49,30 @@ $staffContacts = array_filter($staffContacts ?? [], fn($member) => (int) $member
 
   <section class="mt-4" aria-labelledby="timeslot-title">
     <h2 class="h4" id="timeslot-title">Reservation schedule</h2>
+    <?php if (!empty($dateError)): ?>
+      <p class="alert alert-danger" role="alert"><?= courtEscape($dateError) ?></p>
+    <?php endif; ?>
     <?php if (!$courts || !$slots): ?>
       <p class="court-empty"><?= !$courts ? 'This venue has no courts listed yet.' : 'There are no time slots available for this venue.' ?></p>
     <?php else: ?>
       <p class="text-body-secondary">Choose a date and an available one-hour slot. All times are in Philippine time.</p>
       <div class="desktop-schedule card p-3">
         <div class="date-toolbar" aria-label="Booking dates">
-          <?php $previous = date('Y-m-d', strtotime($targetDate . ' -5 days')); ?>
-          <a class="btn btn-outline-secondary" aria-label="Previous five dates" href="<?= courtEscape(courtUrl($venueRoute . '&date=' . $previous)) ?>">‹</a>
+          <?php $previous = $scheduleDate->modify('-5 days'); ?>
+          <?php if ($previous->format('Y') >= 1000): ?>
+            <a class="btn btn-outline-secondary" aria-label="Previous five dates" href="<?= courtEscape(courtUrl($venueRoute . '&date=' . $previous->format('Y-m-d'))) ?>">‹</a>
+          <?php endif; ?>
           <?php for ($offset = 0; $offset < 5; $offset++): ?>
-            <?php $date = date('Y-m-d', strtotime($targetDate . ' +' . $offset . ' days')); ?>
+            <?php $date = $scheduleDate->modify('+' . $offset . ' days'); ?>
+            <?php if ($date->format('Y') > 9999) break; ?>
             <a class="btn <?= $offset === 0 ? 'btn-primary' : 'btn-outline-secondary' ?>"
                <?= $offset === 0 ? 'aria-current="date"' : '' ?>
-               href="<?= courtEscape(courtUrl($venueRoute . '&date=' . $date)) ?>"><?= date('D, M j', strtotime($date)) ?></a>
+               href="<?= courtEscape(courtUrl($venueRoute . '&date=' . $date->format('Y-m-d'))) ?>"><?= $date->format('D, M j') ?></a>
           <?php endfor; ?>
-          <?php $next = date('Y-m-d', strtotime($targetDate . ' +5 days')); ?>
-          <a class="btn btn-outline-secondary" aria-label="Next five dates" href="<?= courtEscape(courtUrl($venueRoute . '&date=' . $next)) ?>">›</a>
+          <?php $next = $scheduleDate->modify('+5 days'); ?>
+          <?php if ($next->format('Y') <= 9999): ?>
+            <a class="btn btn-outline-secondary" aria-label="Next five dates" href="<?= courtEscape(courtUrl($venueRoute . '&date=' . $next->format('Y-m-d'))) ?>">›</a>
+          <?php endif; ?>
         </div>
         <div class="table-scroll" tabindex="0" role="region" aria-label="Court availability">
           <table class="table availability-table align-middle text-center mb-0">
@@ -89,7 +100,7 @@ $staffContacts = array_filter($staffContacts ?? [], fn($member) => (int) $member
           <input type="hidden" name="url" value="venue/viewVenue/<?= (int) $venue['venueID'] ?>">
           <div>
             <label for="mobile-date" class="form-label">Booking date</label>
-            <input class="form-control" id="mobile-date" type="date" name="date" value="<?= courtEscape($targetDate) ?>" required>
+            <input class="form-control" id="mobile-date" type="date" name="date" min="1000-01-01" max="9999-12-31" value="<?= courtEscape($targetDate) ?>" required>
           </div>
           <button class="btn btn-outline-secondary" type="submit">Go</button>
         </form>

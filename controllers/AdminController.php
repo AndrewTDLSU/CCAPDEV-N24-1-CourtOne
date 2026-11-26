@@ -21,7 +21,12 @@ class AdminController Extends Controller {
             exit;
         }
 
-        $venueID = (int) ($venueID ?? $_POST['venueID'] ?? 0);
+        $venueID = $this->validatedID($venueID ?? $_POST['venueID'] ?? null);
+        if ($venueID === null) {
+            $_SESSION['adminMessage'] = ['type' => 'danger', 'text' => 'Choose a valid venue.'];
+            header('Location: ' . $back);
+            exit;
+        }
 
         $venueModel = $this->model('Venue');
         $imageModel = $this->model('Image');
@@ -82,7 +87,12 @@ class AdminController Extends Controller {
             exit;
         }
 
-        $userID = (int) ($userID ?? $_POST['userID'] ?? 0);
+        $userID = $this->validatedID($userID ?? $_POST['userID'] ?? null);
+        if ($userID === null) {
+            $_SESSION['adminMessage'] = ['type' => 'danger', 'text' => 'Choose a valid user.'];
+            header('Location: ' . $back);
+            exit;
+        }
 
         // an admin deleting their own account would lock everyone out
         // if the userID to delete is the same as the logged-in admin, fallback to the dashboard with an error message

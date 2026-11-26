@@ -10,26 +10,31 @@ class ChatController extends Controller {
         }
 
         $senderID = (int) $_SESSION['userID'];
-        $receiverID = (int) ($_POST['receiverID'] ?? $_GET['receiverID'] ?? 0);
+        $isPost = $_SERVER['REQUEST_METHOD'] === 'POST';
+        $receiver = ($isPost ? ($_POST['receiverID'] ?? null) : null) ?? $_GET['receiverID'] ?? null;
+        $receiverID = $this->validatedID($receiver);
 
         $chatModel = $this->model('Chat');
         $userModel = $this->model('User');
 
-        $recipient = $receiverID > 0 && $receiverID !== $senderID
+        $recipient = $receiverID !== null && $receiverID !== $senderID
             ? $userModel->getUserByID($receiverID)
             : null;
 
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $message = trim($_POST['message'] ?? '');
-
-            if (!$recipient || $message === '' || strlen($message) > 500) {
-                http_response_code(400);
-                die('Please choose a valid receiver and enter a message.');
+        $error = '';
+        if (($isPost || $receiver !== null) && !$recipient) {
+            http_response_code(400);
+            $error = 'Choose a valid recipient for your message.';
+        } elseif ($isPost) {
+            $validator = $this->validator('Validator');
+            if (!$validator->validate($_POST, ['message' => ['required' => true, 'max' => 500, 'multiline' => true]])) {
+                http_response_code(422);
+                $error = $validator->errorMessage(['message' => 'Message']);
+            } else {
+                $chatModel->sendMessage($senderID, $receiverID, $validator->clean()['message']);
+                header('Location: ' . courtUrl('/index.php?url=chat/index&receiverID=' . $receiverID . '#message-thread'));
+                exit;
             }
-
-            $chatModel->sendMessage($senderID, $receiverID, $message);
-            header('Location: ' . courtUrl('/index.php?url=chat/index&receiverID=' . $receiverID . '#message-thread'));
-            exit;
         }
 
         if (!$recipient) {
@@ -47,13 +52,15 @@ class ChatController extends Controller {
             'recipient' => $recipient,
             'conversations' => $chatModel->getConversationsForUser($senderID),
             'staffDirectory' => $chatModel->getStaffDirectory($senderID),
-            'messages'   => $messages
+            'messages'   => $messages,
+            'error'      => $error
         ]);
     }
 
     // Optional endpoint to dynamically refresh messages without a page reload
     // URL: index.php?url=chat/fetchMessages&receiverID={userID}
     public function fetchMessages() {
+        header('Content-Type: application/json');
         if (!isset($_SESSION['userID'])) {
             http_response_code(401);
             echo json_encode(['error' => 'Unauthorized']);
@@ -61,18 +68,18 @@ class ChatController extends Controller {
         }
 
         $senderID = (int) $_SESSION['userID'];
-        $receiverID = (int) ($_GET['receiverID'] ?? 0);
+        $receiverID = $this->validatedID($_GET['receiverID'] ?? null);
 
-        if ($receiverID <= 0 || $receiverID === $senderID) {
+        if ($receiverID === null || $receiverID === $senderID ||
+            !$this->model('User')->getUserByID($receiverID)) {
             http_response_code(400);
-            echo json_encode(['error' => 'Invalid receiver ID']);
+            echo json_encode(['error' => 'Choose a valid recipient.']);
             exit;
         }
 
         $chatModel = $this->model('Chat');
         $messages = $chatModel->getMessages($senderID, $receiverID);
 
-        header('Content-Type: application/json');
         echo json_encode(['status' => 'success', 'data' => $messages]);
         exit;
     }

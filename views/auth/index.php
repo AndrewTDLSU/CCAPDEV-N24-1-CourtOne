@@ -136,7 +136,7 @@ require __DIR__ . '/../partials/Header.php';
                 <!-- Search Bar -->
                 <form action="<?= courtEscape(courtUrl('index.php')) ?>" method="get" id="venue-search-form" class="input-group mt-3 hero-search" role="search">
                     <input type="hidden" name="url" value="venue/browseVenues">
-                    <input name="q" type="search" id="search" class="form-control"
+                    <input name="q" type="search" id="search" class="form-control" data-max-characters="200"
                            placeholder="Search venues or locations"
                            aria-label="Search venues or locations">
 

@@ -119,8 +119,18 @@ class DashboardController extends Controller {
             exit;
         }
 
-        $bookingID = (int) ($_POST['bookingID'] ?? 0);
-        $status = $_POST['status'] ?? '';
+        $validator = $this->validator('Validator');
+        if (!$validator->validate($_POST, [
+            'bookingID' => Validator::ID_RULE,
+            'status' => ['required' => true, 'allowed' => ['completed', 'cancelled', 'upcoming']]
+        ])) {
+            $_SESSION['staffMessage'] = ['type' => 'danger', 'text' => $validator->errorMessage([
+                'bookingID' => 'Booking', 'status' => 'Booking status'
+            ])];
+            header('Location: ' . $back);
+            exit;
+        }
+        ['bookingID' => $bookingID, 'status' => $status] = $validator->clean();
 
         $bookingModel = $this->model('Booking');
         $courtModel = $this->model('Court');
@@ -145,7 +155,7 @@ class DashboardController extends Controller {
             $changed = $bookingModel->updateBookingStatusToCompleted($bookingID);
         } elseif ($status === 'upcoming') {
             $changed = $bookingModel->updateBookingStatusToUpcoming($bookingID);
-        } elseif ($status === 'cancelled') {
+        } else { // cancelled
             $changed = $bookingModel->updateBookingStatusToCancelled($bookingID);
 
             // keep the money in sync: paid -> refunded, pending -> removed
@@ -159,10 +169,6 @@ class DashboardController extends Controller {
                     $paymentModel->deletePayment($payment['paymentID']);
                 }
             }
-        } else {
-            $_SESSION['staffMessage'] = ['type' => 'danger', 'text' => 'Invalid booking status.'];
-            header('Location: ' . $back);
-            exit;
         }
 
         if ($changed) {

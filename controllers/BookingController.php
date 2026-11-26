@@ -13,28 +13,22 @@ class BookingController extends Controller {
             exit;
         }
 
-        $date = $_POST['date'] ?? '';
-        $time = $_POST['time'] ?? '';
-        $courtID = (int) ($_POST['courtID'] ?? 0);
-
-        // Define validation rules for the input fields
+        $validator = $this->validator('Validator');
         $rules = [
-            'date' => ['required' => true, 'type' => 'string', 'pattern' => '/^\d{4}-\d{2}-\d{2}$/'],
-            'time' => ['required' => true, 'type' => 'string', 'pattern' => '/^(?:[01]\d|2[0-3]):[0-5]\d:00$/'],
-            'courtID' => ['required' => true, 'type' => 'int', 'min' => 1]
+            'date' => ['required' => true, 'type' => 'date'],
+            'time' => ['required' => true, 'pattern' => '/\A(?:[01][0-9]|2[0-3]):[0-5][0-9]:00\z/'],
+            'courtID' => Validator::ID_RULE
         ];
 
-        // Instantiate the Validator class and validate the input
-        $validator = $this->validator('Validator');
         if (!$validator->validate($_POST, $rules)) {
-            die('Invalid booking date, time, or court.');
+            http_response_code(422);
+            exit($validator->errorMessage(['date' => 'Booking date', 'time' => 'Start time', 'courtID' => 'Court']));
         }
 
-        // Additional validation to ensure the date is valid and not in the past
-        if ($courtID <= 0 || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $date) ||
-            !preg_match('/^(?:[01]\d|2[0-3]):[0-5]\d:00$/', $time) ||
-            strtotime($date) === false || date('Y-m-d', strtotime($date)) !== $date || strtotime($date . ' ' . $time) <= time()) {
-            die('Invalid booking date, time, or court.');
+        ['date' => $date, 'time' => $time, 'courtID' => $courtID] = $validator->clean();
+        if (strtotime($date . ' ' . $time) <= time()) {
+            http_response_code(422);
+            exit('Choose a booking time in the future.');
         }
 
         $courtModel = $this->model('Court');
@@ -45,12 +39,14 @@ class BookingController extends Controller {
         $court = $courtModel->fetchCourtByID($courtID);
 
         if (!$court) {
+            http_response_code(404);
             die('Court not found.');
         }
 
         $venue = $venueModel->fetchVenueByID($court['venueID']);
 
         if (!$venue) {
+            http_response_code(404);
             die('Venue not found.');
         }
 
@@ -58,12 +54,15 @@ class BookingController extends Controller {
         $end = strtotime($venue['closeHour']);
         $selected = strtotime($time);
 
-        if ($end <= $start) {
+        // Keep midnight closing behavior for venues registered before hours were validated.
+        if ($end === false || $end <= $start) {
             $end = strtotime('24:00:00');
         }
 
-        if ($selected < $start || $selected + 3600 > $end || ($selected - $start) % 3600 !== 0) {
-            die('Time is outside the venue opening hours.');
+        if ($start === false || $end === false || $selected < $start ||
+            $selected + 3600 > $end || ($selected - $start) % 3600 !== 0) {
+            http_response_code(422);
+            exit('Choose an available one-hour slot from the venue schedule.');
         }
 
         $db = Database::getInstance();
@@ -77,6 +76,7 @@ class BookingController extends Controller {
 
             if (!$bookingID) {
                 $db->rollBack();
+                http_response_code(409);
                 die('This time slot is already booked.');
             }
 
@@ -101,17 +101,23 @@ class BookingController extends Controller {
             }
 
             error_log($e->getMessage());
+            http_response_code(500);
             die('Booking could not be saved.');
         }
     }
 
     // fixed this, added proper indentation and session check for payment method page. it used to redirect back to checkout, not being able to finish transaction.
-    public function payment($bookingID) {
+    public function payment($bookingID = null) {
         if (!isset($_SESSION['userID'])) {
             header('Location: ' . courtUrl('/index.php?url=auth/login'));
             exit;
         }
 
+        $bookingID = $this->validatedID($bookingID);
+        if ($bookingID === null) {
+            http_response_code(400);
+            exit('Choose a valid booking.');
+        }
         $bookingModel = $this->model('Booking');
         $paymentModel = $this->model('Payment');
 
@@ -131,10 +137,16 @@ class BookingController extends Controller {
         }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $method = $_POST['paymentMethod'] ?? '';
-
-            if (!in_array($method, ['GCash', 'Card'], true)) {
-                die('Please select a valid payment method.');
+            $validator = $this->validator('Validator');
+            if (!$validator->validate($_POST, [
+                'paymentMethod' => ['required' => true, 'allowed' => ['GCash', 'Card']]
+            ])) {
+                http_response_code(422);
+                $this->view('bookings/payment', [
+                    'pageTitle' => 'Booking Payment', 'booking' => $booking,
+                    'error' => 'Choose GCash or card to continue.'
+                ]);
+                return;
             }
 
             // Lock this booking during payment so cancellation cannot race it.
@@ -147,28 +159,33 @@ class BookingController extends Controller {
 
                 if (!$current || (int) $current['userID'] !== (int) $_SESSION['userID'] ||
                     $current['status'] !== 'upcoming') {
-                    throw new RuntimeException('This booking can no longer be paid.');
+                    throw new DomainException('This booking can no longer be paid.');
                 }
 
                 $currentPayment = $paymentModel->fetchPaymentByBooking($bookingID);
                 if (!$currentPayment) {
-                    throw new RuntimeException('Payment not found.');
+                    throw new DomainException('Payment not found.');
                 }
 
                 if ($currentPayment['status'] === 'pending') {
                     if (!$paymentModel->updatePaymentStatusToPaid($currentPayment['paymentID'])) {
-                        throw new RuntimeException('Payment could not be completed.');
+                        throw new DomainException('Payment could not be completed.');
                     }
                 } elseif ($currentPayment['status'] !== 'paid') {
-                    throw new RuntimeException('This payment cannot be completed.');
+                    throw new DomainException('This payment cannot be completed.');
                 }
                 $db->commit();
             } catch (Throwable $e) {
                 if ($db->inTransaction()) {
                     $db->rollBack();
                 }
-                http_response_code(409);
-                die(htmlspecialchars($e->getMessage(), ENT_QUOTES, 'UTF-8'));
+                if ($e instanceof DomainException) {
+                    http_response_code(409);
+                    exit($e->getMessage());
+                }
+                error_log($e->getMessage());
+                http_response_code(500);
+                exit('Payment could not be completed. Please try again.');
             }
 
             header('Location: ' . courtUrl('/index.php?url=booking/bookingConfirmation/') . $bookingID);
@@ -182,12 +199,17 @@ class BookingController extends Controller {
     }
 
 
-    public function bookingConfirmation($bookingID) {
+    public function bookingConfirmation($bookingID = null) {
         if (!isset($_SESSION['userID'])) {
             header('Location: ' . courtUrl('/index.php?url=auth/login'));
             exit;
         }
 
+        $bookingID = $this->validatedID($bookingID);
+        if ($bookingID === null) {
+            http_response_code(400);
+            exit('Choose a valid booking.');
+        }
         $bookingModel = $this->model('Booking');
         $booking = $bookingModel->fetchBookingExtendedDetails($bookingID);
 
@@ -248,8 +270,8 @@ class BookingController extends Controller {
             die('Invalid cancellation request.');
         }
 
-        $bookingID = filter_var($bookingID, FILTER_VALIDATE_INT);
-        if (!$bookingID || $bookingID <= 0) {
+        $bookingID = $this->validatedID($bookingID);
+        if ($bookingID === null) {
             http_response_code(400);
             die('Invalid booking ID.');
         }
@@ -264,26 +286,26 @@ class BookingController extends Controller {
             $booking = $stmt->fetch();
 
             if (!$booking || (int) $booking['userID'] !== (int) $_SESSION['userID']) {
-                throw new RuntimeException('Booking not found or access denied.');
+                throw new DomainException('Booking not found or access denied.');
             }
             $startTime = strtotime($booking['bookingDate'] . ' ' . $booking['bookingTime']);
             if ($booking['status'] !== 'upcoming' || $startTime === false || $startTime <= time()) {
-                throw new RuntimeException('Only future upcoming bookings can be cancelled.');
+                throw new DomainException('Only future upcoming bookings can be cancelled.');
             }
 
             if (!$bookingModel->updateBookingStatusToCancelled($bookingID)) {
-                throw new RuntimeException('Could not cancel the booking.');
+                throw new DomainException('Could not cancel the booking.');
             }
 
             $payment = $paymentModel->fetchPaymentByBooking($bookingID);
             if ($payment && $payment['status'] === 'paid') {
                 if (!$paymentModel->updatePaymentStatusToRefunded($payment['paymentID'])) {
-                    throw new RuntimeException('Could not update the demo refund.');
+                    throw new DomainException('Could not update the demo refund.');
                 }
             } elseif ($payment && $payment['status'] === 'pending') {
                 // No money was collected: remove the unpaid payment record.
                 if (!$paymentModel->deletePayment($payment['paymentID'])) {
-                    throw new RuntimeException('Could not remove the pending payment.');
+                    throw new DomainException('Could not remove the pending payment.');
                 }
             }
             $db->commit();
@@ -291,8 +313,13 @@ class BookingController extends Controller {
             if ($db->inTransaction()) {
                 $db->rollBack();
             }
-            http_response_code(409);
-            die(htmlspecialchars($e->getMessage(), ENT_QUOTES, 'UTF-8'));
+            if ($e instanceof DomainException) {
+                http_response_code(409);
+                exit($e->getMessage());
+            }
+            error_log($e->getMessage());
+            http_response_code(500);
+            exit('Booking could not be cancelled. Please try again.');
         }
 
         header('Location: ' . courtUrl('/index.php?url=dashboard/userDashboard&notice=cancelled#bookings'));

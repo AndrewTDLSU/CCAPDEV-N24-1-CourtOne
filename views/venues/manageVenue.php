@@ -17,6 +17,9 @@ require __DIR__ . '/../partials/Header.php';
             <?php if (isset($_SESSION['courtMessage'])): ?>
                 <p class="alert alert-<?= courtEscape($_SESSION['courtMessage']['type']) ?>" role="status"><?= courtEscape($_SESSION['courtMessage']['text']) ?></p>
             <?php unset($_SESSION['courtMessage']); endif; ?>
+            <?php if (!empty($filterError)): ?>
+                <p class="alert alert-danger" role="alert"><?= courtEscape($filterError) ?></p>
+            <?php endif; ?>
             <!-- statistics 1st row (total reservations, total revenue, total number of staff) col size 6 -->
             <!-- Values should dynamically change w/ JS/PHP -->
             <div class="row my-3 g-2">
@@ -139,7 +142,7 @@ require __DIR__ . '/../partials/Header.php';
                 <form method="post" action="<?= courtEscape(courtUrl('index.php?url=venue/addCourt/' . (int) $venue['venueID'])) ?>">
                     <label class="form-label" for="new-court">Court name</label>
                     <div class="d-flex flex-wrap flex-sm-nowrap align-items-center gap-2">
-                        <input class="form-control" id="new-court" name="courtName" pattern="[A-Za-z0-9_]+" aria-describedby="court-name-help" required>
+                        <input class="form-control" id="new-court" name="courtName" maxlength="150" pattern="[A-Za-z0-9_]+" aria-describedby="court-name-help" required>
                         <button class="btn btn-primary text-nowrap">Add court</button>
                     </div>
                     <p class="form-text mb-0" id="court-name-help">Use letters, numbers and underscores.</p>

@@ -34,7 +34,8 @@ class Database {
             );
         } catch (PDOException $e) {
             error_log("Database Connection Failure: " . $e->getMessage());
-            die("Critical Error: Database connection dropped.");
+            http_response_code(503);
+            exit('CourtOne is temporarily unavailable. Please try again.');
         }
     }
 

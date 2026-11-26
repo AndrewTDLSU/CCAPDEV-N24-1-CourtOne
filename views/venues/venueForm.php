@@ -1,6 +1,10 @@
 <?php
 $title = 'Add a venue';
 $pageStyles = ['ownerMgmt.css'];
+$photoLimit = $photoLimit ?? 5 * 1024 * 1024;
+$photoLimitLabel = $photoLimit % (1024 * 1024) === 0
+    ? intdiv($photoLimit, 1024 * 1024) . ' MB'
+    : number_format($photoLimit) . ' bytes';
 require __DIR__ . '/../partials/Header.php';
 ?>
 
@@ -20,8 +24,9 @@ require __DIR__ . '/../partials/Header.php';
                     <!-- photos -->
                     <div class="col-12 col-md-4">
                         <label for="photos" class="form-label">Venue photos (optional)</label>
-                        <input type="file" id="photos" name="photos[]" accept=".jpg,.jpeg,.png,.webp" multiple class="form-control" aria-describedby="photo-help">
-                        <p id="photo-help" class="form-text">JPG, PNG or WebP, up to 5 MB each.</p>
+                        <input type="file" id="photos" name="photos[]" accept=".jpg,.jpeg,.png,.webp" multiple class="form-control"
+                               data-max-bytes="<?= $photoLimit ?>" aria-describedby="photo-help">
+                        <p id="photo-help" class="form-text">JPG, PNG or WebP, up to <?= courtEscape($photoLimitLabel) ?> each.</p>
                         <div id="photo-previews" class="row g-2" aria-label="Photo previews"></div>
                     </div>
 
@@ -31,28 +36,32 @@ require __DIR__ . '/../partials/Header.php';
 
                             <div class="col-12 col-sm-8">
                                 <label for="venue-name" class="form-label">Venue name</label>
-                                <input type="text" name="venueName" id="venue-name" class="form-control" required>
+                                <input type="text" name="venueName" id="venue-name" class="form-control" data-max-characters="100" value="<?= courtEscape($values['venueName'] ?? '') ?>" required>
                             </div>
                             <div class="col-12 col-sm-4">
                                 <label for="sport-choice" class="form-label">Sport</label>
                                 <select name="sportsType" id="sport-choice" class="form-select" required>
-                                    <option value="">Select</option><option>Basketball</option><option>Badminton</option><option>Pickleball</option>
+                                    <option value="">Select</option>
+                                    <?php foreach (['Basketball', 'Badminton', 'Pickleball'] as $sport): ?>
+                                        <option <?= ($values['sportsType'] ?? '') === $sport ? 'selected' : '' ?>><?= $sport ?></option>
+                                    <?php endforeach; ?>
                                 </select>
                             </div>
 
                             <div class="col-12">
                                 <label for="venue-location" class="form-label">Location</label>
-                                <input type="text" name="address" id="venue-location" class="form-control" required>
+                                <input type="text" name="address" id="venue-location" class="form-control" data-max-characters="200" value="<?= courtEscape($values['address'] ?? '') ?>" required>
                             </div>
 
                             <div class="col-12">
                                 <label for="venue-description" class="form-label">Description</label>
-                                <textarea name="description" id="venue-description" class="form-control" rows="3" required></textarea>
+                                <textarea name="description" id="venue-description" class="form-control" rows="3" data-max-characters="200" required><?= courtEscape($values['description'] ?? '') ?></textarea>
                             </div>
 
                             <div class="col-12 col-sm-8">
                                 <label for="price-per-session" class="form-label">Price per hour (PHP)</label>
-                                <input type="number" name="hourlyRate" id="price-per-session" class="form-control" min="0" step="0.01" required>
+                                <input type="number" name="hourlyRate" id="price-per-session" class="form-control" min="0.01" max="99999999.99" step="0.01"
+                                       value="<?= isset($values['hourlyRate']) ? number_format($values['hourlyRate'], 2, '.', '') : '' ?>" required>
                             </div>
                         </div>
                     </div>
@@ -65,13 +74,14 @@ require __DIR__ . '/../partials/Header.php';
                         <div class="row g-3">
                             <div class="col-12 col-sm-6">
                                 <label for="venue-open-time" class="form-label">Opens</label>
-                                <input type="time" name="openHour" id="venue-open-time" class="form-control" required>
+                                <input type="time" name="openHour" id="venue-open-time" class="form-control" value="<?= courtEscape($values['openHour'] ?? '') ?>" required>
                             </div>
                             <div class="col-12 col-sm-6">
                                 <label for="venue-close-time" class="form-label">Closes</label>
-                                <input type="time" name="closeHour" id="venue-close-time" class="form-control" required>
+                                <input type="time" name="closeHour" id="venue-close-time" class="form-control" value="<?= courtEscape($values['closeHour'] ?? '') ?>" aria-describedby="venue-hours-help" required>
                             </div>
                         </div>
+                        <p class="form-text mb-0" id="venue-hours-help">Allow at least one hour between opening and closing. Use 00:00 for midnight.</p>
                     </div>
                 </div>
 

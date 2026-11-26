@@ -17,6 +17,32 @@ class Controller {
         return new $validator();
     }
 
+    protected function validatedID($value): ?int {
+        $validator = $this->validator('Validator');
+        $validator->validate(['id' => $value], ['id' => Validator::ID_RULE]);
+        return $validator->clean()['id'] ?? null;
+    }
+
+    protected function accountCreationRules(): array {
+        return [
+            'name' => ['required' => true, 'max' => 100, 'pattern' => "/\A(?=.*\p{L})[\p{L} .'-]+\z/u"],
+            'email' => ['required' => true, 'type' => 'email', 'max' => 100],
+            'password' => [
+                'required' => true,
+                'trim' => false,
+                'min' => 8,
+                'maxBytes' => 72, // PASSWORD_DEFAULT currently uses bcrypt.
+                'patterns' => [
+                    ['/[A-Z]/', 'Include at least one uppercase letter.'],
+                    ['/[a-z]/', 'Include at least one lowercase letter.'],
+                    ['/[0-9]/', 'Include at least one number.'],
+                    ['/[^A-Za-z0-9\s]/u', 'Include at least one special character.'],
+                    ['/\A[^\r\n]*\z/', 'Passwords cannot contain line breaks.'],
+                ]
+            ]
+        ];
+    }
+
     // Maps database arrays straight into HTML component views templates
     protected function view($view, $data = []) {
         // Populate the greeting for sessions started before displayName was stored.
