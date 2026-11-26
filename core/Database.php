@@ -17,7 +17,7 @@ class Database {
         $port = getenv("COURTONE_DB_PORT") ?: "3306";
         $dbname = getenv("COURTONE_DB_NAME") ?: "courtbooking";
         $username = getenv("COURTONE_DB_USER") ?: "root";
-        $password = getenv("COURTONE_DB_PASSWORD") !== false ? getenv("COURTONE_DB_PASSWORD") : "ccinfom_#dlsu2025"; /* change depending on what machine you're using */
+        $password = getenv("COURTONE_DB_PASSWORD") !== false ? getenv("COURTONE_DB_PASSWORD") : "01227801jl"; /* change depending on what machine you're using */
 
         $options = [
             PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,

@@ -9,7 +9,8 @@
   <script src="<?= courtEscape(courtUrl('public/js/theme.js')) ?>"></script>
   <link rel="stylesheet" href="<?= courtEscape(courtUrl('bootstrap-5.3.8-dist/css/bootstrap.min.css')) ?>">
   <?php foreach (array_merge(['style.css'], $pageStyles ?? [], ['phase3.css', 'darkMode.css']) as $stylesheet): ?>
-    <link rel="stylesheet" href="<?= courtEscape(courtUrl('public/css/' . $stylesheet)) ?>">
+    <?php $styleVersion = @filemtime(dirname(__DIR__, 2) . '/public/css/' . $stylesheet) ?: 1; ?>
+    <link rel="stylesheet" href="<?= courtEscape(courtUrl('public/css/' . $stylesheet) . '?v=' . $styleVersion) ?>">
   <?php endforeach; ?>
 </head>
 <body class="<?= courtEscape($bodyClass ?? '') ?>">

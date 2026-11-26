@@ -2,6 +2,7 @@
     display: grid;
     grid-template-columns: minmax(9rem, 12rem) minmax(0, 1fr);
     align-items: start;
+    align-content: start;
     gap: 1rem;
 }
 .admin-title { grid-column: 1 / -1; }
