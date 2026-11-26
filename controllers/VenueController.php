@@ -140,7 +140,14 @@ public function browseVenues() {
                 return;
             }
 
-            $this->registerVenue($values, $photos, (int) $_SESSION['userID']);
+            if (!$this->registerVenue($values, $photos, (int) $_SESSION['userID'])) {
+                http_response_code(500);
+                $this->view('venues/venueForm', $data + [
+                    'error' => 'Venue photos could not be saved. Try saving without photos or contact the site administrator.',
+                    'values' => $values
+                ]);
+                return;
+            }
 
             header('Location: ' . courtUrl('/index.php?url=dashboard/dispatcher'));
             exit;
@@ -186,15 +193,23 @@ public function browseVenues() {
         return $photos;
     }
 
-    private function registerVenue(array $values, array $photos, int $ownerID): void {
+    private function registerVenue(array $values, array $photos, int $ownerID): bool {
+        $uploadDir = dirname(__DIR__) . '/public/uploads/';
+        if ($photos) {
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0755, true);
+            }
+            if (!is_dir($uploadDir) || !is_writable($uploadDir)) {
+                error_log('CourtOne venue photo directory is not writable: ' . $uploadDir);
+                return false;
+            }
+        }
+
         $venueModel = $this->model('Venue');
         $imageModel = $photos ? $this->model('Image') : null;
-        $uploadDir = __DIR__ . '/../public/uploads/';
-        if ($photos && !is_dir($uploadDir) && !mkdir($uploadDir, 0755, true) && !is_dir($uploadDir)) {
-            throw new RuntimeException('Could not create the venue photo directory.');
-        }
         $db = Database::getInstance();
         $savedPaths = [];
+        $committed = false;
         $db->beginTransaction();
         try {
             $venueID = $venueModel->registerVenue(
@@ -206,20 +221,24 @@ public function browseVenues() {
                 $filename = 'venue_' . bin2hex(random_bytes(16)) . '.' . $photo['extension'];
                 $path = $uploadDir . $filename;
                 if (!move_uploaded_file($photo['path'], $path)) {
-                    throw new RuntimeException('Could not save a venue photo.');
+                    error_log('CourtOne could not save a venue photo to: ' . $path);
+                    return false;
                 }
                 $savedPaths[] = $path;
                 $imageModel->createImage('/public/uploads/' . $filename, $venueID);
             }
             $db->commit();
-        } catch (Throwable $error) {
-            if ($db->inTransaction()) {
-                $db->rollBack();
+            $committed = true;
+            return true;
+        } finally {
+            if (!$committed) {
+                if ($db->inTransaction()) {
+                    $db->rollBack();
+                }
+                foreach ($savedPaths as $path) {
+                    unlink($path);
+                }
             }
-            foreach ($savedPaths as $path) {
-                unlink($path);
-            }
-            throw $error;
         }
     }
 

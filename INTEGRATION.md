@@ -119,3 +119,20 @@ Run `php tests/paths.php` to check automatic paths and the proxy override.
 
 The SQL seed uses `utf8mb4_unicode_ci` throughout for compatibility with both
 MySQL and XAMPP MariaDB. Existing databases are not migrated by this change.
+
+### Venue photo uploads on Proxmox
+
+On the Ubuntu guest, PHP needs write access to `public/uploads`. An SFTP upload
+or Git checkout can leave the directory writable only by the deployment user.
+For the default Apache worker account, run these commands on the guest:
+
+```sh
+cd /var/www/html/CCAPDEV-N24-1-CourtOne
+sudo chgrp www-data public/uploads
+sudo chmod g+rwx public/uploads
+sudo -u www-data test -w public/uploads && echo 'Upload directory is writable'
+```
+
+If PHP runs as a different account, use its worker group and account in these
+commands. Submit the form with a small photo to verify the upload. If the save
+still fails, check the PHP error log around the time of the request.
