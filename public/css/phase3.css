@@ -12,7 +12,7 @@
     --court-shadow: 0 2px 6px rgba(20, 46, 83, .05);
 }
 
-html { height: 100%; scroll-padding-top: 5rem; }
+html { height: 100%; scroll-padding-top: 4rem; }
 body {
     min-height: 100vh;
     min-height: 100dvh;
@@ -40,23 +40,33 @@ main { flex: 1 0 auto; width: 100%; }
     background: var(--court-surface);
     border-bottom: 1px solid var(--court-border);
 }
-.court-navbar { min-height: 68px; gap: .55rem; }
+.court-site-header .court-navbar {
+    min-height: 52px;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding: .35rem 1.5rem;
+    gap: .55rem;
+    background: transparent;
+    box-shadow: none;
+}
 .court-brand {
     display: inline-flex;
     align-items: center;
-    gap: .5rem;
+    gap: .45rem;
     margin: 0;
+    padding: 0;
     color: var(--court-ink);
-    font-size: 1.22rem;
+    font-size: clamp(1rem, 3.5vw, 1.12rem);
     font-weight: 800;
     letter-spacing: -.025em;
 }
 .court-brand:hover, .court-brand:focus, .court-brand-accent { color: var(--court-accent); }
-.court-brand-mark { object-fit: contain; border-radius: 7px; }
+.court-brand-mark { width: 30px; height: 30px; object-fit: contain; border-radius: 6px; }
 .court-site-header .nav-link {
     color: var(--court-muted);
+    font-size: .92rem;
     font-weight: 600;
-    padding: .6rem .65rem;
+    padding: .35rem .6rem;
     border-radius: 6px;
 }
 .court-site-header .nav-link:hover,
@@ -73,11 +83,16 @@ main { flex: 1 0 auto; width: 100%; }
     font-size: .83rem;
     color: var(--court-muted);
 }
-.court-navbar .court-nav-account { white-space: nowrap; }
+.court-site-header .court-navbar .court-nav-account {
+    min-height: 34px;
+    padding: .3rem .85rem;
+    font-size: .9rem;
+    white-space: nowrap;
+}
 .court-nav-account[aria-current="page"] { box-shadow: inset 0 -3px rgba(255, 255, 255, .75); }
-.court-mobile-greeting { display: block; padding: .5rem .65rem 0; color: var(--court-muted); }
-.court-signout { color: var(--court-muted); padding: .45rem; white-space: nowrap; }
-.court-menu-toggle { padding: .45rem; border-color: var(--court-border); }
+.court-mobile-greeting { display: block; padding: .4rem .6rem 0; color: var(--court-muted); }
+.court-signout { color: var(--court-muted); padding: .35rem .45rem; font-size: .9rem; white-space: nowrap; }
+.court-menu-toggle { padding: .25rem .45rem; border-color: var(--court-border); }
 .court-site-footer {
     margin-top: auto;
     flex-shrink: 0;
@@ -86,10 +101,14 @@ main { flex: 1 0 auto; width: 100%; }
     background: var(--court-surface);
     color: var(--court-muted);
 }
+.court-site-footer .container {
+    margin-top: 0;
+    margin-bottom: 0;
+}
 .btn.court-theme-toggle {
     position: fixed;
-    right: 1.25rem;
-    bottom: 1.25rem;
+    right: max(1rem, env(safe-area-inset-right));
+    bottom: max(1rem, env(safe-area-inset-bottom));
     z-index: 1035; /* Above sticky header (1030), below Bootstrap modals (1055) */
     width: 44px;
     height: 44px;
@@ -264,4 +283,10 @@ img[data-using-fallback] { object-fit: contain; padding: .75rem; }
 @media (max-width: 767.98px) {
     .court-chat-layout { grid-template-columns: minmax(0, 1fr); }
     .court-chat-body { min-height: 10rem; }
+}
+
+@media (max-width: 575.98px) {
+    .court-site-header .court-navbar { padding: .35rem .75rem; }
+    .court-brand-mark { width: 28px; height: 28px; }
+    .court-site-header .court-navbar .court-nav-account { padding: .25rem .65rem; font-size: .85rem; }
 }

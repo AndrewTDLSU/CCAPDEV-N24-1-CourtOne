@@ -9,7 +9,7 @@ $navLoggedIn = !empty($_SESSION['userID']);
 <header class="court-site-header">
   <nav class="container navbar navbar-expand-lg court-navbar" aria-label="Main navigation">
     <a class="navbar-brand court-brand" href="<?= courtEscape(courtUrl('index.php?url=home/index')) ?>">
-      <img class="court-brand-mark" src="<?= courtEscape(courtUrl('public/media/icons/courtone-logo.png')) ?>" alt="" width="38" height="38">
+      <img class="court-brand-mark" src="<?= courtEscape(courtUrl('public/media/icons/courtone-logo.png')) ?>" alt="" width="30" height="30">
       <span>Court<span class="court-brand-accent">One</span></span>
     </a>
 

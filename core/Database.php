@@ -17,7 +17,7 @@ class Database {
         $port = getenv("COURTONE_DB_PORT") ?: "3306";
         $dbname = getenv("COURTONE_DB_NAME") ?: "courtbooking";
         $username = getenv("COURTONE_DB_USER") ?: "root";
-        $password = getenv("COURTONE_DB_PASSWORD") !== false ? getenv("COURTONE_DB_PASSWORD") : "p@ssword"; /* change depending on what machine you're using */
+        $password = getenv("COURTONE_DB_PASSWORD") !== false ? getenv("COURTONE_DB_PASSWORD") : "123456"; /* change depending on what machine you're using */
 
 
         $options = [

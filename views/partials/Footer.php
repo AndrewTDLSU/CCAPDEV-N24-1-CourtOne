@@ -1,5 +1,5 @@
 <footer class="court-site-footer">
-  <div class="container d-flex flex-wrap justify-content-between align-items-center gap-2 py-3">
+  <div class="container d-flex flex-wrap justify-content-between align-items-center gap-2 py-2">
     <small>&copy; <?= date('Y') ?> CourtOne</small>
   </div>
 </footer>
