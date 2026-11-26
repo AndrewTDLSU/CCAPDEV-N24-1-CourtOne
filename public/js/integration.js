@@ -24,6 +24,7 @@ document.querySelectorAll('[data-new-password]').forEach(password => {
   const confirm = document.getElementById('confirm-password');
   const feedback = document.getElementById('password-match');
   const validate = () => {
+    // Follow the server's password format and byte limit while preserving whitespace.
     const value = password.value;
     const valid = Array.from(value).length >= 8 && /[A-Z]/.test(value)
       && /[a-z]/.test(value) && /[0-9]/.test(value) && /[^A-Za-z0-9\p{White_Space}]/u.test(value);

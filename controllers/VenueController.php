@@ -5,6 +5,7 @@ class VenueController extends Controller {
     private const MAX_PHOTO_BYTES = 5 * 1024 * 1024;
 
 public function browseVenues() {
+    // Get search filters from the URL
     $validator = $this->validator('Validator');
     $valid = $validator->validate($_GET, [
         'q' => ['max' => 200],
@@ -200,6 +201,7 @@ public function browseVenues() {
                 $values['venueName'], $values['address'], $values['description'], $values['sportsType'],
                 $values['openHour'], $values['closeHour'], $ownerID, $values['hourlyRate']
             );
+            // Save optional venue photos
             foreach ($photos as $photo) {
                 $filename = 'venue_' . bin2hex(random_bytes(16)) . '.' . $photo['extension'];
                 $path = $uploadDir . $filename;
@@ -321,7 +323,7 @@ public function browseVenues() {
         ]);
         $filters = $validator->clean();
         $year = $filters['year'] ?? (int) date('Y');
-        $month = $filters['month'] ?? 0;
+        $month = $filters['month'] ?? 0; // 0 = the whole year
 
         // date range of the court usage pie chart: the chosen month, or the whole year
         if ($month > 0) {

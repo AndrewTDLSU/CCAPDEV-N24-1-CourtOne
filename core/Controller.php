@@ -23,8 +23,10 @@ class Controller {
         return $validator->clean()['id'] ?? null;
     }
 
+    // Shared signup and staff account validation rules. Assisted by VSCode Copilot.
     protected function accountCreationRules(): array {
         return [
+            // Require at least one letter. Spaces, periods, apostrophes and hyphens are also allowed.
             'name' => ['required' => true, 'max' => 100, 'pattern' => "/\A(?=.*\p{L})[\p{L} .'-]+\z/u"],
             'email' => ['required' => true, 'type' => 'email', 'max' => 100],
             'password' => [
@@ -32,6 +34,7 @@ class Controller {
                 'trim' => false,
                 'min' => 8,
                 'maxBytes' => 72, // PASSWORD_DEFAULT currently uses bcrypt.
+                // Password validation rules with custom patterns and messages
                 'patterns' => [
                     ['/[A-Z]/', 'Include at least one uppercase letter.'],
                     ['/[a-z]/', 'Include at least one lowercase letter.'],
