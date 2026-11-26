@@ -17,11 +17,8 @@ class Database {
         $port = getenv("COURTONE_DB_PORT") ?: "3306";
         $dbname = getenv("COURTONE_DB_NAME") ?: "courtbooking";
         $username = getenv("COURTONE_DB_USER") ?: "root";
-<<<<<<< HEAD
         $password = getenv("COURTONE_DB_PASSWORD") !== false ? getenv("COURTONE_DB_PASSWORD") : "p@ssword"; /* change depending on what machine you're using */
-=======
-        $password = getenv("COURTONE_DB_PASSWORD") !== false ? getenv("COURTONE_DB_PASSWORD") : "01227801jl"; /* change depending on what machine you're using */
->>>>>>> 24163b00168a4657684e7d1b820affb5bbf11b6c
+
 
         $options = [
             PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
@@ -38,12 +35,9 @@ class Database {
             );
         } catch (PDOException $e) {
             error_log("Database Connection Failure: " . $e->getMessage());
-<<<<<<< HEAD
-            die("Critical Error: " . $e->getMessage());
-=======
             http_response_code(503);
             exit('CourtOne is temporarily unavailable. Please try again.');
->>>>>>> 24163b00168a4657684e7d1b820affb5bbf11b6c
+
         }
     }
 
