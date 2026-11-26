@@ -81,21 +81,26 @@ main { flex: 1 0 auto; width: 100%; }
 .court-site-footer {
     margin-top: auto;
     flex-shrink: 0;
-    width: 100%;    
+    width: 100%;
     border-top: 1px solid var(--court-border);
     background: var(--court-surface);
     color: var(--court-muted);
 }
-.court-theme-toggle {
+.btn.court-theme-toggle {
     position: fixed;
     right: 1.25rem;
     bottom: 1.25rem;
     z-index: 1035; /* Above sticky header (1030), below Bootstrap modals (1055) */
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     background: var(--court-surface);
     color: var(--court-ink);
     border: 1px solid var(--court-border);
-    border-radius: 999px;
-    padding: .5rem .95rem;
+    border-radius: 50%;
     box-shadow: 0 4px 14px rgba(15, 23, 42, .16);
 }
 
@@ -105,6 +110,11 @@ main { flex: 1 0 auto; width: 100%; }
     border-color: var(--court-accent);
     color: var(--court-accent);
 }
+.court-theme-toggle .theme-icon-sun { display: none; }
+.court-theme-toggle .theme-icon-moon { display: block; }
+
+[data-bs-theme="dark"] .court-theme-toggle .theme-icon-sun { display: block; }
+[data-bs-theme="dark"] .court-theme-toggle .theme-icon-moon { display: none; }
 .card, .court-chat-sidebar, .court-messages-panel {
     min-width: 0;
     background: var(--court-surface);

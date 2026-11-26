@@ -16,7 +16,6 @@
 
         if (button) {
             const isDark = theme === "dark";
-            button.textContent = isDark ? "Light mode" : "Dark mode";
             button.setAttribute("aria-label", isDark ? "Switch to light mode" : "Switch to dark mode");
             button.setAttribute("aria-pressed", String(isDark));
         }
