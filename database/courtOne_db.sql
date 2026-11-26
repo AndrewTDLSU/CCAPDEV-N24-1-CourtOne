@@ -136,6 +136,10 @@ LOCK TABLES `images` WRITE;
 /*!40000 ALTER TABLE `images` ENABLE KEYS */;
 UNLOCK TABLES;
 
+INSERT INTO images (imageFilePath, VenueID) VALUES ('/public/uploads/mnl_hoops_center.jpg' ,1);
+INSERT INTO images (imageFilePath, VenueID) VALUES ('/public/uploads/qc_shuttle_club.jpg' ,2);
+INSERT INTO images (imageFilePath, VenueID) VALUES ('/public/uploads/mkt_pickleball_park.jpg' ,3);
+
 --
 -- Table structure for table `payments`
 --
