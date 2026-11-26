@@ -34,7 +34,7 @@ class Database {
             );
         } catch (PDOException $e) {
             error_log("Database Connection Failure: " . $e->getMessage());
-            die("Critical Error: Database connection dropped.");
+            die("Critical Error: " . $e->getMessage());
         }
     }
 
