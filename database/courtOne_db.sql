@@ -19,6 +19,9 @@
 -- Table structure for table `bookings`
 --
 
+CREATE database courtbooking;
+USE courtbooking;
+
 DROP TABLE IF EXISTS `bookings`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
@@ -132,6 +135,10 @@ LOCK TABLES `images` WRITE;
 /*!40000 ALTER TABLE `images` DISABLE KEYS */;
 /*!40000 ALTER TABLE `images` ENABLE KEYS */;
 UNLOCK TABLES;
+
+INSERT INTO images (imageFilePath, VenueID) VALUES ('/public/uploads/mnl_hoops_center.jpg' ,1);
+INSERT INTO images (imageFilePath, VenueID) VALUES ('/public/uploads/qc_shuttle_club.jpg' ,2);
+INSERT INTO images (imageFilePath, VenueID) VALUES ('/public/uploads/mkt_pickleball_park.jpg' ,3);
 
 --
 -- Table structure for table `payments`

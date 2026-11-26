@@ -36,6 +36,30 @@ if (conversationSearch) {
 const thread = document.querySelector('[data-court-messages]');
 if (thread) thread.scrollTop = thread.scrollHeight;
 
+document.querySelectorAll('[data-max-characters]').forEach(field => {
+  const validate = () => {
+    const value = field.value.replace(/^\p{White_Space}+/u, '').replace(/(\P{White_Space})\p{White_Space}+$/u, '$1');
+    const limit = Number(field.dataset.maxCharacters);
+    let error = '';
+    if (!value && field.required) {
+      error = 'Please fill out this field.';
+    } else if (Array.from(value).length > limit) {
+      error = `Enter no more than ${limit} characters.`;
+    } else if (field.hasAttribute('data-account-name') && !/^(?=.*\p{L})[\p{L} .'-]+$/u.test(value)) {
+      error = 'Enter a name with at least one letter. Spaces, periods, apostrophes and hyphens are allowed.';
+    }
+    field.setCustomValidity(error);
+    return !error;
+  };
+  field.addEventListener('input', validate);
+  field.form.addEventListener('submit', event => {
+    if (!validate()) {
+      event.preventDefault();
+      field.form.reportValidity();
+    }
+  });
+});
+
 const topBookingsLink = document.querySelector('[data-bookings-link]');
 const topDashboardLink = document.querySelector('[data-dashboard-link]');
 

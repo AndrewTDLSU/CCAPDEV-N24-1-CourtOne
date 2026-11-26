@@ -14,12 +14,12 @@ require __DIR__ . '/../partials/Header.php';
       <form action="<?= courtEscape(courtUrl('index.php?url=auth/signup')) ?>" method="post" id="signup-form" class="d-grid gap-3">
         <div>
           <label for="signup-name" class="form-label">Full name</label>
-          <input class="form-control" type="text" id="signup-name" name="name" autocomplete="name" required
+          <input class="form-control" type="text" id="signup-name" name="name" autocomplete="name" data-max-characters="100" data-account-name required
                  value="<?= courtEscape(is_string($_POST['name'] ?? null) ? $_POST['name'] : '') ?>">
         </div>
         <div>
           <label for="signup-email" class="form-label">Email</label>
-          <input class="form-control" type="email" id="signup-email" name="email" autocomplete="email" maxlength="254" required
+          <input class="form-control" type="email" id="signup-email" name="email" autocomplete="email" maxlength="100" required
                  value="<?= courtEscape(is_string($_POST['email'] ?? null) ? $_POST['email'] : '') ?>">
         </div>
         <div>
@@ -32,13 +32,13 @@ require __DIR__ . '/../partials/Header.php';
         <div>
           <label for="password" class="form-label">Password</label>
           <input class="form-control" type="password" id="password" name="password" autocomplete="new-password"
-                 aria-describedby="password-rules" required>
-          <p class="form-text mb-0" id="password-rules">Use at least 8 characters, including an uppercase letter, a lowercase letter, a number and a special character.</p>
+                 minlength="8" maxlength="72" data-new-password aria-describedby="password-rules" required>
+          <p class="form-text mb-0" id="password-rules">Use at least 8 characters and at most 72 bytes. Include an uppercase letter, a lowercase letter, a number and a special character.</p>
         </div>
         <div>
           <label for="confirm-password" class="form-label">Confirm password</label>
           <input class="form-control" type="password" id="confirm-password" name="confirmPassword" autocomplete="new-password"
-                 aria-describedby="password-match" required>
+                 maxlength="72" aria-describedby="password-match" required>
           <p id="password-match" class="form-text mb-0 text-danger-emphasis" aria-live="polite"></p>
         </div>
         <input type="hidden" name="csrfToken" value="<?= courtEscape($_SESSION['csrfToken']) ?>">

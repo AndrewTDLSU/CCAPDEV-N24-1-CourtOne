@@ -1,7 +1,13 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
+ini_set('display_errors', '0');
+ini_set('log_errors', '1');
 error_reporting(E_ALL);
+set_exception_handler(function (Throwable $error): void {
+    error_log($error->getMessage());
+    http_response_code(500);
+    header('Content-Type: text/plain; charset=UTF-8');
+    echo 'CourtOne could not complete your request. Please try again.';
+});
 
 require_once __DIR__ . '/../core/Paths.php';
 
@@ -22,7 +28,11 @@ require_once __DIR__ . '/../core/Model.php';
 
 // 3. Parse incoming URL parameters
 $url = $_GET['url'] ?? 'home/index';
-$urlParts = explode('/', filter_var(rtrim($url, '/'), FILTER_SANITIZE_URL));
+if (!is_string($url)) {
+    http_response_code(400);
+    exit('Choose a valid CourtOne page.');
+}
+$urlParts = explode('/', rtrim($url, '/'));
 
 $controllerInput = !empty($urlParts[0])
     ? strtolower($urlParts[0])
@@ -47,6 +57,12 @@ if ($controllerInput === 'home') {
 $methodName = isset($urlParts[1]) && !empty($urlParts[1])
     ? $urlParts[1]
     : 'index';
+
+if (!preg_match('/\A[a-z][a-z0-9_]*\z/', $controllerInput) ||
+    !preg_match('/\A[a-z][a-z0-9_]*\z/i', $methodName)) {
+    http_response_code(400);
+    exit('Choose a valid CourtOne page.');
+}
 
 $params = array_slice($urlParts, 2);
 

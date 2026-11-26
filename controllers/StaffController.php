@@ -18,10 +18,8 @@ class StaffController Extends Controller {
         $ownerID = $_SESSION['userID'];
 
         // no filter = all of the owner's venues
-        $venueID = (int) ($venueID ?? $_GET['venueID'] ?? 0); // get venueID from URL parameter or GET parameter, default to 0 if not provided
-        if ($venueID === 0) {
-            $venueID = null;
-        }
+        $filter = $venueID ?? $_GET['venueID'] ?? '0';
+        $venueID = $this->validatedID($filter);
 
         // messages sent back from createStaff()
         $messages = [
@@ -37,6 +35,9 @@ class StaffController Extends Controller {
 
         $error = $_SESSION['staffFormError'] ?? $error;
         unset($_SESSION['staffFormError']);
+        if ($venueID === null && $filter !== '0' && $filter !== 0 && $filter !== '') {
+            $error = 'Choose a valid venue to filter staff.';
+        }
 
         // load the models for venues and staff
         $venueModel = $this->model('Venue');
@@ -50,7 +51,7 @@ class StaffController Extends Controller {
             'venues' => $venueModel->fetchVenuesByOwner($ownerID),
             'venueID' => $venueID,
             'error' => $error,
-            'success' => isset($_GET['success'])
+            'success' => ($_GET['success'] ?? '') === '1'
         ]);
     }
 
@@ -71,68 +72,17 @@ class StaffController Extends Controller {
             exit;
         }
 
-        // inputted values
-        $name = trim($_POST['name'] ?? '');
-        $email = trim($_POST['email'] ?? '');
-        $password = $_POST['password'] ?? '';
-        $venueID = (int) ($_POST['venueID'] ?? 0);
-
-        // Assisted by VSCode Copilot
-        // Define validation rules for the input fields
-        $rules = [
-            'name' => ['required' => true, 'type' => 'string', 'pattern' => "/^[\p{L} .'-]+$/u"], // pattern allows letters, spaces, periods, apostrophes, and hyphens
-            'email' => ['required' => true, 'type' => 'email', 'max' => 254],
-            // Password validation rules with custom patterns and messages
-            'password' => [
-                    'required' => true,
-                    'type' => 'string',
-                    'min' => 8,
-                    'patterns' => [
-                        ["/[A-Z]/", "Password must contain at least one uppercase letter."],
-                        ["/[a-z]/", "Password must contain at least one lowercase letter."],
-                        ["/[0-9]/", "Password must contain at least one number."],
-                        ["/[\W_]/", "Password must contain at least one special character."]
-                    ]
-                ],
-            'venueID' => ['required' => true, 'type' => 'int', 'min' => 1]
-        ];
-
-        $validator = $this->validator('Validator'); // Instantiate the Validator class
+        $validator = $this->validator('Validator');
+        $rules = $this->accountCreationRules() + ['venueID' => Validator::ID_RULE];
         if (!$validator->validate($_POST, $rules)) {
-            $fieldLabels = [
-                    'name' => 'Name',
-                    'email' => 'Email',
-                    'password' => 'Password',
-                    'venueID' => 'Venue'
-                ];
-            $messages = [];
-            // display the first error message for each field
-            foreach ($validator->errors() as $field => $message) {
-                $messages[] = ($fieldLabels[$field] ?? 'Input') . ': ' . $message;
-            }
-            $_SESSION['staffFormError'] = implode(' ', $messages);
+            $_SESSION['staffFormError'] = $validator->errorMessage([
+                'name' => 'Name', 'email' => 'Email', 'password' => 'Password', 'venueID' => 'Venue'
+            ]);
+            $venueID = $validator->clean()['venueID'] ?? 0;
             header('Location: ' . $back . '&venueID=' . $venueID);
             exit;
         }
-
-        /*// Previous validation checks for missing fields, email format, and password length have been replaced by the Validator class. The following checks are now redundant and can be removed if wished to do so:
-        // validate input, if any of the required fields are missing, redirect back with an error code
-        if ($name === '' || $email === '' || $password === '' || $venueID === 0) {
-            header('Location: ' . $back . '&error=missing_fields');
-            exit;
-        }
-
-        // validate email format
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            header('Location: ' . $back . '&error=invalid_email');
-            exit;
-        }
-
-        // validate password length
-        if (strlen($password) < 8) {
-            header('Location: ' . $back . '&error=short_password');
-            exit;
-        }*/
+        ['name' => $name, 'email' => $email, 'password' => $password, 'venueID' => $venueID] = $validator->clean();
 
         // owners can only add staff to their own venues
         $venueModel = $this->model('Venue');

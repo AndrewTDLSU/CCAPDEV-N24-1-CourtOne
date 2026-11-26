@@ -1,14 +1,21 @@
 <?php
 class VenueController extends Controller {
 
+    private const SPORTS = ['Basketball', 'Badminton', 'Pickleball'];
+    private const MAX_PHOTO_BYTES = 5 * 1024 * 1024;
+
 public function browseVenues() {
+    $validator = $this->validator('Validator');
+    $valid = $validator->validate($_GET, [
+        'q' => ['max' => 200],
+        'sport' => ['allowed' => ['all', ...self::SPORTS]]
+    ]);
+    $filters = $validator->clean();
+    $search = $filters['q'] ?? '';
+    $sport = $filters['sport'] ?? 'all';
 
     // Get venues from the database
     $allVenues = $this->model('Venue')->fetchAllVenues();
-
-    // Get search filters from the URL
-    $search = trim($_GET['q'] ?? '');
-    $sport = $_GET['sport'] ?? 'all';
 
     $venues = [];
 
@@ -35,12 +42,18 @@ public function browseVenues() {
         'pageTitle' => 'Browse Venues',
         'venues' => $venues,
         'search' => $search,
-        'sport' => $sport
+        'sport' => $sport,
+        'filterError' => $valid ? '' : $validator->errorMessage(['q' => 'Search', 'sport' => 'Sport'])
     ]);
 }
 
 
-    public function viewVenue($venueID) {
+    public function viewVenue($venueID = null) {
+        $venueID = $this->validatedID($venueID);
+        if ($venueID === null) {
+            http_response_code(400);
+            exit('Choose a valid venue.');
+        }
         $venueModel = $this->model('Venue');
         $courtModel = $this->model('Court');
         $imageModel = $this->model('Image');
@@ -49,14 +62,13 @@ public function browseVenues() {
         $venue = $venueModel->fetchVenueByID($venueID);
 
         if (!$venue) {
+            http_response_code(404);
             die('Venue not found.');
         }
 
-        $targetDate = $_GET['date'] ?? date('Y-m-d');
-        if (!is_string($targetDate) || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $targetDate) ||
-            strtotime($targetDate) === false || date('Y-m-d', strtotime($targetDate)) !== $targetDate) {
-            $targetDate = date('Y-m-d');
-        }
+        $validator = $this->validator('Validator');
+        $validDate = $validator->validate($_GET, ['date' => ['type' => 'date']]);
+        $targetDate = $validator->clean()['date'] ?? date('Y-m-d');
 
         $this->view('venues/viewVenue', [
             'pageTitle' => $venue['venueName'],
@@ -65,7 +77,8 @@ public function browseVenues() {
             'images' => $imageModel->fetchImageByVenue($venueID),
             'staffContacts' => $this->model('Staff')->getStaffByVenue($venueID),
             'grid' => $bookingModel->fetchOccupiedGridCells($venueID, $targetDate),
-            'targetDate' => $targetDate
+            'targetDate' => $targetDate,
+            'dateError' => $validDate ? '' : 'Enter a valid booking date. The schedule is showing today.'
         ]);
     }
 
@@ -76,88 +89,149 @@ public function browseVenues() {
             die('Only venue owners can register venues.');
         }
 
+        $data = ['pageTitle' => 'Register a Venue', 'photoLimit' => $this->photoLimit()];
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             // Define validation rules for the input fields
             $rules = [
-                'venueName' => ['required' => true, 'type' => 'string'],
-                'address' => ['required' => true, 'type' => 'string'],
-                'description' => ['required' => true, 'type' => 'string'],
-                'sportsType' => ['required' => true, 'type' => 'string'],
-                'openHour' => ['required' => true, 'type' => 'string', 'pattern' => '/^\d{2}:\d{2}$/'],
-                'closeHour' => ['required' => true, 'type' => 'string', 'pattern' => '/^\d{2}:\d{2}$/'],
-                'hourlyRate' => ['required' => true, 'type' => 'float', 'min' => 0]
+                'venueName' => ['required' => true, 'max' => 100],
+                'address' => ['required' => true, 'max' => 200],
+                'description' => ['required' => true, 'max' => 200, 'multiline' => true],
+                'sportsType' => ['required' => true, 'allowed' => self::SPORTS],
+                'openHour' => ['required' => true, 'pattern' => '/\A(?:[01][0-9]|2[0-3]):[0-5][0-9]\z/'],
+                'closeHour' => ['required' => true, 'pattern' => '/\A(?:[01][0-9]|2[0-3]):[0-5][0-9]\z/'],
+                'hourlyRate' => [
+                    'required' => true, 'type' => 'float', 'decimals' => 2, 'min' => 0.01, 'max' => 99999999.99,
+                    'rangeMessage' => 'Enter an hourly rate from ₱0.01 to ₱99,999,999.99.'
+                ]
             ];
 
             // Use the Validator class to validate the input data
             $validator = $this->validator('Validator');
             if (!$validator->validate($_POST, $rules)) {
                 http_response_code(422);
-                $this->view('venues/venueForm', ['error' => 'Check the venue details, rate and operating hours.']);
+                $this->view('venues/venueForm', $data + ['error' => $validator->errorMessage([
+                    'venueName' => 'Venue name', 'address' => 'Location', 'description' => 'Description',
+                    'sportsType' => 'Sport', 'openHour' => 'Opening time', 'closeHour' => 'Closing time',
+                    'hourlyRate' => 'Hourly rate'
+                ]), 'values' => $validator->clean()]);
                 return;
             }
 
-            $venueModel = $this->model('Venue');
-
-            $venueID = $venueModel->registerVenue(
-                $_POST['venueName'],
-                $_POST['address'],
-                $_POST['description'],
-                $_POST['sportsType'],
-                $_POST['openHour'],
-                $_POST['closeHour'],
-                $_SESSION['userID'],
-                $_POST['hourlyRate']
-            );
-
-            // Save optional venue photos
-            if (!empty($_FILES['photos']['name'][0])) {
-                $imageModel = $this->model('Image');
-                $uploadDir = __DIR__ . '/../public/uploads/';
-
-                if (!is_dir($uploadDir)) {
-                    mkdir($uploadDir, 0755, true);
-                }
-
-                foreach ($_FILES['photos']['tmp_name'] as $i => $tmp) {
-                    if ($_FILES['photos']['error'][$i] !== UPLOAD_ERR_OK) {
-                        continue;
-                    }
-
-                    $extension = strtolower(pathinfo($_FILES['photos']['name'][$i], PATHINFO_EXTENSION));
-
-                    if (!in_array($extension, ['jpg', 'jpeg', 'png', 'webp'], true)) {
-                        continue;
-                    }
-
-                    if ($_FILES['photos']['size'][$i] > 5 * 1024 * 1024 || getimagesize($tmp) === false) {
-                        continue;
-                    }
-
-                    $filename = uniqid('venue_') . '.' . $extension;
-
-                    if (move_uploaded_file($tmp, $uploadDir . $filename)) {
-                        $imageModel->createImage('/public/uploads/' . $filename, $venueID);
-                    }
-                }
+            $values = $validator->clean();
+            $close = $values['closeHour'] === '00:00' ? '24:00' : $values['closeHour'];
+            if (strtotime($close) - strtotime($values['openHour']) < 3600) {
+                http_response_code(422);
+                $this->view('venues/venueForm', $data + [
+                    'error' => 'Set the closing time at least one hour after opening. Use 00:00 for midnight.',
+                    'values' => $values
+                ]);
+                return;
             }
+
+            $photos = $this->validatedPhotos($_FILES['photos'] ?? [], $data['photoLimit']);
+            if ($photos === null) {
+                http_response_code(422);
+                $this->view('venues/venueForm', $data + [
+                    'error' => 'Choose valid JPG, PNG or WebP photos within the size limit shown below.',
+                    'values' => $values
+                ]);
+                return;
+            }
+
+            $this->registerVenue($values, $photos, (int) $_SESSION['userID']);
 
             header('Location: ' . courtUrl('/index.php?url=dashboard/dispatcher'));
             exit;
         }
 
-        $this->view('venues/venueForm', [
-            'pageTitle' => 'Register a Venue'
-        ]);
+        $this->view('venues/venueForm', $data);
     }
 
+    private function photoLimit(): int {
+        $configured = strtoupper(trim((string) ini_get('upload_max_filesize')));
+        $multipliers = ['K' => 1024, 'M' => 1024 ** 2, 'G' => 1024 ** 3];
+        $bytes = (int) $configured * ($multipliers[substr($configured, -1)] ?? 1);
+        return $bytes > 0 ? (int) min($bytes, self::MAX_PHOTO_BYTES) : self::MAX_PHOTO_BYTES;
+    }
 
-    public function addCourt($venueID) {
+    private function validatedPhotos(array $uploads, int $maxBytes): ?array {
+        $extensions = ['jpg' => IMAGETYPE_JPEG, 'jpeg' => IMAGETYPE_JPEG, 'png' => IMAGETYPE_PNG, 'webp' => IMAGETYPE_WEBP];
+        $photos = [];
+        $errors = $uploads['error'] ?? [];
+        if (!is_array($errors) || ($errors && (
+            !is_array($uploads['name'] ?? null) || !is_array($uploads['tmp_name'] ?? null) ||
+            !is_array($uploads['size'] ?? null)
+        ))) {
+            return null;
+        }
+        foreach ($errors as $index => $error) {
+            if ($error === UPLOAD_ERR_NO_FILE) {
+                continue;
+            }
+            $name = $uploads['name'][$index] ?? null;
+            $path = $uploads['tmp_name'][$index] ?? null;
+            $size = $uploads['size'][$index] ?? null;
+            if ($error !== UPLOAD_ERR_OK || !is_string($name) || !is_string($path) ||
+                !is_int($size) || $size <= 0 || $size > $maxBytes || !is_uploaded_file($path)) {
+                return null;
+            }
+            $extension = strtolower(pathinfo($name, PATHINFO_EXTENSION));
+            if (!isset($extensions[$extension]) || (@getimagesize($path)[2] ?? null) !== $extensions[$extension]) {
+                return null;
+            }
+            $photos[] = ['path' => $path, 'extension' => $extension];
+        }
+        return $photos;
+    }
+
+    private function registerVenue(array $values, array $photos, int $ownerID): void {
+        $venueModel = $this->model('Venue');
+        $imageModel = $photos ? $this->model('Image') : null;
+        $uploadDir = __DIR__ . '/../public/uploads/';
+        if ($photos && !is_dir($uploadDir) && !mkdir($uploadDir, 0755, true) && !is_dir($uploadDir)) {
+            throw new RuntimeException('Could not create the venue photo directory.');
+        }
+        $db = Database::getInstance();
+        $savedPaths = [];
+        $db->beginTransaction();
+        try {
+            $venueID = $venueModel->registerVenue(
+                $values['venueName'], $values['address'], $values['description'], $values['sportsType'],
+                $values['openHour'], $values['closeHour'], $ownerID, $values['hourlyRate']
+            );
+            foreach ($photos as $photo) {
+                $filename = 'venue_' . bin2hex(random_bytes(16)) . '.' . $photo['extension'];
+                $path = $uploadDir . $filename;
+                if (!move_uploaded_file($photo['path'], $path)) {
+                    throw new RuntimeException('Could not save a venue photo.');
+                }
+                $savedPaths[] = $path;
+                $imageModel->createImage('/public/uploads/' . $filename, $venueID);
+            }
+            $db->commit();
+        } catch (Throwable $error) {
+            if ($db->inTransaction()) {
+                $db->rollBack();
+            }
+            foreach ($savedPaths as $path) {
+                unlink($path);
+            }
+            throw $error;
+        }
+    }
+
+    public function addCourt($venueID = null) {
         // Only allow venue owners to add courts to their own venues
         if (!isset($_SESSION['userID']) || ($_SESSION['role'] ?? '') !== 'court_owner') {
             die('Only venue owners can add courts.');
         }
 
+        $venueID = $this->validatedID($venueID);
+        if ($venueID === null) {
+            http_response_code(400);
+            exit('Choose a valid venue.');
+        }
         $venueModel = $this->model('Venue');
 
         // Check if the logged-in user is the owner of the venue
@@ -171,12 +245,12 @@ public function browseVenues() {
         }
 
         $rules = [
-            'courtName' => ['required' => true, 'type' => 'string', 'pattern' => '/^[A-Za-z0-9_]+$/']
+            'courtName' => ['required' => true, 'max' => 150, 'pattern' => '/\A[A-Za-z0-9_]+\z/']
         ];
 
         $validator = $this->validator('Validator');
         if (!$validator->validate($_POST, $rules)) {
-            $_SESSION['courtMessage'] = ['type' => 'danger', 'text' => 'Enter a court name using letters, numbers and underscores.'];
+            $_SESSION['courtMessage'] = ['type' => 'danger', 'text' => 'Enter a court name of up to 150 characters using letters, numbers and underscores.'];
             header('Location: ' . courtUrl('/index.php?url=venue/venueStatistics/' . $venueID . '#add-court'));
             exit;
         }
@@ -217,13 +291,18 @@ public function browseVenues() {
     // index.php?url=venue/venueStatistics/{venueID}&year=2026&month=3
     // year = filter of the monthly line chart, bar graph and pie chart (default: this year)
     // month = optional extra filter of the pie chart only (default: the whole year)
-    public function venueStatistics($venueID) {
-        $venueModel = $this->model('Venue');
+    public function venueStatistics($venueID = null) {
+        $venueID = $this->validatedID($venueID);
 
         // Only allow venue owners to view statistics of their own venues
         if (!isset($_SESSION['userID']) ||
             ($_SESSION['role'] ?? '') !== 'court_owner' ||
-            !$venueModel->isVenueOwner($venueID, $_SESSION['userID'])) {
+            $venueID === null) {
+            http_response_code(403);
+            die('You cannot view the statistics of this venue.');
+        }
+        $venueModel = $this->model('Venue');
+        if (!$venueModel->isVenueOwner($venueID, $_SESSION['userID'])) {
             http_response_code(403);
             die('You cannot view the statistics of this venue.');
         }
@@ -235,15 +314,14 @@ public function browseVenues() {
         $venue = $venueModel->fetchVenueByID($venueID);
 
         // filters
-        $year = (int) ($_GET['year'] ?? date('Y'));
-        if ($year < 2000 || $year > 2100) {
-            $year = (int) date('Y');
-        }
-
-        $month = (int) ($_GET['month'] ?? 0);
-        if ($month < 1 || $month > 12) {
-            $month = 0; // 0 = the whole year
-        }
+        $validator = $this->validator('Validator');
+        $validFilters = $validator->validate($_GET, [
+            'year' => ['type' => 'int', 'min' => 2000, 'max' => 2100],
+            'month' => ['type' => 'int', 'min' => 0, 'max' => 12]
+        ]);
+        $filters = $validator->clean();
+        $year = $filters['year'] ?? (int) date('Y');
+        $month = $filters['month'] ?? 0;
 
         // date range of the court usage pie chart: the chosen month, or the whole year
         if ($month > 0) {
@@ -267,6 +345,7 @@ public function browseVenues() {
             'stats' => $stats,
             'year' => $year,
             'month' => $month,
+            'filterError' => $validFilters ? '' : 'Choose a valid year and month for the statistics.',
             'years' => $bookingModel->fetchBookingYearsByVenue($venueID),
             'monthlyRevenue' => $paymentModel->fetchMonthlyRevenueByVenue($venueID, $year),     // line chart
             'monthlyBookings' => $bookingModel->fetchMonthlyBookingsByVenue($venueID, $year),   // bar graph

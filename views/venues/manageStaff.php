@@ -1,5 +1,6 @@
 <?php
 $title = 'Manage staff';
+$pageScripts = ['integration.js'];
 require __DIR__ . '/../partials/Header.php';
 ?>
 
@@ -63,18 +64,18 @@ require __DIR__ . '/../partials/Header.php';
                             <div class="row g-3">
                                 <div class="col-12">
                                     <label for="staff-name" class="form-label">Name</label>
-                                    <input type="text" name="name" id="staff-name" autocomplete="name" class="form-control" required>
+                                    <input type="text" name="name" id="staff-name" autocomplete="name" class="form-control" data-max-characters="100" data-account-name required>
                                 </div>
 
                                 <div class="col-12">
                                     <label for="staff-email" class="form-label">Email</label>
-                                    <input type="email" name="email" id="staff-email" autocomplete="email" maxlength="254" class="form-control" required>
+                                    <input type="email" name="email" id="staff-email" autocomplete="email" maxlength="100" class="form-control" required>
                                 </div>
 
                                 <div class="col-12">
                                     <label for="staff-password" class="form-label">Password</label>
-                                    <input type="password" name="password" id="staff-password" minlength="8" autocomplete="new-password" aria-describedby="staff-password-rules" class="form-control" required>
-                                    <p class="form-text mb-0" id="staff-password-rules">Use at least 8 characters, including uppercase and lowercase letters, a number and a special character.</p>
+                                    <input type="password" name="password" id="staff-password" minlength="8" maxlength="72" data-new-password autocomplete="new-password" aria-describedby="staff-password-rules" class="form-control" required>
+                                    <p class="form-text mb-0" id="staff-password-rules">Use at least 8 characters and at most 72 bytes. Include an uppercase letter, a lowercase letter, a number and a special character.</p>
                                 </div>
 
                                 <div class="col-12">

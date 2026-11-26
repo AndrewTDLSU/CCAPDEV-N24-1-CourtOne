@@ -12,16 +12,18 @@
     --court-shadow: 0 2px 6px rgba(20, 46, 83, .05);
 }
 
-html { scroll-padding-top: 5rem; }
+html { height: 100%; scroll-padding-top: 5rem; }
 body {
     min-height: 100vh;
+    min-height: 100dvh;
     display: flex;
     flex-direction: column;
+    overflow-x: clip;
     background: var(--court-page);
     color: var(--court-ink);
     overflow-wrap: anywhere;
 }
-main { flex: 1; }
+main { flex: 1 0 auto; width: 100%; }
 :focus-visible { outline: 3px solid var(--court-accent); outline-offset: 2px; }
 [hidden] { display: none !important; }
 
@@ -77,12 +79,42 @@ main { flex: 1; }
 .court-signout { color: var(--court-muted); padding: .45rem; white-space: nowrap; }
 .court-menu-toggle { padding: .45rem; border-color: var(--court-border); }
 .court-site-footer {
-    margin-top: 1.5rem;
+    margin-top: auto;
+    flex-shrink: 0;
+    width: 100%;
     border-top: 1px solid var(--court-border);
     background: var(--court-surface);
     color: var(--court-muted);
 }
+.btn.court-theme-toggle {
+    position: fixed;
+    right: 1.25rem;
+    bottom: 1.25rem;
+    z-index: 1035; /* Above sticky header (1030), below Bootstrap modals (1055) */
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--court-surface);
+    color: var(--court-ink);
+    border: 1px solid var(--court-border);
+    border-radius: 50%;
+    box-shadow: 0 4px 14px rgba(15, 23, 42, .16);
+}
 
+.court-theme-toggle:hover,
+.court-theme-toggle:focus-visible {
+    background: var(--court-soft);
+    border-color: var(--court-accent);
+    color: var(--court-accent);
+}
+.court-theme-toggle .theme-icon-sun { display: none; }
+.court-theme-toggle .theme-icon-moon { display: block; }
+
+[data-bs-theme="dark"] .court-theme-toggle .theme-icon-sun { display: block; }
+[data-bs-theme="dark"] .court-theme-toggle .theme-icon-moon { display: none; }
 .card, .court-chat-sidebar, .court-messages-panel {
     min-width: 0;
     background: var(--court-surface);

@@ -5,11 +5,14 @@ require __DIR__ . '/../partials/Header.php';
 
 <main class="container my-4" id="main-content">
   <h1 class="court-page-title">Find venues</h1>
+  <?php if (!empty($filterError)): ?>
+    <p class="alert alert-danger" role="alert"><?= courtEscape($filterError) ?></p>
+  <?php endif; ?>
   <form class="row g-2 align-items-end my-3" action="<?= courtEscape(courtUrl('index.php')) ?>" method="get" role="search">
     <input type="hidden" name="url" value="venue/browseVenues">
     <div class="col-12 col-sm">
       <label for="searchInput" class="form-label">Venue or location</label>
-      <input type="search" class="form-control" id="searchInput" name="q" value="<?= courtEscape($search) ?>"
+      <input type="search" class="form-control" id="searchInput" name="q" data-max-characters="200" value="<?= courtEscape($search) ?>"
              placeholder="Search venues or locations">
     </div>
     <div class="col col-sm-4 col-lg-3">

@@ -6,6 +6,9 @@ require __DIR__ . '/../partials/Header.php';
 <main class="container my-4" id="main-content">
   <h1 class="court-page-title mb-3">Demo payment</h1>
   <p class="alert alert-info">Payment is simulated. No money will be charged.</p>
+  <?php if (!empty($error)): ?>
+    <p class="alert alert-danger" role="alert"><?= courtEscape($error) ?></p>
+  <?php endif; ?>
   <form action="<?= courtEscape(courtUrl('index.php?url=booking/payment/' . (int) $booking['bookingID'])) ?>" method="post">
     <div class="row g-3">
       <div class="col-12 col-md-6">

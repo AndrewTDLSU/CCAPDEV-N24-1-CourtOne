@@ -8,6 +8,9 @@ require __DIR__ . '/../partials/Header.php';
     <h1 class="court-page-title mb-0">Messages</h1>
     <?php if ($recipient): ?><a class="btn btn-outline-secondary d-md-none" href="#message-thread">Go to conversation</a><?php endif; ?>
   </div>
+  <?php if (!empty($error)): ?>
+    <p class="alert alert-danger" role="alert"><?= courtEscape($error) ?></p>
+  <?php endif; ?>
   <div class="court-chat-layout">
     <aside class="court-chat-sidebar" id="conversation-list" aria-labelledby="inbox-title">
       <h2 class="h5" id="inbox-title">Inbox</h2>
@@ -72,7 +75,7 @@ require __DIR__ . '/../partials/Header.php';
           <input type="hidden" name="receiverID" value="<?= (int) $receiverID ?>">
           <input type="hidden" name="csrfToken" value="<?= courtEscape($_SESSION['csrfToken']) ?>">
           <label class="visually-hidden" for="courtMessageInput">Message</label>
-          <textarea class="form-control" id="courtMessageInput" name="message" rows="2" maxlength="500" placeholder="Type a message…" required></textarea>
+          <textarea class="form-control" id="courtMessageInput" name="message" rows="2" data-max-characters="500" placeholder="Type a message…" required></textarea>
           <button class="btn btn-primary" type="submit">Send</button>
         </form>
       <?php else: ?>

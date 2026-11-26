@@ -20,7 +20,7 @@ require __DIR__ . '/../partials/Header.php';
         </div>
         <div>
           <label for="login-email" class="form-label">Email</label>
-          <input class="form-control" type="email" id="login-email" name="email" autocomplete="username" required
+          <input class="form-control" type="email" id="login-email" name="email" autocomplete="username" maxlength="100" required
                  value="<?= courtEscape(is_string($_POST['email'] ?? null) ? $_POST['email'] : '') ?>">
         </div>
         <div>
