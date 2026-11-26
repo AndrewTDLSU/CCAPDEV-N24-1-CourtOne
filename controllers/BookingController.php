@@ -13,6 +13,7 @@ class BookingController extends Controller {
             exit;
         }
 
+        // Validate the calendar date, start time and court ID before checking slot availability.
         $validator = $this->validator('Validator');
         $rules = [
             'date' => ['required' => true, 'type' => 'date'],
@@ -26,6 +27,7 @@ class BookingController extends Controller {
         }
 
         ['date' => $date, 'time' => $time, 'courtID' => $courtID] = $validator->clean();
+        // The booking date and start time together must be in the future.
         if (strtotime($date . ' ' . $time) <= time()) {
             http_response_code(422);
             exit('Choose a booking time in the future.');
@@ -136,7 +138,11 @@ class BookingController extends Controller {
             exit;
         }
 
+
+        // Display the payment page for the booking.
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+            // Validate the selected payment method.
             $validator = $this->validator('Validator');
             if (!$validator->validate($_POST, [
                 'paymentMethod' => ['required' => true, 'allowed' => ['GCash', 'Card']]

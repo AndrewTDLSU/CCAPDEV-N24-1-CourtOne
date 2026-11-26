@@ -13,9 +13,13 @@ require_once __DIR__ . '/../core/Paths.php';
 
 date_default_timezone_set('Asia/Manila');
 session_start();
+
+//generates a random CSRF token if one does not exist
 if (empty($_SESSION['csrfToken'])) {
     $_SESSION['csrfToken'] = bin2hex(random_bytes(32));
 }
+
+//validates CSRF token for POST requests
 if ($_SERVER['REQUEST_METHOD'] === 'POST' &&
     (!is_string($_POST['csrfToken'] ?? null) || !hash_equals($_SESSION['csrfToken'], $_POST['csrfToken']))) {
     http_response_code(403);
@@ -27,6 +31,7 @@ require_once __DIR__ . '/../core/Controller.php';
 require_once __DIR__ . '/../core/Model.php';
 
 // 3. Parse incoming URL parameters
+// Default to the home page when the URL does not specify a route.
 $url = $_GET['url'] ?? 'home/index';
 if (!is_string($url)) {
     http_response_code(400);

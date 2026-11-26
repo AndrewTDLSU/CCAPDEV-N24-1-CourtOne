@@ -17,7 +17,7 @@ class StaffController Extends Controller {
 
         $ownerID = $_SESSION['userID'];
 
-        // no filter = all of the owner's venues
+        // Prefer the route parameter over the query parameter. Zero means all of the owner's venues.
         $filter = $venueID ?? $_GET['venueID'] ?? '0';
         $venueID = $this->validatedID($filter);
 
@@ -73,6 +73,7 @@ class StaffController Extends Controller {
         }
 
         $validator = $this->validator('Validator');
+        // Use the shared name, email and password rules and require a venue ID.
         $rules = $this->accountCreationRules() + ['venueID' => Validator::ID_RULE];
         if (!$validator->validate($_POST, $rules)) {
             $_SESSION['staffFormError'] = $validator->errorMessage([

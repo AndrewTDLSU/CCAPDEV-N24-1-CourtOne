@@ -22,6 +22,9 @@ class AuthController extends Controller {
             return;
         }
 
+
+        // Extract and clean the input data after validation.
+        // rate limiting is applied based on the IP and email address of the user attempting to log in.
         ['email' => $email, 'password' => $password, 'loginType' => $loginTarget] = $validator->clean();
         $limiter = $this->model('LoginRateLimiter');
         $attempt = $limiter->attempt(
@@ -32,7 +35,10 @@ class AuthController extends Controller {
 
         $user = $attempt['user'];
         if ($user !== null) {
+            // Successful authentication, Generates a new session ID to prevent session fixation attacks.
             session_regenerate_id(true);
+
+            // Store user information in the session for subsequent requests.
             $_SESSION['userID'] = $user['userID'];
             $_SESSION['displayName'] = $user['name'];
             $_SESSION['role'] = $user['userType'];
@@ -43,7 +49,7 @@ class AuthController extends Controller {
                 header('Location: ' . courtUrl('/index.php?url=dashboard/staffDashboard'));
                 exit;
             }
-
+            // If the user is not staff, redirect to the appropriate customer portal dashboard.
             unset($_SESSION['staffID'], $_SESSION['venueID']);
             header('Location: ' . courtUrl('/index.php?url=dashboard/dispatcher'));
             exit;
@@ -61,19 +67,26 @@ class AuthController extends Controller {
         $this->view('auth/login', $data);
     }
 
+    // Authenticates a user for the specified portal (customer or staff). Returns the user array on success, or null on failure.
+    // AI assisted 
     private function authenticateForPortal(string $email, string $password, string $loginTarget): ?array {
+        // Retrieve the user from the database based on the provided email and password.
         $user = $this->model('User')->authenticateUser($email, $password);
         if (!$user) {
             return null;
         }
+        // Ensure the user is attempting to log in to the correct portal.
 
         if ($loginTarget === 'customer_portal') {
             return in_array($user['userType'], ['user', 'court_owner', 'admin'], true) ? $user : null;
         }
+        // Ensure that only staff users can access the staff portal.
         if ($user['userType'] !== 'staff') {
             return null;
         }
+        // At this point, the user is confirmed to be a staff member attempting to access the staff portal.
 
+        // Retrieve the venue associated with the staff member.
         $venue = $this->model('Staff')->getVenueByStaff($user['userID']);
         if (!$venue) {
             return null;
@@ -86,6 +99,7 @@ class AuthController extends Controller {
     public function signup() {
         $data = ['pageTitle' => 'Account Creation Registration Sheet'];
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // Extend the shared account rules with signup-only fields.
             $rules = $this->accountCreationRules() + [
                 'confirmPassword' => ['required' => true, 'trim' => false, 'maxBytes' => 72],
                 'userType' => ['required' => true, 'allowed' => ['user', 'court_owner']]

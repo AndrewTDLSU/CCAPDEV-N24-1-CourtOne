@@ -9,11 +9,15 @@ Universal validation rules for various data types and formats
 // app/core/Validator.php
 class Validator
 {
+    // Validates input data against defined rules and stores any errors or cleaned data.
+    // Returns true if all fields pass validation, false otherwise.
+
     public const ID_RULE = ['required' => true, 'type' => 'int', 'min' => 1, 'max' => 2147483647];
 
     private array $errors = [];
     private array $clean  = [];
 
+    // Returns the array of validation errors.
     public function validate(array $input, array $rules): bool
     {
         $this->errors = [];
@@ -22,6 +26,7 @@ class Validator
         foreach ($rules as $field => $rule) {
             $value = $input[$field] ?? null;
             $type = $rule['type'] ?? 'string';
+            // Reject arrays and objects. Only numeric rules accept native numbers.
             if ($value !== null && !is_string($value) &&
                 !(is_int($value) && in_array($type, ['int', 'float'], true)) &&
                 !(is_float($value) && $type === 'float')) {
@@ -95,6 +100,8 @@ class Validator
 
             }
 
+
+            // 1. Numeric range checks (for integers and floats)
             if (is_int($value) || is_float($value)) {
                 if ((isset($rule['min']) && $value < $rule['min']) ||
                     (isset($rule['max']) && $value > $rule['max'])) {
@@ -103,17 +110,20 @@ class Validator
                 }
             }
 
+            // 2. Allowed values check (for enums or predefined sets)
             if (isset($rule['allowed']) && !in_array($value, $rule['allowed'], true)) {
                 $this->errors[$field] = 'Choose a valid option.';
                 continue;
             }
 
             // 2. Length (for strings/emails)
+            // 3. Length checks (for strings/emails)
             if (is_string($value) && isset($rule['maxBytes']) && strlen($value) > $rule['maxBytes']) {
                 $this->errors[$field] = "Must be no more than {$rule['maxBytes']} bytes. Some characters use more than one byte.";
                 continue;
             }
             if (is_string($value) && (isset($rule['min']) || isset($rule['max']))) {
+                // Original string length check assisted by VSCode Copilot.
                 $len = preg_match_all('/./us', $value);
                 if ((isset($rule['min']) && $len < $rule['min']) ||
                     (isset($rule['max']) && $len > $rule['max'])) {
@@ -156,6 +166,7 @@ class Validator
     public function errorMessage(array $labels): string
     {
         $messages = [];
+        // Display the first validation error for each field.
         foreach ($this->errors as $field => $message) {
             $messages[] = ($labels[$field] ?? 'Input') . ': ' . $message;
         }
